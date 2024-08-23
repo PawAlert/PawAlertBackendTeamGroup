@@ -107,6 +107,4 @@ public enum ErrorCode {
 
     private final HttpStatus status;
     private final String message;
-    // final 키워드는 Java에서 변수의 값을 한 번 할당하면 변경할 수 없음을 나타내는 데 사용
-    // 오류 코드를 나타내는 enum의 경우 불변성을 유지하는 것이 특히 중요. 왜냐하면 오류 코드는 프로그램 실행 동안 일반적으로 변경되지 않기 때문. 이러한 값의 수정 시도는 예상치 못한 동작 및 프로그램 오류로 이어질 수 있음
 }

@@ -1,5 +1,6 @@
 package com.pawalert.backend;
 
+import com.pawalert.backend.domain.mypet.entity.PetEntity;
 import com.pawalert.backend.global.BaseEntity;
 import com.pawalert.backend.global.Location;
 import com.pawalert.backend.domain.user.entity.UserEntity;
@@ -29,7 +30,7 @@ public class MissingReport extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "pet_id", nullable = false)
-    private Pet pet;
+    private PetEntity pet;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

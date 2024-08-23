@@ -39,6 +39,7 @@ public class FoundPetReport extends BaseEntity {
     private Location location;
 
     @Lob
+
     @Column(name = "description")
     @Schema(description = "특징 및 설명")
     private String description;

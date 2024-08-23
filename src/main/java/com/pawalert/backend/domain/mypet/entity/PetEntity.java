@@ -1,4 +1,4 @@
-package com.pawalert.backend;
+package com.pawalert.backend.domain.mypet.entity;
 
 import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.global.BaseEntity;
@@ -6,15 +6,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.List;
 
 @Getter
 @Setter
 @Entity
-public class Pet extends BaseEntity {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class PetEntity extends BaseEntity {
     @Id
     @Column(name = "pet_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,11 +31,11 @@ public class Pet extends BaseEntity {
     @Schema(description = "사용자 ID")
     private UserEntity user;
 
-    @Size(max = 255)
+    @Size(max = 50)
     @NotNull
     @Column(name = "pet_name", nullable = false)
     @Schema(description = "반려동물 이름")
-    private String pet_name;
+    private String petName;
 
     @Size(max = 50)
     @Column(name = "species", length = 50)
@@ -44,14 +48,9 @@ public class Pet extends BaseEntity {
     private String breed;
 
     // todo 중성화 여부
-
-    // todo 특징 (예: 경계심 있음)
-
-    // todo 구조정보 ( 구조지역, 구조장소 등등 )
-
-
-
-
+    @Column(name = "neutering")
+    @Schema(description = "중성화 여부")
+    private boolean neutering;
 
     @Size(max = 50)
     @Column(name = "color", length = 50)
@@ -60,7 +59,7 @@ public class Pet extends BaseEntity {
 
     @Column(name = "age")
     @Schema(description = "나이")
-    private Integer age;
+    private int age;
 
     @Lob
     @Column(name = "gender")
@@ -72,10 +71,11 @@ public class Pet extends BaseEntity {
     @Schema(description = "마이크로칩 ID")
     private String microchipId;
 
-    @Size(max = 255)
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "pet_photos", joinColumns = @JoinColumn(name = "pet_id"))
     @Column(name = "photo_url")
-    @Schema(description = "사진 URL")
-    private String photoUrl;
+    @Schema(description = "사진 URL 목록")
+    private List<String> photoUrls;
 
 
 }

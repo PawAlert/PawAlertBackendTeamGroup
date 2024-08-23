@@ -1,12 +1,10 @@
 package com.pawalert.backend.global.exception;
 
-
 import lombok.Getter;
 
 @Getter
 public class BusinessException extends RuntimeException {
 
-    // todo: 에러 코드 정의 필요
     private final ErrorCode errorCode;
 
     public BusinessException(ErrorCode errorCode) {
@@ -24,4 +22,8 @@ public class BusinessException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
+    public ErrorCode getErrorCode() {
+        // todo: 에러 코드 정의 필요
+        return errorCode;
+    }
 }
