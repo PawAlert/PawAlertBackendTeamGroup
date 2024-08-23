@@ -40,7 +40,7 @@ public class Pet extends BaseEntity {
 
     @Size(max = 50)
     @Column(name = "breed", length = 50)
-    @Schema(description = "품종")
+    @Schema(description = "상세품종")
     private String breed;
 
     // todo 중성화 여부
