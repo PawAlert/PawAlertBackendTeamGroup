@@ -1,19 +1,24 @@
 name: Deploy to cloudtype
+
 on:
   push:
     branches:
       - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
       - name: Connect deploy key
         uses: cloudtype-github-actions/connect@v1
         with:
           token: ${{ secrets.CLOUDTYPE_TOKEN }}
           ghtoken: ${{ secrets.GHP_TOKEN }}
+
       - name: Deploy
         uses: cloudtype-github-actions/deploy@v1
         with:
@@ -25,7 +30,27 @@ jobs:
             app: java@17
             options:
               ports: 8080
-              env: []
+              env:
+                - name: SPRING_DATASOURCE_URL
+                  value: ${{ secrets.DB_URL }}
+                - name: SPRING_DATASOURCE_USERNAME
+                  value: ${{ secrets.DB_USER }}
+                - name: SPRING_DATASOURCE_PASSWORD
+                  value: ${{ secrets.DB_PASSWORD }}
+                - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID
+                  value: ${{ secrets.GOOGLE_CLIENT_ID }}
+                - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET
+                  value: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+                - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_NAVER_CLIENT_ID
+                  value: ${{ secrets.NAVER_CLIENT_ID }}
+                - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_NAVER_CLIENT_SECRET
+                  value: ${{ secrets.NAVER_CLIENT_SECRET }}
+                - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_CLIENT_ID
+                  value: ${{ secrets.KAKAO_CLIENT_ID }}
+                - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_CLIENT_SECRET
+                  value: ${{ secrets.KAKAO_CLIENT_SECRET }}
+                - name: JWT_SECRET
+                  value: ${{ secrets.JWT_SECRET }}
               buildenv: []
             context:
               git:
