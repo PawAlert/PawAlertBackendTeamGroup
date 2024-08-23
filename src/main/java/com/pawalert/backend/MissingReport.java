@@ -2,7 +2,7 @@ package com.pawalert.backend;
 
 import com.pawalert.backend.global.BaseEntity;
 import com.pawalert.backend.global.Location;
-import com.pawalert.backend.domain.user.entity.User;
+import com.pawalert.backend.domain.user.entity.UserEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -35,7 +35,7 @@ public class MissingReport extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserEntity user;
 
     @NotNull
     @Column(name = "date_lost", nullable = false)

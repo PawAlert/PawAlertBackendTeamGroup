@@ -26,7 +26,7 @@ public class UserLocation {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
     @Schema(description = "사용자 ID")
-    private User user;
+    private UserEntity user;
 
     @Embedded
     private Location location;

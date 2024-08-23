@@ -1,7 +1,7 @@
 package com.pawalert.backend.domain.organization.entity;
 
+import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.global.BaseEntity;
-import com.pawalert.backend.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -25,7 +25,7 @@ public class AnimalRescueRequest extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
     @Schema(description = "구조 요청을 보낸 사용자의 user_id")
-    private User user;
+    private UserEntity user;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

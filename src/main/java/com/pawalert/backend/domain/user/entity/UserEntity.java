@@ -4,15 +4,16 @@ import com.pawalert.backend.global.BaseEntity;
 import com.pawalert.backend.domain.user.model.UserRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Entity
-public class User extends BaseEntity {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserEntity extends BaseEntity {
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,6 +58,8 @@ public class User extends BaseEntity {
     @Column(name = "role")
     @Schema(description = "USER, ADMIN, ASSOCIATION_USER")
     private UserRole role = UserRole.ROLE_USER;
+
+
 
 
 }

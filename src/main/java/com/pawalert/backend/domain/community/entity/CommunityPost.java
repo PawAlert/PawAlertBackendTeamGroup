@@ -1,7 +1,7 @@
 package com.pawalert.backend.domain.community.entity;
 
 import com.pawalert.backend.global.BaseEntity;
-import com.pawalert.backend.domain.user.entity.User;
+import com.pawalert.backend.domain.user.entity.UserEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -25,7 +25,7 @@ public class CommunityPost extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
     @Schema(description = "작성자")
-    private User user;
+    private UserEntity user;
 
     @Size(max = 255)
     @NotNull

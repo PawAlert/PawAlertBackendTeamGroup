@@ -27,19 +27,19 @@ public class JwtTokenProvider {
     }
 
     // JWT 토큰 생성
-    public String generateToken(String name) {
+    public String generateToken(String email) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + tokenValidityInSeconds * 1000);
 
         return Jwts.builder()
-                .setSubject(name)
+                .setSubject(email)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
-    // JWT 토큰에서 uid 추출
+    // JWT 토큰에서 email 추출
     public String getUserIdFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(secretKey)
@@ -65,6 +65,8 @@ public class JwtTokenProvider {
         CustomUserDetails userDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(userId);
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
+
+
 
     // HttpServletRequest에서 JWT 토큰 추출
     public String resolveToken(HttpServletRequest request) {

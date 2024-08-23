@@ -1,6 +1,6 @@
 package com.pawalert.backend.global.jwt;
 
-import com.pawalert.backend.domain.user.entity.User;
+import com.pawalert.backend.domain.user.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,9 +10,9 @@ import java.util.Collections;
 
 public class CustomUserDetails implements UserDetails {
 
-    private final User user;
+    private final UserEntity user;
 
-    public CustomUserDetails(User user) {
+    public CustomUserDetails(UserEntity user) {
         this.user = user;
     }
 
@@ -28,7 +28,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return user.getEmail();
     }
 
     @Override

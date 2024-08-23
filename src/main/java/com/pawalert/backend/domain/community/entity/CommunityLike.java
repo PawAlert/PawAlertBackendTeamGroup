@@ -1,6 +1,6 @@
 package com.pawalert.backend.domain.community.entity;
 
-import com.pawalert.backend.domain.user.entity.User;
+import com.pawalert.backend.domain.user.entity.UserEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -33,7 +33,7 @@ public class CommunityLike {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
     @Schema(description = "좋아요를 누른 사용자의 user_id")
-    private User user;
+    private UserEntity user;
 
     @ColumnDefault("current_timestamp()")
     @Column(name = "created_at")

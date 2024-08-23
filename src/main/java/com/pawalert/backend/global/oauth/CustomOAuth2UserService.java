@@ -1,6 +1,6 @@
 package com.pawalert.backend.global.oauth;
 
-import com.pawalert.backend.domain.user.entity.User;
+import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.jwt.JwtTokenProvider;
 import lombok.AllArgsConstructor;
@@ -47,6 +47,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
             Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
 
+            // todo : kakao 는 비지니스 인증을 받아야 email 을 가져올 수 있음
             username = (String) profile.get("nickname");
             profileImageUrl = (String) profile.get("profile_image_url"); // 카카오의 프로필 이미지 URL
             uid = String.valueOf(attributes.get("id")); // 카카오는 "id"가 사용자 고유 ID
@@ -71,8 +72,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         System.out.println("Attributes: " + attributes);
 
         // 사용자 정보 저장 또는 업데이트
-        User user = userRepository.findByUid(uid)
-                .orElseGet(User::new);
+        UserEntity user = userRepository.findByUid(uid)
+                .orElseGet(UserEntity::new);
 
         user.setUsername(username);
 
