@@ -6,12 +6,14 @@ import com.pawalert.backend.domain.user.model.LoginRequest;
 import com.pawalert.backend.domain.user.model.RegisterRequest;
 import com.pawalert.backend.domain.user.model.UserRole;
 import com.pawalert.backend.domain.user.repository.UserRepository;
+import com.pawalert.backend.global.SaveImage;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
 import com.pawalert.backend.global.jwt.JwtTokenProvider;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,16 +29,21 @@ import java.util.UUID;
 @Slf4j
 public class UserService {
 
+
+
+
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final SaveImage saveImage;
 
     @Transactional
     public ResponseEntity<?> registerUser(RegisterRequest registerRequest) {
         if (userRepository.existsByEmail(registerRequest.email())) {
             return ResponseEntity.badRequest().body("Email is already taken!");
         }
+
 
         try {
             UserEntity user = UserEntity.builder()
@@ -47,7 +54,9 @@ public class UserService {
                     .uid(UUID.randomUUID().toString())
                     .authProvider("localUser")
                     .build();
+            user.setProfilePictureUrl(saveImage.saveProfileImage(user));
             userRepository.save(user);
+
             return ResponseEntity.ok("User registered successfully!");
 
         } catch (Exception e) {

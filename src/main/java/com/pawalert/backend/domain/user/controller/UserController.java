@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 @RestController
 @AllArgsConstructor
 @Slf4j
@@ -46,7 +48,7 @@ public class UserController {
         ResponseEntity<JwtResponse> responseEntity = userService.login(loginRequest);
 
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
-            String token = responseEntity.getBody().getToken();
+            String token = Objects.requireNonNull(responseEntity.getBody()).getToken();
             return ResponseEntity.ok()
                     .header("Authorization", "Bearer " + token)
                     .body("Login successful");
