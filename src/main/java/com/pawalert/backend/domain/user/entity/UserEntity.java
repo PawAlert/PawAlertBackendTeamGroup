@@ -24,7 +24,7 @@ public class UserEntity extends BaseEntity {
 
     @Size(max = 255)
     @Column(name = "username")
-    private String username;
+    private String userName;
 
     @Size(max = 255)
     @Column(name = "email")
@@ -44,13 +44,8 @@ public class UserEntity extends BaseEntity {
 
     @Size(max = 50)
     @Column(name = "auth_provider", length = 50)
-    @Schema(description = "소셜정보, google, facebook, kakao, naver, apple")
+    @Schema(description = "소셜정보, google, kakao, naver, localuser")
     private String authProvider;
-
-    @Size(max = 255)
-    @Column(name = "auth_provider_id")
-    @Schema(description = "소셜로그인시 제공되는 고유 아이디")
-    private String authProviderId;
 
     @Size(max = 255)
     @Column(name = "profile_picture_url")

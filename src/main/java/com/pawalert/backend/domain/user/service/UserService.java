@@ -1,12 +1,11 @@
 package com.pawalert.backend.domain.user.service;
 
 import com.pawalert.backend.domain.user.entity.UserEntity;
-import com.pawalert.backend.domain.user.model.JwtResponse;
-import com.pawalert.backend.domain.user.model.LoginRequest;
-import com.pawalert.backend.domain.user.model.RegisterRequest;
-import com.pawalert.backend.domain.user.model.UserRole;
+import com.pawalert.backend.domain.user.model.*;
 import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.SaveImage;
+import com.pawalert.backend.global.exception.BusinessException;
+import com.pawalert.backend.global.exception.ErrorCode;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
 import com.pawalert.backend.global.jwt.JwtTokenProvider;
 import jakarta.transaction.Transactional;
@@ -21,6 +20,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -30,26 +31,23 @@ import java.util.UUID;
 public class UserService {
 
 
-
-
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final SaveImage saveImage;
 
+    // 회원가입
     @Transactional
     public ResponseEntity<?> registerUser(RegisterRequest registerRequest) {
         if (userRepository.existsByEmail(registerRequest.email())) {
             return ResponseEntity.badRequest().body("Email is already taken!");
         }
-
-
         try {
             UserEntity user = UserEntity.builder()
                     .email(registerRequest.email())
                     .password(passwordEncoder.encode(registerRequest.password()))
-                    .username(registerRequest.username())
+                    .userName(registerRequest.username())
                     .role(UserRole.ROLE_USER)
                     .uid(UUID.randomUUID().toString())
                     .authProvider("localUser")
@@ -64,6 +62,7 @@ public class UserService {
         }
     }
 
+    // 로그인
     public ResponseEntity<JwtResponse> login(LoginRequest loginRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -81,5 +80,36 @@ public class UserService {
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(401).body(new JwtResponse("Invalid credentials"));
         }
+    }
+
+    // 마이페이지 수정
+    public void updateMyPage(UserUpdateRequest request, CustomUserDetails user, MultipartFile images) {
+        UserEntity userEntity = userRepository.findById(user.getId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+
+        if (images != null) {
+            userEntity.setProfilePictureUrl(saveImage.SaveImages(images));
+        }
+
+        userEntity.setUserName(request.username());
+        userEntity.setPhoneNumber(request.phoneNumber());
+        userEntity.setPassword(passwordEncoder.encode(request.password()));
+        userRepository.save(userEntity);
+    }
+
+    // myPage 조회
+    public MyPageGetRequest getMyPage(CustomUserDetails user) {
+        UserEntity memberUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+
+        return new MyPageGetRequest(
+                memberUser.getUid(),
+                memberUser.getEmail(),
+                memberUser.getUserName(),
+                memberUser.getPhoneNumber(),
+                memberUser.getAuthProvider(),
+                memberUser.getProfilePictureUrl(),
+                memberUser.getRole()
+        );
     }
 }

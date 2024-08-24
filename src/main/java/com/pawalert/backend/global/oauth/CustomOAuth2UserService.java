@@ -75,7 +75,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         UserEntity user = userRepository.findByUid(uid)
                 .orElseGet(UserEntity::new);
 
-        user.setUsername(username);
+        user.setUserName(username);
 
         if (email != null) {
             user.setEmail(email);
