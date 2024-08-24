@@ -75,6 +75,10 @@ public class PetEntity extends BaseEntity {
     @Schema(description = "반려동물 사진 목록")
     private List<PetImageEntity> PetImages;
 
+    @Schema(description = "특징 : 우리집 강아지는 기여워요")
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "deleted_pet")
     @Schema(description = "삭제 여부")
     private boolean deleted;

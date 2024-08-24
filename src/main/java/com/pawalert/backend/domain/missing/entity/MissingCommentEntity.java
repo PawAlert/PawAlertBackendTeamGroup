@@ -1,4 +1,4 @@
-package com.pawalert.backend.domain.community.entity;
+package com.pawalert.backend.domain.missing.entity;
 
 import com.pawalert.backend.global.BaseEntity;
 import com.pawalert.backend.domain.user.entity.UserEntity;
@@ -13,7 +13,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Getter
 @Setter
 @Entity
-public class CommunityComment extends BaseEntity {
+public class MissingCommentEntity extends BaseEntity {
     @Id
     @Column(name = "comment_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,9 +22,9 @@ public class CommunityComment extends BaseEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "post_id", nullable = false)
-    @Schema(description = "댓글이 달린 게시글의 community_post_id")
-    private CommunityPost post;
+    @JoinColumn(name = "missing_report_id", nullable = false)
+    @Schema(description = "실종글에 달린 게시글 id")
+    private MissingReportEntity missingReport;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

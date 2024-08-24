@@ -1,4 +1,4 @@
-package com.pawalert.backend;
+package com.pawalert.backend.domain.missing.entity;
 
 import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.global.BaseEntity;
@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-public class FoundPetReport extends BaseEntity {
+public class FoundPetReportEntity extends BaseEntity {
     @Id
     @Column(name = "found_pet_report_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +39,6 @@ public class FoundPetReport extends BaseEntity {
     private Location location;
 
     @Lob
-
     @Column(name = "description")
     @Schema(description = "특징 및 설명")
     private String description;

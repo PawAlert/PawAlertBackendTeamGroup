@@ -28,7 +28,7 @@ public class PetController {
     }
 
 
-    @PatchMapping("/updateMyPet")
+    @PatchMapping(value = "/updateMyPet", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void updateMyPet(@AuthenticationPrincipal CustomUserDetails user,
                             @RequestPart("petUpdateDto") PetUpdateRequest request,
                             @RequestPart("petImage") List<MultipartFile> images) {
