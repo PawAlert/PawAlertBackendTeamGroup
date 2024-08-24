@@ -1,6 +1,8 @@
 package com.pawalert.backend.global;
 
 import com.pawalert.backend.domain.user.entity.UserEntity;
+import com.pawalert.backend.global.exception.BusinessException;
+import com.pawalert.backend.global.exception.ErrorCode;
 import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -35,7 +37,7 @@ public class SaveImage {
             Path uploadPath = Paths.get(System.getProperty("user.dir") + uploadDir);
 
             //파일 경로에 없으면 만듬
-            if(!Files.exists(uploadPath)) {
+            if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
@@ -50,7 +52,7 @@ public class SaveImage {
 
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BusinessException(ErrorCode.UPLOAD_ERROR_IMAGE);
         }
 
     }

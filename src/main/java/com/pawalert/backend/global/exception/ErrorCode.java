@@ -22,6 +22,7 @@ public enum ErrorCode {
     OTHER_LOGIN_TYPE(HttpStatus.BAD_REQUEST, "로그인 타입을 확인해주세요"),
     NOT_FOUND_AUTHORITY(HttpStatus.NOT_FOUND, "존재하지 않는 권한입니다."),
     FORBIDDEN_ERROR(HttpStatus.FORBIDDEN, "권한이 없습니다."),
+    NOT_PET_ERROR(HttpStatus.NOT_FOUND, "PET이 존재하지 않습니다."),
 
 
     EXPIRED_JWT_ERROR(HttpStatus.UNAUTHORIZED, "토큰 만료 기한이 지났습니다."),

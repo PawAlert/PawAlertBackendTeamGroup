@@ -71,11 +71,12 @@ public class PetEntity extends BaseEntity {
     @Schema(description = "마이크로칩 ID")
     private String microchipId;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name = "pet_photos", joinColumns = @JoinColumn(name = "pet_id"))
-    @Column(name = "photo_url")
-    @Schema(description = "사진 URL 목록")
-    private List<String> photoUrls;
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Schema(description = "반려동물 사진 목록")
+    private List<PetImageEntity> PetImages;
 
+    @Column(name = "deleted_pet")
+    @Schema(description = "삭제 여부")
+    private boolean deleted;
 
 }

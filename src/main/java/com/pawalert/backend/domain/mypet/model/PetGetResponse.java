@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
-public record PetRegisterRequest(
+public record PetGetResponse(
+        @Schema(description = "pet ID")
+        Long petId,
         @Schema(description = "반려동물 이름")
         String petName,
         @Schema(description = "품종 : 강아지, 고양이")
@@ -20,7 +22,8 @@ public record PetRegisterRequest(
         @Schema(description = "중성화 여부")
         boolean neutering,
         @Schema(description = "나이")
-        int age
-
+        int age,
+        @Schema(description = "사진")
+        List<PetImageListRecord> petImageList
 ) {
 }
