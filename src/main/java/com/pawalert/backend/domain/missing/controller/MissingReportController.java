@@ -1,6 +1,9 @@
 package com.pawalert.backend.domain.missing.controller;
 
+import com.pawalert.backend.domain.missing.model.ChangeMissingStatusRecord;
+import com.pawalert.backend.domain.missing.model.MissingDetailResponse;
 import com.pawalert.backend.domain.missing.model.MissingReportRecord;
+import com.pawalert.backend.domain.missing.model.MissingUpdateRequest;
 import com.pawalert.backend.domain.missing.service.MissingReportService;
 import com.pawalert.backend.domain.mypet.model.PetUpdateRequest;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
@@ -18,8 +21,8 @@ import java.util.List;
 public class MissingReportController {
     private final MissingReportService missingReportService;
 
-    //todo : 실종신고 등록
-    @PostMapping(value = "/updateMissingReport", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    //실종신고 등록
+    @PostMapping(value = "/createMissingReport", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void createMissingReport(@AuthenticationPrincipal CustomUserDetails user,
                                     @RequestPart("MissingPost") MissingReportRecord request,
                                     @RequestPart("MissingImage") List<MultipartFile> images) {
@@ -28,14 +31,45 @@ public class MissingReportController {
 
     }
 
+    // 실종글 수정
+    @PatchMapping("/updateMissingReport")
+    public void updateMissingReport(@AuthenticationPrincipal CustomUserDetails user,
+                                    @RequestPart("MissingUpdatePost") MissingUpdateRequest request,
+                                    @RequestPart("MissingUpdateImage") List<MultipartFile> images) {
 
-    //todo : 실종신고 수정
-    //todo : 실종신고 삭제
-    //todo : 실종신고 상세 조회
-    //todo : 실종신고 전체 조회
+        missingReportService.updateMissingReport(request, user, images);
+
+    }
+
+    // 실종글 삭제
+    @DeleteMapping("/deleteMissingReport/{missingReportId}")
+    public void deleteMissingReport(@AuthenticationPrincipal CustomUserDetails user,
+                                    @PathVariable Long missingReportId) {
+
+        missingReportService.deleteMissingReport(missingReportId, user);
+
+    }
+
+    //실종상태변경
+    @PatchMapping("/changeMissingStatus")
+    public void changeMissingStatus(@AuthenticationPrincipal CustomUserDetails user,
+                                    ChangeMissingStatusRecord request) {
+
+        missingReportService.changeMissingStatus(request, user);
+
+    }
+
+    //todo : 실종신고 상세 조회 / 내 글인지 true,false
+    @GetMapping("/getMissingReportDetail/{missingReportId}")
+    public MissingDetailResponse getMissingReportDetail(@AuthenticationPrincipal CustomUserDetails user,
+                                                        @PathVariable Long missingReportId) {
+
+        return missingReportService.getMissingReportDetail(missingReportId, user);
+
+    }
+
     //todo : 실종신고 검색 조회
-    //todo : 실종신고 상태 변경
 
-    //todo : 실종신고 등록하기 진입 시, 정보 전달(예: 내 펫정보)
+
 
 }

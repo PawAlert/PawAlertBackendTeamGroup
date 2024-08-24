@@ -76,7 +76,7 @@ public class MissingReportEntity extends BaseEntity {
 
     @Column(name = "reward_amount", precision = 10, scale = 2)
     @Schema(description = "포상금액")
-    private BigDecimal rewardAmount;
+    private int rewardAmount;
 
     @ColumnDefault("'PENDING'")
     @Column(name = "reward_status")
@@ -85,5 +85,7 @@ public class MissingReportEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "missingReport", cascade = CascadeType.ALL, orphanRemoval = true)
     @Schema(description = "반려동물 사진 목록")
-    private List<MissingReportImageEntity> petImages;
+    private List<MissingReportImageEntity> missingPetImages;
+
+    private boolean deleted = false;
 }
