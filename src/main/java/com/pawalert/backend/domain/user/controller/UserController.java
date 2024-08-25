@@ -1,12 +1,11 @@
 package com.pawalert.backend.domain.user.controller;
 
-import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.model.JwtResponse;
 import com.pawalert.backend.domain.user.model.LoginRequest;
 import com.pawalert.backend.domain.user.model.RegisterRequest;
 import com.pawalert.backend.domain.user.model.UserUpdateRequest;
 import com.pawalert.backend.domain.user.service.UserService;
-import com.pawalert.backend.global.jwt.JwtTokenProvider;
+import com.pawalert.backend.global.httpstatus.exception.ResponseHandler;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,22 +40,14 @@ public class UserController {
     // 회원가입
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
+
         return userService.registerUser(registerRequest);
     }
 
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
-        ResponseEntity<JwtResponse> responseEntity = userService.login(loginRequest);
-
-        if (responseEntity.getStatusCode().is2xxSuccessful()) {
-            String token = Objects.requireNonNull(responseEntity.getBody()).getToken();
-            return ResponseEntity.ok()
-                    .header("Authorization", "Bearer " + token)
-                    .body("Login successful");
-        } else {
-            return responseEntity;
-        }
+        return userService.login(loginRequest);
     }
 
     // todo : 프론트단이 완성되면 추가하기로!

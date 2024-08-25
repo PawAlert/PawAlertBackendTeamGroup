@@ -1,8 +1,8 @@
 package com.pawalert.backend.global;
 
 import com.pawalert.backend.domain.user.entity.UserEntity;
-import com.pawalert.backend.global.exception.BusinessException;
-import com.pawalert.backend.global.exception.ErrorCode;
+import com.pawalert.backend.global.httpstatus.exception.BusinessException;
+import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
 import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

@@ -4,15 +4,16 @@ import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.model.*;
 import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.SaveImage;
-import com.pawalert.backend.global.exception.BusinessException;
-import com.pawalert.backend.global.exception.ErrorCode;
+import com.pawalert.backend.global.httpstatus.exception.BusinessException;
+import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
+import com.pawalert.backend.global.httpstatus.exception.ResponseHandler;
+import com.pawalert.backend.global.httpstatus.exception.SuccessResponse;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
 import com.pawalert.backend.global.jwt.JwtTokenProvider;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,7 +21,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
@@ -40,8 +40,9 @@ public class UserService {
     // 회원가입
     @Transactional
     public ResponseEntity<?> registerUser(RegisterRequest registerRequest) {
+        // 이미 존재하는 이메일인지 확인
         if (userRepository.existsByEmail(registerRequest.email())) {
-            return ResponseEntity.badRequest().body("Email is already taken!");
+            throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
         }
         try {
             UserEntity user = UserEntity.builder()
@@ -54,16 +55,15 @@ public class UserService {
                     .build();
             user.setProfilePictureUrl(saveImage.saveProfileImage(user));
             userRepository.save(user);
-
-            return ResponseEntity.ok("User registered successfully!");
+            return ResponseHandler.generateResponse(HttpStatus.CREATED, "User registered successfully!", "사용자 이메일 : " + user.getEmail());
 
         } catch (Exception e) {
-            throw new RuntimeException("User registration failed", e);
+            throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
     // 로그인
-    public ResponseEntity<JwtResponse> login(LoginRequest loginRequest) {
+    public ResponseEntity<?> login(LoginRequest loginRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -73,12 +73,22 @@ public class UserService {
             );
 
             String email = ((CustomUserDetails) authentication.getPrincipal()).getUsername(); // email 가져오기
-            log.info("User logged in: {}", email);
             String jwt = jwtTokenProvider.generateToken(email); //email 기반으로
-            return ResponseEntity.ok(new JwtResponse(jwt));
+
+            // 성공적인 응답 생성
+            SuccessResponse<JwtResponse> response = new SuccessResponse<>(
+                    HttpStatus.OK,
+                    "Login successful",
+                    new JwtResponse(jwt)
+            );
+
+            // JWT 토큰을 헤더에 추가하고 성공 응답 반환
+            return ResponseEntity.ok()
+                    .header("Authorization", "Bearer " + jwt)
+                    .body(response);
 
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(401).body(new JwtResponse("Invalid credentials"));
+            throw new  BusinessException(ErrorCode.INVALID_LOGIN_CREDENTIALS);
         }
     }
 

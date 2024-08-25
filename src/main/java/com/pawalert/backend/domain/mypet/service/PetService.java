@@ -12,8 +12,8 @@ import com.pawalert.backend.domain.mypet.repository.PetRepository;
 import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.SaveImage;
-import com.pawalert.backend.global.exception.BusinessException;
-import com.pawalert.backend.global.exception.ErrorCode;
+import com.pawalert.backend.global.httpstatus.exception.BusinessException;
+import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class PetService {
     public void createMyPet(PetRegisterRequest request, CustomUserDetails user, List<MultipartFile> images) {
 
         UserEntity userMember = userRepository.findByUid(user.getUid())
-                .orElseThrow(() -> new BusinessException(ErrorCode.FORBIDDEN_ERROR));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
         PetEntity pet = PetEntity.builder()
                 .user(userMember)
@@ -69,7 +69,7 @@ public class PetService {
     @Transactional
     public void updateMyPet(PetUpdateRequest request, CustomUserDetails user, List<MultipartFile> images) {
         PetEntity pet = petRepository.findById(request.petId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_PET_ERROR));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PET));
 
         // 삭제 처리 false -> true
         if (!request.deletePhotoIds().isEmpty()) {
@@ -113,7 +113,7 @@ public class PetService {
     @Transactional
     public PetGetResponse getMyPet(Long petId, CustomUserDetails user) {
         PetEntity pet = petRepository.findById(petId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_PET_ERROR));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PET));
 
         List<PetImageListRecord> petImageRecords = pet.getPetImages().stream()
                 .filter(image -> !image.isDeleted())
@@ -139,7 +139,7 @@ public class PetService {
     @Transactional
     public void deleteMyPet(Long petId, CustomUserDetails user) {
         PetEntity pet = petRepository.findById(petId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_PET_ERROR));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PET));
 
         pet.setDeleted(true);
         petRepository.save(pet);
