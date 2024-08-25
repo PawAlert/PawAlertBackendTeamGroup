@@ -25,8 +25,7 @@ public class ResponseHandler {
         return generateResponse(HttpStatus.NOT_FOUND, message, data);
     }
 
-    public static <T> ResponseEntity<SuccessResponse<T>> internalServerError(String message) {
-        return generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, message, null);
+    public static <T> ResponseEntity<SuccessResponse<T>> internalServerError(String message, T data) {
+        return generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, message, data);
     }
-
 }

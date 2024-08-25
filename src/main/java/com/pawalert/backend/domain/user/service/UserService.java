@@ -13,6 +13,7 @@ import com.pawalert.backend.global.jwt.JwtTokenProvider;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -92,21 +93,36 @@ public class UserService {
             throw new BusinessException(ErrorCode.INVALID_LOGIN_CREDENTIALS);
         }
     }
-
     // 마이페이지 수정
-    public void updateMyPage(UserUpdateRequest request, CustomUserDetails user, MultipartFile images) {
+    public ResponseEntity<?> updateMyPage(UserUpdateRequest request, CustomUserDetails user, MultipartFile images) {
+        // 사용자 정보 조회
         UserEntity userEntity = userRepository.findById(user.getId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
-        if (images != null) {
-            userEntity.setProfilePictureUrl(saveImage.SaveImages(images));
-        }
+        try {
+            // 이미지가 있는 경우 프로필 이미지 업데이트
+            if (images != null && !images.isEmpty()) {
+                userEntity.setProfilePictureUrl(saveImage.SaveImages(images));
+            }
+            // 비밀번호가 null이 아닌 경우에만 업데이트
+            if (request.password() != null && !request.password().isEmpty()) {
+                userEntity.setPassword(passwordEncoder.encode(request.password()));
+            }
 
-        userEntity.setUserName(request.username());
-        userEntity.setPhoneNumber(request.phoneNumber());
-        userEntity.setPassword(passwordEncoder.encode(request.password()));
-        userRepository.save(userEntity);
+            // 사용자 정보 업데이트
+            userEntity.setUserName(request.username());
+            userEntity.setPhoneNumber(request.phoneNumber());
+            // 사용자 정보 저장
+            userRepository.save(userEntity);
+
+            // 성공 응답 반환
+            return ResponseHandler.generateResponse(HttpStatus.OK, "내 정보 수정 성공", "사용자 이메일 : " + userEntity.getEmail());
+
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.FAIL_MY_UPDATE, "마이페이지 수정 중 오류가 발생했습니다.");
+        }
     }
+
 
     // myPage 조회
     public ResponseEntity<SuccessResponse<MyPageGetRequest>> getMyPage(CustomUserDetails user) {

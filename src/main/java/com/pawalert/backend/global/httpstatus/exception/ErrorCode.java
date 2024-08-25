@@ -29,17 +29,6 @@ public enum ErrorCode {
     // 실종 보고서
     NOT_FOUND_MISSING_REPORT(HttpStatus.NOT_FOUND, "존재하지 않는 실종 보고서입니다."),
 
-    // JWT
-    EXPIRED_JWT(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
-    INVALID_JWT(HttpStatus.FORBIDDEN, "유효하지 않은 토큰입니다."),
-    USER_AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "사용자 인증에 실패했습니다."),
-    EMPTY_JWT_CLAIM(HttpStatus.BAD_REQUEST, "JWT 클레임이 비어있습니다."),
-    UNSUPPORTED_JWT(HttpStatus.BAD_REQUEST, "지원되지 않는 JWT 토큰입니다."),
-    VALID_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "유효한 Access Token입니다."),
-    NOT_FOUND_REFRESH_TOKEN(HttpStatus.NOT_FOUND, "존재하지 않는 리프레시 토큰입니다."),
-    NOT_FOUND_COOKIE(HttpStatus.NOT_FOUND, "쿠키가 존재하지 않습니다. 다시 로그인해주세요."),
-    INCORRECT_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "리프레시 토큰이 일치하지 않습니다. 다시 로그인해주세요."),
-    INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "유효하지 않은 리프레시 토큰입니다. 다시 로그인해주세요."),
 
     // 상품
     NOT_FOUND_ITEM(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다."),
@@ -70,6 +59,7 @@ public enum ErrorCode {
     // 게시물
     NOT_FOUND_BOARD(HttpStatus.NOT_FOUND, "존재하지 않는 게시물입니다."),
     UNAUTHORIZED_BOARD_CREATION(HttpStatus.BAD_REQUEST, "게시물을 생성할 권한이 없습니다."),
+    FAIL_MY_UPDATE(HttpStatus.BAD_REQUEST, "게시물을 생성할 권한이 없습니다."),
     FILE_UPLOAD_FAILURE(HttpStatus.BAD_REQUEST, "파일 업로드에 실패했습니다."),
 
     // 파일 및 이미지
