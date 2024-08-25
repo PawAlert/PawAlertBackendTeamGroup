@@ -29,14 +29,4 @@ public class BaseEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Schema(description = "엔티티를 생성한 사용자 ID")
-    @CreatedBy
-    @Column(name = "created_by", updatable = false)
-    private Long createdBy;
-
-    @Schema(description = "엔티티를 마지막으로 수정한 사용자 ID")
-    @LastModifiedBy
-    @Column(name = "updated_by")
-    private Long updatedBy;
-
 }

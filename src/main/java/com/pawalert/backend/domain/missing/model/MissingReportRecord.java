@@ -39,7 +39,9 @@ public record MissingReportRecord(
         @Schema(description = "포상 금액")
         int rewardAmount,
         @Schema(description = "포상 내용")
-        String rewardDescription
+        String rewardDescription,
+        @Schema(description = "실종된 주소")
+        String address
 
 //        @Schema(description = "펫 사진 URL")
 //                List<String> petImageUrl,

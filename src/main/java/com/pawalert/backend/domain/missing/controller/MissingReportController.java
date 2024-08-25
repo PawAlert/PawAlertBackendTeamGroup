@@ -65,7 +65,6 @@ public class MissingReportController {
                                                         @PathVariable Long missingReportId) {
 
         return missingReportService.getMissingReportDetail(missingReportId, user);
-
     }
 
     //todo : 실종신고 검색 조회

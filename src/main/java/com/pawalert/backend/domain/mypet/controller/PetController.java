@@ -19,7 +19,7 @@ import java.util.List;
 public class PetController {
     private final PetService petService;
 
-
+    // 펫 등록
     @PostMapping(value = "/createMyPet", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void createMyPet(@AuthenticationPrincipal CustomUserDetails user,
                             @RequestPart("petDto") PetRegisterRequest request,
@@ -27,7 +27,7 @@ public class PetController {
         petService.createMyPet(request, user, images);
     }
 
-
+    // 펫정보 수정
     @PatchMapping(value = "/updateMyPet", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void updateMyPet(@AuthenticationPrincipal CustomUserDetails user,
                             @RequestPart("petUpdateDto") PetUpdateRequest request,
@@ -35,16 +35,18 @@ public class PetController {
         petService.updateMyPet(request, user, images);
 
     }
-
+    // 펫정보 삭제
     @DeleteMapping("/deleteMyPet")
     public void deleteMyPet(Long petId, @AuthenticationPrincipal CustomUserDetails user) {
         petService.deleteMyPet(petId, user);
     }
-
+    //마이펫 정보 확인
     @GetMapping("/getMyPet")
     public PetGetResponse getMyPet(@RequestParam Long petId, @AuthenticationPrincipal CustomUserDetails user) {
         return petService.getMyPet(petId, user);
     }
+
+    // todo : 마이펫 리스트 조회하는 부분 추가
 
 
 }

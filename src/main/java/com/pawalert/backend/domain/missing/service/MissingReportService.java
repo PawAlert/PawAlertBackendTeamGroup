@@ -94,6 +94,7 @@ public class MissingReportService {
 
 
         Location location = Location.builder()
+                .addressName(request.address())
                 .latitude(request.latitude())
                 .longitude(request.longitude())
                 .build();
