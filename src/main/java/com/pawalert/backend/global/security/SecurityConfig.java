@@ -1,5 +1,6 @@
 package com.pawalert.backend.global.security;
 
+import com.pawalert.backend.global.httpstatus.exception.CustomAuthenticationEntryPoint;
 import com.pawalert.backend.global.jwt.JwtAuthenticationFilter;
 import com.pawalert.backend.global.jwt.JwtTokenProvider;
 import com.pawalert.backend.global.oauth.CustomOAuth2UserService;
@@ -24,13 +25,17 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final JwtTokenProvider jwtTokenProvider;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     public SecurityConfig(CustomOAuth2UserService customOAuth2UserService,
                           OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
-                          JwtTokenProvider jwtTokenProvider) {
+                          JwtTokenProvider jwtTokenProvider,
+                          CustomAuthenticationEntryPoint customAuthenticationEntryPoint
+                          ) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
     }
 
     @Bean
@@ -59,8 +64,7 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling
-                                .authenticationEntryPoint((request, response, authException) ->
-                                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage()))
+                                .authenticationEntryPoint(customAuthenticationEntryPoint) // 변경된 부분
                 );
 
         return http.build();

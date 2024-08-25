@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -88,7 +89,7 @@ public class UserService {
                     .body(response);
 
         } catch (BadCredentialsException e) {
-            throw new  BusinessException(ErrorCode.INVALID_LOGIN_CREDENTIALS);
+            throw new BusinessException(ErrorCode.INVALID_LOGIN_CREDENTIALS);
         }
     }
 
@@ -108,11 +109,13 @@ public class UserService {
     }
 
     // myPage 조회
-    public MyPageGetRequest getMyPage(CustomUserDetails user) {
+    public ResponseEntity<SuccessResponse<MyPageGetRequest>> getMyPage(CustomUserDetails user) {
+        // 사용자 정보 조회, 없을 경우 예외 발생
         UserEntity memberUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
-        return new MyPageGetRequest(
+        // MyPage 응답 생성
+        MyPageGetRequest response = new MyPageGetRequest(
                 memberUser.getUid(),
                 memberUser.getEmail(),
                 memberUser.getUserName(),
@@ -121,5 +124,8 @@ public class UserService {
                 memberUser.getProfilePictureUrl(),
                 memberUser.getRole()
         );
+
+        // 성공 응답 반환
+        return ResponseHandler.generateResponse(HttpStatus.OK, "MyPage 조회 성공", response);
     }
 }

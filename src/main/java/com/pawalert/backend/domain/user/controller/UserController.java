@@ -24,12 +24,13 @@ public class UserController {
 
     private final UserService userService;
 
+    // 내 정보 조회
     @GetMapping("/profile")
     public ResponseEntity<?> getProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        return ResponseEntity.ok(userService.getMyPage(customUserDetails));
+        return userService.getMyPage(customUserDetails);
     }
 
-    // 마이페이지 업데이트
+    // 내 정보 업데이트
     @PatchMapping("/updateMyPage")
     public void updateMyPage(@AuthenticationPrincipal CustomUserDetails user,
                              @RequestPart("userUpdateDto") UserUpdateRequest request,
