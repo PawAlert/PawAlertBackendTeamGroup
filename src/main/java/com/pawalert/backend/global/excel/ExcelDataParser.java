@@ -1,8 +1,8 @@
 package com.pawalert.backend.global.excel;
 
-import com.pawalert.backend.domain.hospital.entity.HospitalExcelInfo;
+import com.pawalert.backend.domain.hospital.entity.HospitalExcelInfoEntity;
 import com.pawalert.backend.domain.hospital.repository.HospitalExcelInfoRepository;
-import com.pawalert.backend.domain.organization.entity.AnimalShelter;
+import com.pawalert.backend.domain.organization.entity.AnimalShelterEntity;
 import com.pawalert.backend.domain.organization.repository.AnimalShelterRepository;
 import jakarta.transaction.Transactional;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -64,16 +64,16 @@ public class ExcelDataParser {
 
                 // todo
                 // 데이터베이스에 저장된 병원 정보를 인허가번호로 조회
-                Optional<AnimalShelter> existingAnimalShelterOpt = Optional.ofNullable(animalShelterRepository.findByJurisdictionAndShelterName(jurisdiction, shelterName));
+                Optional<AnimalShelterEntity> existingAnimalShelterOpt = Optional.ofNullable(animalShelterRepository.findByJurisdictionAndShelterName(jurisdiction, shelterName));
                 if (existingAnimalShelterOpt.isPresent()) {
-                    AnimalShelter existingAnimalShelter = existingAnimalShelterOpt.get();
+                    AnimalShelterEntity existingAnimalShelter = existingAnimalShelterOpt.get();
                     existingAnimalShelter.setJurisdiction(jurisdiction);
                     existingAnimalShelter.setShelterName(shelterName);
                     existingAnimalShelter.setPhoneNumber(phoneNumber);
                     existingAnimalShelter.setAddress(address);
                 } else {
                     // 새로운 병원 정보를 추가 (데이터베이스에 저장)
-                    AnimalShelter animalShelter = new AnimalShelter();
+                    AnimalShelterEntity animalShelter = new AnimalShelterEntity();
                     animalShelter.setJurisdiction(jurisdiction);
                     animalShelter.setShelterName(shelterName);
                     animalShelter.setPhoneNumber(phoneNumber);
@@ -122,16 +122,16 @@ public class ExcelDataParser {
                 String licenseNumber = getCellValue(row.getCell(4));
 
                 // 데이터베이스에 저장된 병원 정보를 인허가번호로 조회
-                Optional<HospitalExcelInfo> existingHospitalOpt = hospitalInfoRepository.findByLicenseNumber(licenseNumber);
+                Optional<HospitalExcelInfoEntity> existingHospitalOpt = hospitalInfoRepository.findByLicenseNumber(licenseNumber);
                 if (existingHospitalOpt.isPresent()) {
                     // 기존 병원 정보가 있을 경우, 엔티티의 속성만 업데이트 (JPA의 더티 체킹에 의해 자동으로 반영됨)
-                    HospitalExcelInfo existingHospital = existingHospitalOpt.get();
+                    HospitalExcelInfoEntity existingHospital = existingHospitalOpt.get();
                     existingHospital.setName(name);
                     existingHospital.setPhoneNumber(phoneNumber);
                     existingHospital.setAddress(address);
                 } else {
                     // 새로운 병원 정보를 추가 (데이터베이스에 저장)
-                    HospitalExcelInfo hospitalInfo = new HospitalExcelInfo();
+                    HospitalExcelInfoEntity hospitalInfo = new HospitalExcelInfoEntity();
                     hospitalInfo.setName(name);
                     hospitalInfo.setPhoneNumber(phoneNumber);
                     hospitalInfo.setAddress(address);

@@ -1,6 +1,8 @@
 package com.pawalert.backend.domain.user.entity;
 
+import com.pawalert.backend.domain.hospital.entity.HospitalDoctorEntity;
 import com.pawalert.backend.domain.mypet.entity.PetEntity;
+import com.pawalert.backend.domain.organization.entity.AnimalRescueOrganizationEntity;
 import com.pawalert.backend.global.BaseEntity;
 import com.pawalert.backend.domain.user.model.UserRole;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -58,7 +60,7 @@ public class UserEntity extends BaseEntity {
     private UserRole role = UserRole.ROLE_USER;
 
 
-    // 유저 - 반려동물 1:N
+    // 유저 - 반려동물 1:Nㅜ
     @OneToMany(mappedBy = "user",orphanRemoval = true, fetch = FetchType.LAZY)
     private List<PetEntity> pets;
 
