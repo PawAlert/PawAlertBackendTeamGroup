@@ -12,6 +12,7 @@ import com.pawalert.backend.global.SaveImage;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
 import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
 import com.pawalert.backend.global.httpstatus.exception.ResponseHandler;
+import com.pawalert.backend.global.httpstatus.exception.SuccessResponse;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class PetService {
     private final PetImageRepository petImageRepository;
 
     @Transactional
-    public void createMyPet(PetRegisterRequest request, CustomUserDetails user, List<MultipartFile> images) {
+    public ResponseEntity<SuccessResponse<String>> createMyPet(PetRegisterRequest request, CustomUserDetails user, List<MultipartFile> images) {
 
         UserEntity userMember = userRepository.findByUid(user.getUid())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
@@ -63,28 +64,42 @@ public class PetService {
         petRepository.save(pet);
         petImageRepository.saveAll(petImage);
 
+        return ResponseHandler.generateResponse(HttpStatus.CREATED, "펫 등록 성공", "반려동물 이름 : " + pet.getPetName());
+
     }
 
     //펫 정보 수정
     @Transactional
-    public void updateMyPet(PetUpdateRequest request, CustomUserDetails user, List<MultipartFile> images) {
+    public ResponseEntity<SuccessResponse<String>> updateMyPet(PetUpdateRequest request, CustomUserDetails user, List<MultipartFile> images) {
+        // 펫 조회
         PetEntity pet = petRepository.findById(request.petId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PET));
+
+        // 사용자가 소유한 펫인지 확인
+        if (!pet.getUser().getId().equals(user.getId())) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
 
         // 삭제 처리 false -> true
         if (!request.deletePhotoIds().isEmpty()) {
             List<PetImageEntity> petImages = pet.getPetImages();
             for (Long deletePhotoId : request.deletePhotoIds()) {
-                petImages.stream()
+                PetImageEntity imageToDelete = petImages.stream()
                         .filter(image -> image.getId().equals(deletePhotoId))
-                        .forEach(image -> {
-                            image.setDeleted(true);
-                        });
+                        .findFirst()
+                        .orElseThrow(() -> new BusinessException(ErrorCode.FORBIDDEN));
+
+                // 이미지 소유권 확인
+                if (!imageToDelete.getPet().getId().equals(pet.getId())) {
+                    throw new BusinessException(ErrorCode.FORBIDDEN);
+                }
+
+                imageToDelete.setDeleted(true);
             }
         }
 
         // 이미지 저장
-        List<PetImageEntity> newPetImage = images.stream()
+        List<PetImageEntity> newPetImages = images.stream()
                 .map(image -> {
                     String petImageUrl = saveImage.SaveImages(image);
                     return PetImageEntity.builder()
@@ -93,9 +108,9 @@ public class PetService {
                             .photoUrl(petImageUrl)
                             .build();
                 }).toList();
-        pet.getPetImages().addAll(newPetImage);
+        pet.getPetImages().addAll(newPetImages);
 
-        pet.setPetName(request.petName());
+        // 펫 정보 업데이트
         pet.setPetName(request.petName());
         pet.setSpecies(request.species());
         pet.setBreed(request.breed());
@@ -105,9 +120,9 @@ public class PetService {
         pet.setNeutering(request.neutering());
         pet.setAge(request.age());
 
-        petRepository.save(pet);
-
+        return ResponseHandler.generateResponse(HttpStatus.OK, "펫 정보 수정 성공", "반려동물 이름 : " + pet.getPetName());
     }
+
 
     //펫 정보 조회
     @Transactional
@@ -147,12 +162,21 @@ public class PetService {
 
     //펫 정보 삭제
     @Transactional
-    public void deleteMyPet(Long petId, CustomUserDetails user) {
-        PetEntity pet = petRepository.findById(petId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PET));
+    public ResponseEntity<String> deleteMyPet(Long petId, CustomUserDetails user) {
+        try{
+            PetEntity pet = petRepository.findById(petId)
+                    .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PET));
+            pet.setDeleted(true);
+            // 관련 이미지 처리 (삭제 마킹)
+            List<PetImageEntity> images = pet.getPetImages();
+            for (PetImageEntity image : images) {
+                image.setDeleted(true);
+            }
+        } catch (BusinessException e) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
+        return ResponseEntity.noContent().build();
 
-        pet.setDeleted(true);
-        petRepository.save(pet);
     }
 
 

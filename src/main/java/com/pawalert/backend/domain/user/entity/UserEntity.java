@@ -23,7 +23,7 @@ public class UserEntity extends BaseEntity {
     private Long id;
 
     @Size(max = 255)
-    @Column(name = "username")
+    @Column(name = "user_name")
     private String userName;
 
     @Size(max = 255)
