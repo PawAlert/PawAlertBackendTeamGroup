@@ -5,10 +5,12 @@ import com.pawalert.backend.domain.missing.model.MissingDetailResponse;
 import com.pawalert.backend.domain.missing.model.MissingReportRecord;
 import com.pawalert.backend.domain.missing.model.MissingUpdateRequest;
 import com.pawalert.backend.domain.missing.service.MissingReportService;
-import com.pawalert.backend.domain.mypet.model.PetUpdateRequest;
+import com.pawalert.backend.global.httpstatus.exception.SuccessResponse;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,54 +23,53 @@ import java.util.List;
 public class MissingReportController {
     private final MissingReportService missingReportService;
 
-    //실종신고 등록
-    @PostMapping(value = "/createMissingReport", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void createMissingReport(@AuthenticationPrincipal CustomUserDetails user,
-                                    @RequestPart("MissingPost") MissingReportRecord request,
-                                    @RequestPart("MissingImage") List<MultipartFile> images) {
+    //실종 글 작성
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<SuccessResponse<List<String>>> createMissingReport(@AuthenticationPrincipal CustomUserDetails user,
+                                                                             @RequestPart("MissingPost") MissingReportRecord request,
+                                                                             @RequestPart("MissingImage") List<MultipartFile> images) {
 
-        missingReportService.createMissingReport(request, user, images);
-
+        return missingReportService.createMissingReport(request, user, images);
     }
 
     // 실종글 수정
-    @PatchMapping("/updateMissingReport")
-    public void updateMissingReport(@AuthenticationPrincipal CustomUserDetails user,
-                                    @RequestPart("MissingUpdatePost") MissingUpdateRequest request,
-                                    @RequestPart("MissingUpdateImage") List<MultipartFile> images) {
+    @PatchMapping("/update")
+    public ResponseEntity<?> updateMissingReport(@AuthenticationPrincipal CustomUserDetails user,
+                                                 @RequestPart("MissingUpdatePost") MissingUpdateRequest request,
+                                                 @RequestPart("MissingUpdateImage") List<MultipartFile> images) {
 
-        missingReportService.updateMissingReport(request, user, images);
+        return missingReportService.updateMissingReport(request, user, images);
 
     }
 
     // 실종글 삭제
-    @DeleteMapping("/deleteMissingReport/{missingReportId}")
-    public void deleteMissingReport(@AuthenticationPrincipal CustomUserDetails user,
-                                    @PathVariable Long missingReportId) {
+    @DeleteMapping("/delete/{missingReportId}")
+    public ResponseEntity<String> deleteMissingReport(@AuthenticationPrincipal CustomUserDetails user,
+                                                      @PathVariable Long missingReportId) {
 
-        missingReportService.deleteMissingReport(missingReportId, user);
-
-    }
-
-    //실종상태변경
-    @PatchMapping("/changeMissingStatus")
-    public void changeMissingStatus(@AuthenticationPrincipal CustomUserDetails user,
-                                    ChangeMissingStatusRecord request) {
-
-        missingReportService.changeMissingStatus(request, user);
+        return missingReportService.deleteMissingReport(missingReportId, user);
 
     }
 
-    //todo : 실종신고 상세 조회 / 내 글인지 true,false
-    @GetMapping("/getMissingReportDetail/{missingReportId}")
-    public MissingDetailResponse getMissingReportDetail(@AuthenticationPrincipal CustomUserDetails user,
-                                                        @PathVariable Long missingReportId) {
+    // 실종 글 상세 조회
+    @GetMapping("/getdetail/{missingReportId}")
+    public ResponseEntity<SuccessResponse<MissingDetailResponse>> getMissingReportDetail(@AuthenticationPrincipal CustomUserDetails user,
+                                                                                         @PathVariable Long missingReportId) {
 
         return missingReportService.getMissingReportDetail(missingReportId, user);
     }
 
-    //todo : 실종신고 검색 조회
+    //실종상태변경
+    @PatchMapping("/change")
+    public ResponseEntity<SuccessResponse<String>> changeMissingStatus(@AuthenticationPrincipal CustomUserDetails user,
+                                    @RequestBody ChangeMissingStatusRecord request) {
 
+        return missingReportService.changeMissingStatus(request, user);
+
+    }
+
+
+    //todo : 실종신고 검색 조회
 
 
 }

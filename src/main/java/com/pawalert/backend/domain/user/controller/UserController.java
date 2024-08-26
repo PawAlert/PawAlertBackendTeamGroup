@@ -31,7 +31,7 @@ public class UserController {
     }
 
     // 내 정보 업데이트
-    @PatchMapping("/updateMyPage")
+    @PatchMapping("/update")
     public ResponseEntity<?> updateMyPage(@AuthenticationPrincipal CustomUserDetails user,
                                           @RequestPart("userUpdateDto") UserUpdateRequest request,
                                           @RequestPart("userImage") MultipartFile images) {

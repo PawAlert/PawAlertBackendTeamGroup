@@ -3,10 +3,7 @@ package com.pawalert.backend.domain.mypet.service;
 
 import com.pawalert.backend.domain.mypet.entity.PetEntity;
 import com.pawalert.backend.domain.mypet.entity.PetImageEntity;
-import com.pawalert.backend.domain.mypet.model.PetGetResponse;
-import com.pawalert.backend.domain.mypet.model.PetImageListRecord;
-import com.pawalert.backend.domain.mypet.model.PetRegisterRequest;
-import com.pawalert.backend.domain.mypet.model.PetUpdateRequest;
+import com.pawalert.backend.domain.mypet.model.*;
 import com.pawalert.backend.domain.mypet.repository.PetImageRepository;
 import com.pawalert.backend.domain.mypet.repository.PetRepository;
 import com.pawalert.backend.domain.user.entity.UserEntity;
@@ -14,9 +11,12 @@ import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.SaveImage;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
 import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
+import com.pawalert.backend.global.httpstatus.exception.ResponseHandler;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -111,29 +111,39 @@ public class PetService {
 
     //펫 정보 조회
     @Transactional
-    public PetGetResponse getMyPet(Long petId, CustomUserDetails user) {
-        PetEntity pet = petRepository.findById(petId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_PET));
+    public ResponseEntity<?> getPets(CustomUserDetails user) {
+        UserEntity userMember = userRepository.findByUid(user.getUid())
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
-        List<PetImageListRecord> petImageRecords = pet.getPetImages().stream()
-                .filter(image -> !image.isDeleted())
-                .map(image -> new PetImageListRecord(image.getId(), image.getPhotoUrl()))
+        List<PetEntity> pets = petRepository.findAllById(userMember.getPets().stream()
+                .map(PetEntity::getId)
+                .toList());
+
+        List<PetGetResponse> petResponses = pets.stream()
+                .map(pet -> {
+                    List<PetImageListRecord> petImageRecords = pet.getPetImages().stream()
+                            .filter(image -> !image.isDeleted())
+                            .map(image -> new PetImageListRecord(image.getId(), image.getPhotoUrl()))
+                            .toList();
+
+                    return new PetGetResponse(
+                            pet.getId(),
+                            pet.getPetName(),
+                            pet.getSpecies(),
+                            pet.getBreed(),
+                            pet.getColor(),
+                            pet.getGender(),
+                            pet.getMicrochipId(),
+                            pet.isNeutering(),
+                            pet.getAge(),
+                            petImageRecords
+                    );
+                })
                 .toList();
 
-
-        return new PetGetResponse(
-                pet.getId(),
-                pet.getPetName(),
-                pet.getSpecies(),
-                pet.getBreed(),
-                pet.getColor(),
-                pet.getGender(),
-                pet.getMicrochipId(),
-                pet.isNeutering(),
-                pet.getAge(),
-                petImageRecords
-                );
+        return ResponseHandler.generateResponse(HttpStatus.OK, "펫 정보 조회 성공", petResponses);
     }
+
 
     //펫 정보 삭제
     @Transactional

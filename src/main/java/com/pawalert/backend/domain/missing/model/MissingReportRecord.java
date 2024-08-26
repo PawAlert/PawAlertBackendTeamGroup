@@ -41,7 +41,12 @@ public record MissingReportRecord(
         @Schema(description = "포상 내용")
         String rewardDescription,
         @Schema(description = "실종된 주소")
-        String address
+        String address,
+        // todo : 이름 수정하자!
+        @Schema(description = "상세 주소1")
+        String addressDetail1,
+        @Schema(description = "상세 주소2")
+        String addressDetail2
 
 //        @Schema(description = "펫 사진 URL")
 //                List<String> petImageUrl,

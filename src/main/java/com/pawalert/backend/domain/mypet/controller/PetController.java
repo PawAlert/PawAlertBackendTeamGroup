@@ -3,10 +3,12 @@ package com.pawalert.backend.domain.mypet.controller;
 import com.pawalert.backend.domain.mypet.model.PetGetResponse;
 import com.pawalert.backend.domain.mypet.model.PetRegisterRequest;
 import com.pawalert.backend.domain.mypet.model.PetUpdateRequest;
+import com.pawalert.backend.domain.mypet.model.PetViewListRequest;
 import com.pawalert.backend.domain.mypet.service.PetService;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,10 +42,11 @@ public class PetController {
     public void deleteMyPet(Long petId, @AuthenticationPrincipal CustomUserDetails user) {
         petService.deleteMyPet(petId, user);
     }
+
     //마이펫 정보 확인
     @GetMapping("/getMyPet")
-    public PetGetResponse getMyPet(@RequestParam Long petId, @AuthenticationPrincipal CustomUserDetails user) {
-        return petService.getMyPet(petId, user);
+    public ResponseEntity<?> getMyPet(@AuthenticationPrincipal CustomUserDetails user) {
+        return petService.getPets(user);
     }
 
     // todo : 마이펫 리스트 조회하는 부분 추가

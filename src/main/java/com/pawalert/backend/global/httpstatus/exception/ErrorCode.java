@@ -21,6 +21,8 @@ public enum ErrorCode {
     DUPLICATE_NICKNAME(HttpStatus.BAD_REQUEST, "이미 존재하는 닉네임입니다."),
     INVALID_LOGIN_TYPE(HttpStatus.BAD_REQUEST, "잘못된 로그인 타입입니다."),
     NOT_FOUND_AUTHORITY(HttpStatus.NOT_FOUND, "존재하지 않는 권한입니다."),
+    ERROR_DELETE(HttpStatus.BAD_REQUEST, "삭제 중 오류가 발생하였습니다."),
+    ERROR_MISSING_REPORT(HttpStatus.BAD_REQUEST, "오류가 발생하였습니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다."),
 
     // 반려동물
