@@ -58,6 +58,18 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
+    // 특정 웹사이트의 데이터를 수집
+    implementation 'org.jsoup:jsoup:1.16.1'
+
+    // 웹 서버에 HTTP 요청을 보내고 응답을 받는 데 / API를 호출하여 데이터를 가져오거나, 파일을 업로드하는 등의 작업을 수행할 때 활용
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2'
+
+    // Excel 파일을 읽고 쓰는 작업을 자동화하는 데 사용
+    implementation 'org.apache.poi:poi-ooxml:5.2.3'
+
+    // 대량의 데이터를 처리하는 배치 작업을 개발하는 데 사용
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+
 
     // querydsl
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"

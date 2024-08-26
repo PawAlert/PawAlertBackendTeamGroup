@@ -30,7 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
     private EntityManager entityManager;
 
     @Bean
-    public JPAQueryFactory queryFactory() {
+    public JPAQueryFactory jpaQueryFactory() {
         return new JPAQueryFactory(entityManager);
     }
 }
