@@ -2,6 +2,8 @@ package com.pawalert.backend.global.excel;
 
 import com.pawalert.backend.domain.hospital.entity.HospitalExcelInfo;
 import com.pawalert.backend.domain.hospital.repository.HospitalExcelInfoRepository;
+import com.pawalert.backend.domain.organization.entity.AnimalShelter;
+import com.pawalert.backend.domain.organization.repository.AnimalShelterRepository;
 import jakarta.transaction.Transactional;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -20,6 +22,68 @@ public class ExcelDataParser {
 
     @Autowired
     private HospitalExcelInfoRepository hospitalInfoRepository;
+    @Autowired
+    private AnimalShelterRepository animalShelterRepository;
+
+    @Transactional
+    public void parseAnimalSaveData(String filePath) throws IOException {
+        Workbook workbook;
+        try (InputStream fis = new FileInputStream(filePath);
+             PushbackInputStream pushbackInputStream = new PushbackInputStream(fis, 8)) {
+
+            // 파일 헤더를 읽어 OLE2 형식인지 OOXML 형식인지 확인
+            byte[] header = new byte[8];
+            pushbackInputStream.read(header);
+            pushbackInputStream.unread(header);
+
+            // 파일 형식에 따라 적절한 Workbook 객체 생성
+            if (isOLE2Format(header)) {
+                workbook = new HSSFWorkbook(pushbackInputStream); // OLE2 형식 (.xls)
+            } else {
+                workbook = new XSSFWorkbook(pushbackInputStream); // OOXML 형식 (.xlsx)
+            }
+
+            // 첫 번째 시트를 가져옴
+            Sheet sheet = workbook.getSheetAt(0);
+
+            // 시트의 각 행을 순회하며 데이터 파싱
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) continue; // 첫 번째 행(헤더) 건너뜀
+
+                // todo
+                // 각 셀의 데이터를 추출\
+
+                //관할구역
+                String jurisdiction = getCellValue(row.getCell(1));
+                //쉘터 네임
+                String shelterName = getCellValue(row.getCell(2));
+                //phoneNumber 폰 번호
+                String phoneNumber = getCellValue(row.getCell(3));
+                //address 주소
+                String address = getCellValue(row.getCell(4));
+
+                // todo
+                // 데이터베이스에 저장된 병원 정보를 인허가번호로 조회
+                Optional<AnimalShelter> existingAnimalShelterOpt = Optional.ofNullable(animalShelterRepository.findByJurisdictionAndShelterName(jurisdiction, shelterName));
+                if (existingAnimalShelterOpt.isPresent()) {
+                    AnimalShelter existingAnimalShelter = existingAnimalShelterOpt.get();
+                    existingAnimalShelter.setJurisdiction(jurisdiction);
+                    existingAnimalShelter.setShelterName(shelterName);
+                    existingAnimalShelter.setPhoneNumber(phoneNumber);
+                    existingAnimalShelter.setAddress(address);
+                } else {
+                    // 새로운 병원 정보를 추가 (데이터베이스에 저장)
+                    AnimalShelter animalShelter = new AnimalShelter();
+                    animalShelter.setJurisdiction(jurisdiction);
+                    animalShelter.setShelterName(shelterName);
+                    animalShelter.setPhoneNumber(phoneNumber);
+                    animalShelter.setAddress(address);
+
+                    animalShelterRepository.save(animalShelter); // 새 엔티티는 명시적으로 save 호출
+                }
+            }
+        }
+    }
 
     /**
      * Excel 파일을 파싱하여 데이터를 데이터베이스에 저장하는 메서드입니다.

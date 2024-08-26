@@ -54,6 +54,14 @@ public class BatchConfig {
                 .start(step1())
                 .build();
     }
+    @Bean
+    public Job importAnimalJob() {
+        return new JobBuilder("importAnimalJob", jobRepository)
+                .incrementer(new RunIdIncrementer())
+                .listener(jobExecutionListener) // Listener를 사용
+                .start(step2())
+                .build();
+    }
 
     @Bean
     public Step step1() {
@@ -80,12 +88,46 @@ public class BatchConfig {
                 }, transactionManager)
                 .build();
     }
+    @Bean
+    public Step step2() {
+        return new StepBuilder("step2", jobRepository)
+                .tasklet((contribution, chunkContext) -> {
+                    String url = "https://www.animal.go.kr/front/awtis/institution/poiExcel.do";
+                    String fileName = "poiExcel_data.xlsx";
+                    String filePath = null;
+                    try {
+                        filePath = excelFileDownloader.downloadExcelFile(url, fileName);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    if (filePath != null) {
+                        try {
+                            excelDataParser.parseAnimalSaveData(filePath);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        System.out.println("File download failed.");
+                    }
+                    return RepeatStatus.FINISHED;
+                }, transactionManager)
+                .build();
+    }
 
     //    @Scheduled(cron = "0 0 1 * * ?") // 매일 새벽 1시에 실행
     @Scheduled(cron = "0 0 1 * * ?")
     public void performJob() {
         try {
             jobLauncher.run(importHospitalJob(), new JobParametersBuilder().toJobParameters());
+        } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException |
+                 JobParametersInvalidException e) {
+            e.printStackTrace();
+        }
+    }
+    @Scheduled(cron = "0 0 2 * * ?")
+    public void performJob2() {
+        try {
+            jobLauncher.run(importAnimalJob(), new JobParametersBuilder().toJobParameters());
         } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException |
                  JobParametersInvalidException e) {
             e.printStackTrace();
