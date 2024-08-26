@@ -31,8 +31,8 @@ public class BatchConfig {
     private final PlatformTransactionManager transactionManager;
     private final ExcelFileDownloader excelFileDownloader;
     private final ExcelDataParser excelDataParser;
-    private final JobLauncher jobLauncher; // JobLauncher를 주입받음
-    private final JobExecutionListener jobExecutionListener; // JobExecutionListener를 주입받음
+    private final JobLauncher jobLauncher;
+    private final JobExecutionListener jobExecutionListener;
 
     @Autowired
     public BatchConfig(JobRepository jobRepository, PlatformTransactionManager transactionManager,
