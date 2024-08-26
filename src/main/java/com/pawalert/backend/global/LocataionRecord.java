@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 
 public record LocataionRecord(
         BigDecimal latitude,
-        BigDecimal longitude
+        BigDecimal longitude,
+        String addressName,
+        String addressDetail1,
+        String addressDetail2
 ) {
 }

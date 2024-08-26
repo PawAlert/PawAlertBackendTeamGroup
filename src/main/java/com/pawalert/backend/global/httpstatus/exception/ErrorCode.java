@@ -30,7 +30,8 @@ public enum ErrorCode {
 
     // 실종 보고서
     NOT_FOUND_MISSING_REPORT(HttpStatus.NOT_FOUND, "존재하지 않는 실종 보고서입니다."),
-
+    // 존재하지 않는 병원 라이센스
+    NOT_FOUND_LICENSE(HttpStatus.NOT_FOUND, "존재하지 않는 라이센스입니다."),
 
     // 상품
     NOT_FOUND_ITEM(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다."),

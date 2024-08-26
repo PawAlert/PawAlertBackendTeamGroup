@@ -62,4 +62,5 @@ public class CustomUserDetails implements UserDetails {
     public String getAuthProvider() {
         return user.getAuthProvider();
     }
+
 }

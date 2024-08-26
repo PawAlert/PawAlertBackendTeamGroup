@@ -2,6 +2,8 @@ package com.pawalert.backend.domain.organization.entity;
 
 import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.global.BaseEntity;
+import com.pawalert.backend.global.ImageInfo;
+import com.pawalert.backend.global.Location;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -14,6 +16,9 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(indexes = {
+        @Index(name = "idx_shelter_name", columnList = "shelter_name")
+})
 public class AnimalRescueOrganizationEntity extends BaseEntity {
     @Id
     @Column(name = "organization_id", nullable = false)
@@ -32,10 +37,9 @@ public class AnimalRescueOrganizationEntity extends BaseEntity {
     @Schema(description = "관할 구역")
     private String jurisdiction;
 
-    @Size(max = 255)
-    @Column(name = "shelter_address")
-    @Schema(description = "동물보호센터 주소")
-    private String address;
+    @Embedded
+    @Schema(description = "실종 위치 (위도/경도) 및 상세주소")
+    private Location detailAddress;
 
     @Size(max = 20)
     @Column(name = "contact_phone", length = 20)
@@ -56,4 +60,8 @@ public class AnimalRescueOrganizationEntity extends BaseEntity {
     @Schema(description = "사용자 ID")
     @Column(name = "user_id")
     private Long userId;
+
+    @Embedded
+    @Schema(description = "프로필 이미지 정보")
+    private ImageInfo profileImage;
 }

@@ -26,6 +26,7 @@ public class SaveImage {
     @Value("${file.profile-upload-dir}")
     private String profileUploadDir;
 
+    //todo : 아니 왜 유저Entity 받음?ㅠㅠㅠㅠㅠㅠㅠㅠ이거 뭐야 ㅠㅠ 괜찮아 괜찮아...고치자..
     public @Size(max = 255) String saveProfileImage(UserEntity user) {
         // 기본 이미지 URL 반환
         return baseUrl + profileUploadDir;

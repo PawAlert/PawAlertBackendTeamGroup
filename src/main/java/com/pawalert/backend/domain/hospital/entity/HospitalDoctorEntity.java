@@ -1,6 +1,7 @@
 package com.pawalert.backend.domain.hospital.entity;
 
-import com.pawalert.backend.domain.user.entity.UserEntity;
+import com.pawalert.backend.global.ImageInfo;
+import com.pawalert.backend.global.Location;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,6 +12,9 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(indexes = {
+        @Index(name = "idx_doctor_license_number", columnList = "doctor_license_number")
+})
 public class HospitalDoctorEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,9 +28,9 @@ public class HospitalDoctorEntity {
     @Column(name = "doctor_hospital_name")
     private String hospitalName;
 
-    @Schema(description = "병원 주소")
-    @Column(name = "doctor_hospital_address")
-    private String address;
+    @Embedded
+    @Schema(description = "실종 위치 (위도/경도) 및 상세주소")
+    private Location detailAddress;
 
     @Schema(description = "의사 인허가번호")
     @Column(name = "doctor_license_number")
@@ -39,4 +43,8 @@ public class HospitalDoctorEntity {
     @Schema(description = "사용자 ID")
     @Column(name = "user_id")
     private Long userId;
+
+    @Embedded
+    @Schema(description = "병원 이미지 정보")
+    private ImageInfo hospitalImage;
 }

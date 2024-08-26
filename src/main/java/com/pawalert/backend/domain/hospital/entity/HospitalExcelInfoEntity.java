@@ -8,6 +8,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Table(name = "hospital_excel_info")
 public class HospitalExcelInfoEntity {
 
     @Id
@@ -25,6 +26,7 @@ public class HospitalExcelInfoEntity {
     @Schema(name = "병원 주소")
     @Column(name = "hospital_address")
     private String address;
+
     @Schema(name = "의사 인허가번호")
     @Column(name = "hospital_license_number")
     private String licenseNumber;

@@ -1,7 +1,4 @@
 package com.pawalert.backend.domain.hospital.repository;
-
-
-
 import com.pawalert.backend.domain.hospital.entity.HospitalExcelInfoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
