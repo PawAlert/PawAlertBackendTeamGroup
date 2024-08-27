@@ -51,6 +51,14 @@ jobs:
                   value: ${{ secrets.KAKAO_CLIENT_SECRET }}
                 - name: JWT_SECRET
                   value: ${{ secrets.JWT_SECRET }}
+                - name: SPRING_DATA_MONGODB_USERNAME
+                  value: ${{ secrets.MONGO_USERNAME }}
+                - name: SPRING_DATA_MONGODB_DATABASE
+                  value: ${{ secrets.MONGO_DATABASE }}
+                - name: SPRING_DATA_MONGODB_PASSWORD
+                  value: ${{ secrets.MONGO_PASSWORD }}
+                - name: SPRING_DATA_REDIS_PASSWORD
+                  value: ${{ secrets.REDIS_PASSWORD }}
               buildenv: []
             context:
               git:
