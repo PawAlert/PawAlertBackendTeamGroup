@@ -1,10 +1,10 @@
 package com.pawalert.backend.domain.missing.model;
 
+import com.pawalert.backend.domain.comment.entity.CommentEntity;
 import com.pawalert.backend.domain.mypet.model.PetImageListRecord;
 import com.pawalert.backend.global.Location;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -52,8 +52,8 @@ public record MissingDetailResponse(
         @Schema(description = "펫 특징")
         String petDescription,
         @Schema(description = "펫 사진 URL")
-        List<PetImageListRecord> missingPetImages
+        List<PetImageListRecord> missingPetImages,
 
 
-) {
+        List<CommentEntity> comments) {
 }
