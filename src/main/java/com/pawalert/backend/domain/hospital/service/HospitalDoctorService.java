@@ -15,18 +15,18 @@ import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
 import com.pawalert.backend.global.httpstatus.exception.ResponseHandler;
 import com.pawalert.backend.global.httpstatus.exception.SuccessResponse;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+
 public class HospitalDoctorService {
     private final HospitalDoctorRepository hospitalDoctorRepository;
     private final HospitalExcelInfoRepository hospitalExcelInfoRepository;
@@ -35,12 +35,15 @@ public class HospitalDoctorService {
 
 
     // 동물병원 등록
+    @Transactional
     public ResponseEntity<SuccessResponse<String>> createHospitalDoctor(CustomUserDetails user,
                                                                         HospitalDoctorRequest request,
                                                                         MultipartFile file) {
 
         UserEntity memberUser = userRepository.findByUid(user.getUid())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+
+
 
         String fileName = saveImage.saveProfileImage(memberUser);
 
@@ -80,6 +83,7 @@ public class HospitalDoctorService {
                     .userId(user.getId())
                     .detailAddress(detailAddress)
                     .hospitalImage(imageInfo)
+                    .userId(memberUser.getId())
                     .build();
 
             hospitalDoctorRepository.save(hospitalDoctor);
@@ -93,6 +97,7 @@ public class HospitalDoctorService {
     }
 
     //정보 업데이트
+    @Transactional
     public ResponseEntity<SuccessResponse<String>> updateHospitalDoctor(CustomUserDetails user,
                                                                         HospitalDoctorUpdateRequest request,
                                                                         MultipartFile file) {
@@ -136,6 +141,7 @@ public class HospitalDoctorService {
     }
 
     //병원 의사 정보 조회
+    @Transactional(readOnly = true)
     public ResponseEntity<SuccessResponse<HospitalDoctorViewResponse>> getHospitalDoctorView(CustomUserDetails user) {
 
 

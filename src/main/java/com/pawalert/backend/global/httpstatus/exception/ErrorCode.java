@@ -24,6 +24,8 @@ public enum ErrorCode {
     ERROR_DELETE(HttpStatus.BAD_REQUEST, "삭제 중 오류가 발생하였습니다."),
     ERROR_MISSING_REPORT(HttpStatus.BAD_REQUEST, "오류가 발생하였습니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다."),
+    NOT_FOUND_SHELTER(HttpStatus.NOT_FOUND, "보호단체 정보가 없습니다."),
+    DUPLICATE_SHELTER(HttpStatus.FORBIDDEN, "보호단체 인증실패."),
 
     // 반려동물
     NOT_FOUND_PET(HttpStatus.NOT_FOUND, "존재하지 않는 반려동물입니다."),
