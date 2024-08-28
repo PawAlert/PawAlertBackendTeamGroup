@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -22,9 +23,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
+        String email = oauth2User.getAttribute("email");  // OAuth2User의 'email' 속성 가져오기
+
         // JWT 토큰 생성
-        String jwtToken = jwtTokenProvider.generateToken(userDetails.getUsername());
+        String jwtToken = jwtTokenProvider.generateToken(email);
 
         // 응답 JSON 생성
         String jsonResponse = "{"
