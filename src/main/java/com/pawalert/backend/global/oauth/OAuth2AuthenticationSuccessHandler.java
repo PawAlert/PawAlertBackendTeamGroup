@@ -24,12 +24,20 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         // JWT 토큰 생성
         String jwtToken = jwtTokenProvider.generateToken(authentication.getName());
 
+        // 응답 JSON 생성
+        String jsonResponse = "{"
+                + "\"status\": \"OK\","
+                + "\"message\": \"Login successful\","
+                + "\"data\": {"
+                + "\"token\": \"" + jwtToken + "\""
+                + "}"
+                + "}";
+
+        // 응답 설정
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write("{\"token\": \"" + jwtToken + "\"}");
 
-        // 리디렉트 URL 설정
-        String targetUrl = "https://web-pawalertfrontteam-m06zwfj8628a2164.sel4.cloudtype.app/home";
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+        // JSON 응답을 클라이언트로 작성
+        response.getWriter().write(jsonResponse);
     }
 }
