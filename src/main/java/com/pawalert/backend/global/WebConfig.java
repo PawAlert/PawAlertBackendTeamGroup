@@ -22,7 +22,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("https://web-pawalertfrontteam-m06zwfj8628a2164.sel4.cloudtype.app/", "http://localhost:8080")  // 프론트엔드 주소
+                .allowedOrigins("https://web-pawalertfrontteam-m06zwfj8628a2164.sel4.cloudtype.app", "http://localhost:8080")  // 프론트엔드 주소
                 .allowedMethods(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(), HttpMethod.DELETE.name());
     }
 
