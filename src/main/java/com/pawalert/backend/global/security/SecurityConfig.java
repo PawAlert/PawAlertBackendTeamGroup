@@ -49,8 +49,8 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2Login ->
                         oauth2Login
-                                .loginPage("/login")
-                                .defaultSuccessUrl("http://localhost:8080/home")
+                                .loginPage("https://web-pawalertfrontteam-m06zwfj8628a2164.sel4.cloudtype.app/login")
+                                .defaultSuccessUrl("https://web-pawalertfrontteam-m06zwfj8628a2164.sel4.cloudtype.app/home")
                                 .failureUrl("/login?error=true")
                                 .userInfoEndpoint(userInfoEndpoint ->
                                         userInfoEndpoint
