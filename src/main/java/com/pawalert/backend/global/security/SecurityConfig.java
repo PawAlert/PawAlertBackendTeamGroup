@@ -44,13 +44,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // JWT 인증을 사용할 경우 CSRF 보호 비활성화
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/","/login","swagger-ui/**", "api/user/login", "/oauth2/**", "/api/user/register", "/api/missing/getdetail/**").permitAll()
+                                .requestMatchers("/","/login","/swagger-ui/**", "api/user/login", "/oauth2/**", "/api/user/register", "/api/missing/getdetail/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2Login ->
                         oauth2Login
                                 .loginPage("/login")
-                                .defaultSuccessUrl("/")
+                                .defaultSuccessUrl("http://localhost:8080/home")
                                 .failureUrl("/login?error=true")
                                 .userInfoEndpoint(userInfoEndpoint ->
                                         userInfoEndpoint
