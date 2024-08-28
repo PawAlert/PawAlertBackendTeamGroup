@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +39,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private Cookie createTokenCookie(String token) {
         Cookie cookie = new Cookie("token", token);
         cookie.setHttpOnly(true); // 클라이언트 측 스크립트에서 접근하지 못하도록 설정
-        cookie.setSecure(true); // HTTPS를 통해서만 전송되도록 설정
+//        cookie.setSecure(true); // HTTPS를 통해서만 전송되도록 설정
         cookie.setPath("/"); // 전체 경로에서 쿠키 접근 가능
         return cookie;
     }
