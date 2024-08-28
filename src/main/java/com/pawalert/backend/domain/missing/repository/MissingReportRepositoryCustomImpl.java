@@ -29,7 +29,7 @@ public class MissingReportRepositoryCustomImpl implements MissingReportRepositor
         BooleanBuilder builder = new BooleanBuilder();
 
         // 상태 필터
-        if (request.status() != null) {
+        if (!request.status().isEmpty()) {
             builder.and(missingReport.status.eq(MissingStatus.valueOf(request.status())));
         }
 
