@@ -31,7 +31,7 @@ public class SecurityConfig {
                           OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
                           JwtTokenProvider jwtTokenProvider,
                           CustomAuthenticationEntryPoint customAuthenticationEntryPoint
-                          ) {
+    ) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -44,12 +44,17 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // JWT 인증을 사용할 경우 CSRF 보호 비활성화
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/","/login","/swagger-ui/**", "api/user/login", "/oauth2/**", "/api/user/register", "/api/missing/getdetail/**").permitAll()
+                                .requestMatchers("/",
+                                        "/login",
+                                        "/swagger-ui/**",
+                                        "/api/user/login",
+                                        "/oauth2/**",
+                                        "/api/user/register",
+                                        "/api/missing/getdetail/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2Login ->
                         oauth2Login
-                                .loginPage("https://web-pawalertfrontteam-m06zwfj8628a2164.sel4.cloudtype.app/login")
                                 .defaultSuccessUrl("https://web-pawalertfrontteam-m06zwfj8628a2164.sel4.cloudtype.app/home")
                                 .failureUrl("/login?error=true")
                                 .userInfoEndpoint(userInfoEndpoint ->
