@@ -24,8 +24,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         // JWT 토큰 생성
         String jwtToken = jwtTokenProvider.generateToken(authentication.getName());
 
-        // JWT 토큰을 Authorization 헤더에 설정
-        response.setHeader("Authorization", "Bearer " + jwtToken);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write("{\"token\": \"" + jwtToken + "\"}");
 
         // 리디렉트 URL 설정
         String targetUrl = "https://web-pawalertfrontteam-m06zwfj8628a2164.sel4.cloudtype.app/home";
