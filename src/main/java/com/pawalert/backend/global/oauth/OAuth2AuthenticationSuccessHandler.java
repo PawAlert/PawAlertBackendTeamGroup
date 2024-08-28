@@ -1,6 +1,7 @@
 package com.pawalert.backend.global.oauth;
 
 import com.pawalert.backend.global.jwt.JwtTokenProvider;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
@@ -23,26 +24,24 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
-        String email = oauth2User.getAttribute("email");  // OAuth2User의 'email' 속성 가져오기
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String jwtToken = jwtTokenProvider.generateToken(userDetails.getUsername());
 
-        // JWT 토큰 생성
-        String jwtToken = jwtTokenProvider.generateToken(email);
+        // 쿠키에 JWT 토큰을 설정합니다.
+        response.addCookie(createTokenCookie(jwtToken));
 
-        // 응답 JSON 생성
-        String jsonResponse = "{"
-                + "\"status\": \"OK\","
-                + "\"message\": \"Login successful\","
-                + "\"data\": {"
-                + "\"token\": \"" + jwtToken + "\""
-                + "}"
-                + "}";
+        // 성공 시 리디렉션할 URL을 설정합니다.
+        String redirectUrl = "https://web-pawalertfrontteam-m06zwfj8628a2164.sel4.cloudtype.app/home";
 
-        // 응답 설정
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        // 클라이언트 측에 리디렉션합니다.
+        getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+    }
 
-        // JSON 응답을 클라이언트로 작성
-        response.getWriter().write(jsonResponse);
+    private Cookie createTokenCookie(String token) {
+        Cookie cookie = new Cookie("token", token);
+        cookie.setHttpOnly(true); // 클라이언트 측 스크립트에서 접근하지 못하도록 설정
+        cookie.setSecure(true); // HTTPS를 통해서만 전송되도록 설정
+        cookie.setPath("/"); // 전체 경로에서 쿠키 접근 가능
+        return cookie;
     }
 }
