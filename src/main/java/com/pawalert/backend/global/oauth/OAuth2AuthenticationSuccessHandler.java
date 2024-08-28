@@ -38,13 +38,18 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         // JWT 토큰 생성
         String jwtToken = jwtTokenProvider.generateToken(username);
 
-        // 응답 데이터를 생성
-        Map<String, String> tokenResponse = new HashMap<>();
-        tokenResponse.put("token", jwtToken);
 
-        // 응답을 JSON 형식으로 변환하여 클라이언트에 전송
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(objectMapper.writeValueAsString(tokenResponse));
+        // 쿠키에 JWT 토큰을 설정합니다.
+        Cookie cookie = new Cookie("token", jwtToken);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(3600); // 1시간
+        response.addCookie(cookie);
+
+        // 성공 시 리디렉션할 URL을 설정합니다.
+        String redirectUrl = "https://web-pawalertfrontteam-m06zwfj8628a2164.sel4.cloudtype.app/home";
+
+        // 클라이언트 측에 리디렉션합니다.
+        response.sendRedirect(redirectUrl);
     }
 }
