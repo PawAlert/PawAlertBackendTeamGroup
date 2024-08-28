@@ -27,17 +27,20 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String jwtToken = jwtTokenProvider.generateToken(userDetails.getUsername());
         // JWT 토큰을 쿠키로 설정
         Cookie jwtCookie = new Cookie("jwtToken", jwtToken);
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setSecure(true);
-        jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(60 * 60);
+        jwtCookie.setHttpOnly(true); // 클라이언트에서 자바스크립트로 접근 불가하게 설정
+        jwtCookie.setSecure(true); // HTTPS 사용 시에만 전송되도록 설정 (보안 강화)
+        jwtCookie.setPath("/"); // 쿠키가 모든 경로에서 사용되도록 설정
+        jwtCookie.setMaxAge(60 * 60); // 쿠키 유효기간을 1시간으로 설정
+
+        // 쿠키를 응답에 추가
         response.addCookie(jwtCookie);
-        // 성공 시 리디렉션할 URL을 설정합니다.
-        String redirectUrl = "https://web-pawalertfrontteam-m06zwfj8628a2164.sel4.cloudtype.app/home";
+
+        // 리다이렉트 URL 설정
+        String targetUrl = determineTargetUrl(request, response);
 
 
         // 클라이언트 측에 리디렉션합니다.
-        getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+        getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
 
