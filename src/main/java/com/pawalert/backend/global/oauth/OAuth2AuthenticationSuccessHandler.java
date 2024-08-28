@@ -36,10 +36,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         response.addCookie(jwtCookie);
 
         // 리다이렉트 URL 설정
-        String targetUrl = determineTargetUrl(request, response);
-// 리다이렉트 URL 설정
-//        String targetUrl = "https://web-pawalertfrontteam-m06zwfj8628a2164.sel4.cloudtype.app/home";
-        // 리다이렉트 처리
+        // String targetUrl = determineTargetUrl(request, response);
+        String targetUrl = "https://web-pawalertfrontteam-m06zwfj8628a2164.sel4.cloudtype.app/home";
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }
