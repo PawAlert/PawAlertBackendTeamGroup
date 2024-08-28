@@ -5,7 +5,6 @@ import com.pawalert.backend.global.jwt.JwtAuthenticationFilter;
 import com.pawalert.backend.global.jwt.JwtTokenProvider;
 import com.pawalert.backend.global.oauth.CustomOAuth2UserService;
 import com.pawalert.backend.global.oauth.OAuth2AuthenticationSuccessHandler;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
