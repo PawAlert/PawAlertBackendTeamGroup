@@ -281,8 +281,8 @@ public class MissingReportService {
         return ResponseHandler.generateResponse(HttpStatus.OK, "Missing report status changed successfully", "변경 : " + request.status().toString());
 
     }
-
+    // 상태, 주소로 조회
     public Page<MissingViewListResponse> getMissingReports(MissingViewListRequest request, Pageable pageable) {
-        return missingReportRepository.searchMissingReports(request.title(), request.status(), request.location(), pageable);
+        return missingReportRepository.searchMissingReports(request, pageable);
     }
 }

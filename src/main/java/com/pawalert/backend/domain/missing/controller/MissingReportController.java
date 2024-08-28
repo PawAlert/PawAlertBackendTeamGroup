@@ -70,8 +70,15 @@ public class MissingReportController {
 
 
     //todo : 실종신고 검색 조회
-    @PostMapping("/search")
-    public Page<MissingViewListResponse> searchMissingReports(@RequestBody MissingViewListRequest request, @PageableDefault(size = 10) Pageable pageable) {
+    //todo : 실종신고 검색 조회
+    @GetMapping("/search")
+    public Page<MissingViewListResponse> searchMissingReports(
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) String addressDetail1,
+            @RequestParam(required = false) String status,
+            @PageableDefault(size = 10) Pageable pageable) {
+
+        MissingViewListRequest request = new MissingViewListRequest(address, addressDetail1, status);
         return missingReportService.getMissingReports(request, pageable);
     }
 

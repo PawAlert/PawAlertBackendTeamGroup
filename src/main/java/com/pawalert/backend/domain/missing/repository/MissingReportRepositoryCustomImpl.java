@@ -3,6 +3,7 @@ package com.pawalert.backend.domain.missing.repository;
 import com.pawalert.backend.domain.missing.entity.QMissingReportEntity;
 import com.pawalert.backend.domain.missing.entity.QMissingReportImageEntity;
 import com.pawalert.backend.domain.missing.model.MissingStatus;
+import com.pawalert.backend.domain.missing.model.MissingViewListRequest;
 import com.pawalert.backend.domain.missing.model.MissingViewListResponse;
 import com.pawalert.backend.global.LocataionRecord;
 import com.querydsl.core.BooleanBuilder;
@@ -21,25 +22,25 @@ public class MissingReportRepositoryCustomImpl implements MissingReportRepositor
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<MissingViewListResponse> searchMissingReports(String title, String status, LocataionRecord location, Pageable pageable) {
+    public Page<MissingViewListResponse> searchMissingReports(MissingViewListRequest request, Pageable pageable) {
         QMissingReportEntity missingReport = QMissingReportEntity.missingReportEntity;
         QMissingReportImageEntity missingPetImage = QMissingReportImageEntity.missingReportImageEntity;
+
         BooleanBuilder builder = new BooleanBuilder();
 
         // 상태 필터
-        if (status != null) {
-            builder.and(missingReport.status.eq(MissingStatus.valueOf(status)));
+        if (request.status() != null) {
+            builder.and(missingReport.status.eq(MissingStatus.valueOf(request.status())));
         }
 
         // 주소 정보 조건 추가
-        if (location != null) {
-            if (location.addressName() != null && !location.addressName().isEmpty()) {
-                builder.and(missingReport.location.addressName.eq(location.addressName()));
-            }
-            if (location.addressDetail1() != null && !location.addressDetail1().isEmpty()) {
-                builder.and(missingReport.location.addressDetail1.eq(location.addressDetail1()));
-            }
+        if (!request.address().isEmpty()) {
+            builder.and(missingReport.location.addressName.eq(request.address()));
         }
+        if (!request.addressDetail1().isEmpty()) {
+            builder.and(missingReport.location.addressDetail1.eq(request.addressDetail1()));
+        }
+
 
         // Querydsl 쿼리 실행 및 결과 매핑
         List<MissingViewListResponse> results = queryFactory

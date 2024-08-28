@@ -4,8 +4,8 @@ import com.pawalert.backend.global.LocataionRecord;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record MissingViewListRequest(
-        String title,
-        LocataionRecord location,
+        String address,
+        String addressDetail1,
         String status
 
 ) {
