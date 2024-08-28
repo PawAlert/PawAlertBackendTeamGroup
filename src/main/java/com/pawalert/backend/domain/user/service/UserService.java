@@ -74,7 +74,7 @@ public class UserService {
                     )
             );
 
-            String email = ((CustomUserDetails) authentication.getPrincipal()).getUsername(); // email 가져오기
+            String email = ((CustomUserDetails) authentication.getPrincipal()).getUid(); // email 가져오기
             String jwt = jwtTokenProvider.generateToken(email); //email 기반으로
 
             // 성공적인 응답 생성
