@@ -1,13 +1,13 @@
 package com.pawalert.backend.domain.missing.controller;
 
-import com.pawalert.backend.domain.missing.model.ChangeMissingStatusRecord;
-import com.pawalert.backend.domain.missing.model.MissingDetailResponse;
-import com.pawalert.backend.domain.missing.model.MissingReportRecord;
-import com.pawalert.backend.domain.missing.model.MissingUpdateRequest;
+import com.pawalert.backend.domain.missing.model.*;
 import com.pawalert.backend.domain.missing.service.MissingReportService;
 import com.pawalert.backend.global.httpstatus.exception.SuccessResponse;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -62,7 +62,7 @@ public class MissingReportController {
     //실종상태변경
     @PatchMapping("/change")
     public ResponseEntity<SuccessResponse<String>> changeMissingStatus(@AuthenticationPrincipal CustomUserDetails user,
-                                    @RequestBody ChangeMissingStatusRecord request) {
+                                                                       @RequestBody ChangeMissingStatusRecord request) {
 
         return missingReportService.changeMissingStatus(request, user);
 
@@ -70,6 +70,10 @@ public class MissingReportController {
 
 
     //todo : 실종신고 검색 조회
+    @PostMapping("/search")
+    public Page<MissingViewListResponse> searchMissingReports(@RequestBody MissingViewListRequest request, @PageableDefault(size = 10) Pageable pageable) {
+        return missingReportService.getMissingReports(request, pageable);
+    }
 
 
 }

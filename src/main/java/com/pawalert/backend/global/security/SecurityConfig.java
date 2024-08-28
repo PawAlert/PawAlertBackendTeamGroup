@@ -45,6 +45,7 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers("/",
                                         "/login",
+                                        "/api/missing/search",
                                         "/swagger-ui/**",
                                         "/api/user/login",
                                         "/oauth2/**",
