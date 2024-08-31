@@ -7,8 +7,10 @@ import com.pawalert.backend.domain.missing.model.MissingViewListRequest;
 import com.pawalert.backend.domain.missing.model.MissingViewListResponse;
 import com.pawalert.backend.global.LocataionRecord;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -61,7 +63,10 @@ public class MissingReportRepositoryCustomImpl implements MissingReportRepositor
                         missingReport.pet.gender,
                         // 첫 번째 이미지 URL만 가져오기
                         missingPetImage.missingPhotoUrl.coalesce(""),
-                        missingReport.rewardAmount
+                        missingReport.rewardAmount,
+                        missingReport.description,
+                        missingReport.user.phoneNumber
+
                 ))
                 .from(missingReport)
                 .leftJoin(missingReport.missingPetImages, missingPetImage)

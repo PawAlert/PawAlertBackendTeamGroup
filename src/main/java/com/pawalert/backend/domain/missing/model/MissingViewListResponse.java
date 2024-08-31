@@ -35,7 +35,11 @@ public record MissingViewListResponse(
         @Schema(description = "펫 이미지 url")
         String petImageUrls,
         @Schema(description = "포상금액")
-        int rewardAmount
+        int rewardAmount,
+        @Schema(description = "설명")
+        String description,
+        @Schema(description = "연락처")
+        String contact
 
 ) {
 }
