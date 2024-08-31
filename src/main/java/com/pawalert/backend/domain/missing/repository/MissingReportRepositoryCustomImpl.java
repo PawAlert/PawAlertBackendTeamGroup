@@ -64,7 +64,7 @@ public class MissingReportRepositoryCustomImpl implements MissingReportRepositor
                         // 첫 번째 이미지 URL만 가져오기
                         missingPetImage.missingPhotoUrl.coalesce(""),
                         missingReport.rewardAmount,
-                        missingReport.description,
+                        missingReport.content,
                         missingReport.user.phoneNumber
 
                 ))
