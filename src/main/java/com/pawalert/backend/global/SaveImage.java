@@ -37,10 +37,6 @@ public class SaveImage {
             //파일 경로 가져옴
             Path uploadPath = Paths.get(System.getProperty("user.dir") + uploadDir);
 
-            //파일 경로에 없으면 만듬
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
 
             String fileName = UUID.randomUUID() + "_" + images.getOriginalFilename();
             Path filePath = uploadPath.resolve(fileName);
