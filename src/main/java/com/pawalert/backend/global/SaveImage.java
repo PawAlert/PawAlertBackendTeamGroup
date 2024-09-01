@@ -35,10 +35,16 @@ public class SaveImage {
     }
 
     public String SaveImages(MultipartFile images) {
+
         try {
             //파일 경로 가져옴
             Path uploadPath = Paths.get(System.getProperty("user.dir") + uploadDir);
 
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            uploadPath = Paths.get(System.getProperty("user.dir") + uploadDir);
 
             String fileName = UUID.randomUUID() + "_" + images.getOriginalFilename();
             Path filePath = uploadPath.resolve(fileName);
