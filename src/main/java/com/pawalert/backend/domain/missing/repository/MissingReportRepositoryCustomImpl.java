@@ -45,24 +45,25 @@ public class MissingReportRepositoryCustomImpl implements MissingReportRepositor
         List<MissingViewListResponse> results = queryFactory
                 .select(Projections.constructor(
                         MissingViewListResponse.class,
-                        missingReport.id,
-                        missingReport.user.id.stringValue(),
-                        missingReport.user.email,
-                        missingReport.title,
-                        missingReport.dateLost,
-                        missingReport.location.address,
-                        missingReport.location.addressDetail1,
-                        missingReport.status.stringValue(),
-                        missingReport.pet.petName,
-                        missingReport.pet.species,
-                        missingReport.pet.color,
-                        missingReport.pet.age,
-                        missingReport.pet.gender,
-                        // 첫 번째 이미지 URL만 가져오기
-                        missingPetImage.missingPhotoUrl.coalesce(""),
-                        missingReport.rewardAmount,
-                        missingReport.content,
-                        missingReport.user.phoneNumber
+                        missingReport.id, // 실종글 Id
+                        missingReport.user.id.stringValue(), // 작성자 ID
+                        missingReport.user.email, // 작성자 email
+                        missingReport.title, // 제목
+                        missingReport.dateLost, // 실종날짜
+                        missingReport.location.postcode, // 위치코드
+                        missingReport.location.address, // 주소
+                        missingReport.location.addressDetail1, // 상세주소
+                        missingReport.location.extraAddress, // 추가주소
+                        missingReport.status.stringValue(), // 실종상태
+                        missingReport.pet.petName, // 펫 이름
+                        missingReport.pet.species, // 펫 품종
+                        missingReport.pet.color, // 펫 색상
+                        missingReport.pet.age, // 펫 나이
+                        missingReport.pet.gender, // 펫 성별
+                        missingPetImage.missingPhotoUrl.coalesce(""), // 첫 번째 펫 이미지 URL
+                        missingReport.rewardAmount, // 포상금액
+                        missingReport.content, // 설명
+                        missingReport.user.phoneNumber // 연락처
 
                 ))
                 .from(missingReport)
