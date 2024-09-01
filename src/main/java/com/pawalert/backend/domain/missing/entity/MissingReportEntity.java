@@ -31,31 +31,26 @@ public class MissingReportEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "pet_id", nullable = false)
     private PetEntity pet;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
     @Size(max = 255)
-    @NotNull
     @Column(name = "title", nullable = false)
     @Schema(description = "제목")
     private String title;
 
-    @NotNull
     @Lob
     @Column(name = "content", nullable = false)
     @Schema(description = "게시글 내용")
     private String content;
 
-    @NotNull
     @Column(name = "date_lost", nullable = false)
     @Schema(description = "실종날짜")
     private LocalDateTime dateLost;
@@ -63,8 +58,6 @@ public class MissingReportEntity extends BaseEntity {
     @Embedded
     @Schema(description = "실종 위치 (위도/경도)")
     private Location location;
-
-
 
     @Lob
     @Column(name = "description")
