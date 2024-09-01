@@ -18,17 +18,11 @@ public class CommentEntity {
 
     @Id
     private String id;
-
     private String userId;  // MongoDB에서는 직접 사용자 ID를 저장
     private String missingReportId;  // MongoDB에서는 직접 게시글 ID를 저장
-
     private String content;
-
     private boolean isDeleted;
-
     private LocalDateTime timestamp;
-
     private boolean isSecret;  // 비밀 댓글 여부
-
     private String password;  // 비밀 댓글의 비밀번호, 해시된 형태로 저장
 }

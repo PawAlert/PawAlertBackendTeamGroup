@@ -57,8 +57,6 @@ public record MissingDetailResponse(
         int reward,
         @Schema(description = "사례금 지급 상태")
         String rewardStatus,
-
-
         List<CommentEntity> comments
 ) {
 }

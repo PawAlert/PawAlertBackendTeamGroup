@@ -39,7 +39,7 @@ public class CommentController {
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
         // 사용자 확인
-        UserEntity userMember = userRepository.findById(commentDto.userId())
+        UserEntity userMember = userRepository.findById(user.getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         // 비밀 댓글 여부 및 비밀번호 처리
