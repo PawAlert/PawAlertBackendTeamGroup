@@ -53,7 +53,12 @@ public record MissingDetailResponse(
         String petDescription,
         @Schema(description = "펫 사진 URL")
         List<PetImageListRecord> missingPetImages,
+        @Schema(description = "사례금")
+        int reward,
+        @Schema(description = "사례금 지급 상태")
+        String rewardStatus,
 
 
-        List<CommentEntity> comments) {
+        List<CommentEntity> comments
+) {
 }

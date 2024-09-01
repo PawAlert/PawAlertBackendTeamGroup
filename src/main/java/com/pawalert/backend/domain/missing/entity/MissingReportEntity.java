@@ -76,7 +76,7 @@ public class MissingReportEntity extends BaseEntity {
     @ColumnDefault("'PENDING'")
     @Column(name = "reward_status")
     @Schema(description = "포상 상태, default: 대기, 지급")
-    private String rewardStatus;
+    private String rewardStatus = "PENDING";
 
     @OneToMany(mappedBy = "missingReport", cascade = CascadeType.ALL, orphanRemoval = true)
     @Schema(description = "반려동물 사진 목록")
