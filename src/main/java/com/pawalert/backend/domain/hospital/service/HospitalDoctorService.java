@@ -70,9 +70,10 @@ public class HospitalDoctorService {
             Location detailAddress = Location.builder()
                     .latitude(request.detailAddress().latitude())
                     .longitude(request.detailAddress().longitude())
-                    .addressName(request.detailAddress().addressName())
+                    .postcode(request.detailAddress().postcode())
+                    .address(request.detailAddress().address())
                     .addressDetail1(request.detailAddress().addressDetail1())
-                    .addressDetail2(request.detailAddress().addressDetail2())
+                    .extraAddress(request.detailAddress().extraAddress())
                     .build();
 
             HospitalDoctorEntity hospitalDoctor = HospitalDoctorEntity.builder()
@@ -120,9 +121,10 @@ public class HospitalDoctorService {
             Location detailAddress = Location.builder()
                     .latitude(request.detailAddress().latitude())
                     .longitude(request.detailAddress().longitude())
-                    .addressName(request.detailAddress().addressName())
+                    .postcode(request.detailAddress().postcode())
+                    .address(request.detailAddress().address())
                     .addressDetail1(request.detailAddress().addressDetail1())
-                    .addressDetail2(request.detailAddress().addressDetail2())
+                    .extraAddress(request.detailAddress().extraAddress())
                     .build();
 
 
@@ -151,9 +153,10 @@ public class HospitalDoctorService {
         LocataionRecord getDetailAddress = new LocataionRecord(
                 hospitalDoctor.getDetailAddress().getLatitude(),
                 hospitalDoctor.getDetailAddress().getLongitude(),
-                hospitalDoctor.getDetailAddress().getAddressName(),
+                hospitalDoctor.getDetailAddress().getAddress(),
                 hospitalDoctor.getDetailAddress().getAddressDetail1(),
-                hospitalDoctor.getDetailAddress().getAddressDetail2()
+                hospitalDoctor.getDetailAddress().getExtraAddress(),
+                hospitalDoctor.getDetailAddress().getPostcode()
         );
         ImageInfoRecord imageInfoRecord = new ImageInfoRecord(
                 hospitalDoctor.getHospitalImage().getImageUserId(),

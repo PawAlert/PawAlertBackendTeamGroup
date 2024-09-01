@@ -5,12 +5,9 @@ import com.pawalert.backend.domain.missing.entity.QMissingReportImageEntity;
 import com.pawalert.backend.domain.missing.model.MissingStatus;
 import com.pawalert.backend.domain.missing.model.MissingViewListRequest;
 import com.pawalert.backend.domain.missing.model.MissingViewListResponse;
-import com.pawalert.backend.global.LocataionRecord;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -37,7 +34,7 @@ public class MissingReportRepositoryCustomImpl implements MissingReportRepositor
 
         // 주소 정보 조건 추가
         if (!request.address().isEmpty()) {
-            builder.and(missingReport.location.addressName.eq(request.address()));
+            builder.and(missingReport.location.address.eq(request.address()));
         }
         if (!request.addressDetail1().isEmpty()) {
             builder.and(missingReport.location.addressDetail1.eq(request.addressDetail1()));
@@ -53,7 +50,7 @@ public class MissingReportRepositoryCustomImpl implements MissingReportRepositor
                         missingReport.user.email,
                         missingReport.title,
                         missingReport.dateLost,
-                        missingReport.location.addressName,
+                        missingReport.location.address,
                         missingReport.location.addressDetail1,
                         missingReport.status.stringValue(),
                         missingReport.pet.petName,

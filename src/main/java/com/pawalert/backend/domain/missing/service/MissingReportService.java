@@ -22,6 +22,7 @@ import com.pawalert.backend.global.httpstatus.exception.SuccessResponse;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MissingReportService {
@@ -119,9 +121,10 @@ public class MissingReportService {
 
         try {
             Location location = Location.builder()
-                    .addressName(request.address())
+                    .postcode(request.postcode())
+                    .address(request.address())
                     .addressDetail1(request.addressDetail1())
-                    .addressDetail2(request.addressDetail2())
+                    .extraAddress(request.extraAddress())
                     .latitude(request.latitude())
                     .longitude(request.longitude())
                     .build();
@@ -176,6 +179,7 @@ public class MissingReportService {
             return ResponseHandler.generateResponse(HttpStatus.CREATED, "Missing report created successfully", data);
 
         } catch (Exception e) {
+            log.error("Missing report create error", e);
             throw new BusinessException(ErrorCode.ERROR_MISSING_REPORT);
         }
 

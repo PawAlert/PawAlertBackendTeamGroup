@@ -70,11 +70,12 @@ public class ShelterService {
                     .build();
 
             Location location = Location.builder()
-                    .addressName(request.location().addressName())
+                    .address(request.location().address())
                     .addressDetail1(request.location().addressDetail1())
-                    .addressDetail2(request.location().addressDetail2())
+                    .extraAddress(request.location().extraAddress())
                     .latitude(request.location().latitude())
                     .longitude(request.location().longitude())
+                    .postcode(request.location().postcode())
                     .build();
 
 
@@ -120,11 +121,12 @@ public class ShelterService {
 
             // todo : 변수화 하자 (중복)
             Location location = Location.builder()
-                    .addressName(request.location().addressName())
+                    .address(request.location().address())
                     .addressDetail1(request.location().addressDetail1())
-                    .addressDetail2(request.location().addressDetail2())
+                    .extraAddress(request.location().extraAddress())
                     .latitude(request.location().latitude())
                     .longitude(request.location().longitude())
+                    .postcode(request.location().postcode())
                     .build();
 
             shelter.setJurisdiction(request.jurisdiction());
@@ -154,9 +156,10 @@ public class ShelterService {
             LocataionRecord location = new LocataionRecord(
                     shelter.getDetailAddress().getLatitude(),
                     shelter.getDetailAddress().getLongitude(),
-                    shelter.getDetailAddress().getAddressName(),
+                    shelter.getDetailAddress().getAddress(),
                     shelter.getDetailAddress().getAddressDetail1(),
-                    shelter.getDetailAddress().getAddressDetail2()
+                    shelter.getDetailAddress().getExtraAddress(),
+                    shelter.getDetailAddress().getPostcode()
             );
 
 

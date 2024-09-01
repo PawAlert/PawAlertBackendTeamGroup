@@ -16,10 +16,14 @@ public record MissingViewListResponse(
         String title,
         @Schema(description = "실종날짜 2024-12-31T23:59:59")
         LocalDateTime dateLost,
-        @Schema(description = "실종 위치")
+        @Schema(description = "위치코드")
+        String postcode,
+        @Schema(description = "경기도 시흥시 현대아파트")
         String address,
-        @Schema(description = "실종 위치 OO 동")
+        @Schema(description = "(정왕동)")
         String addressDetail1,
+        @Schema(description = "101동 101호")
+        String extraAddress,
         @Schema(description = "실종상태")
         String missingStatus,
         @Schema(description = "펫 이름")
