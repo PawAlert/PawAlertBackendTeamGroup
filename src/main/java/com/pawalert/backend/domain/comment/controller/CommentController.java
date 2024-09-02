@@ -42,16 +42,12 @@ public class CommentController {
         UserEntity userMember = userRepository.findById(user.getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // 비밀 댓글 여부 및 비밀번호 처리
-        String encryptedPassword = commentDto.isSecret() ? passwordEncoder.encode(commentDto.password()) : null;
 
         CommentEntity comment = CommentEntity.builder()
                 .missingReportId(String.valueOf(post.getId()))
                 .userId(String.valueOf(userMember.getId()))
                 .content(commentDto.content())
                 .timestamp(LocalDateTime.now())
-                .isSecret(commentDto.isSecret())
-                .password(encryptedPassword)
                 .build();
 
         commentRepository.save(comment);
@@ -63,24 +59,4 @@ public class CommentController {
 
         return ResponseEntity.ok("Comment added successfully");
     }
-
-//    @GetMapping("/{postId}/comments")
-//    public ResponseEntity<List<CommentEntity>> getComments(@AuthenticationPrincipal CustomUserDetails user, @PathVariable String postId) {
-//
-//    }
-
-
-    @PostMapping("/{postId}/comments/{commentId}/verify")
-    public ResponseEntity<?> verifyCommentPassword(@PathVariable String postId, @PathVariable String commentId, @RequestBody String inputPassword) {
-        CommentEntity comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new RuntimeException("Comment not found"));
-
-        if (comment.isSecret() && passwordEncoder.matches(inputPassword, comment.getPassword())) {
-            return ResponseEntity.ok(comment.getContent());
-        } else {
-            return ResponseEntity.status(403).body("비밀번호가 일치하지 않습니다.");
-        }
-    }
-
-
 }
