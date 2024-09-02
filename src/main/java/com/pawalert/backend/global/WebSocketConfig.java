@@ -21,7 +21,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // WebSocket 엔드포인트 설정
         registry.addEndpoint("/ws")  // WebSocket 연결 엔드포인트
-                .setAllowedOrigins("https://port-0-pawalertbackendteamgroup-m06zwfj8628a2164.sel4.cloudtype.app", "http://localhost:8080") // 허용할 출처 설정
+                .setAllowedOrigins("https://web-pawalertfrontteam-m06zwfj8628a2164.sel4.cloudtype.app", "http://localhost:8080") // 허용할 출처 설정
                 .withSockJS(); // SockJS 사용
     }
 }
