@@ -55,7 +55,7 @@ public class CommentController {
 
         // 알림 전송
         String notificationMessage = "게시글 '" + post.getTitle() + "'에 새로운 댓글이 작성되었습니다.";
-        notificationService.sendNotification(user.getUid(), notificationMessage);
+        notificationService.sendNotification(userMember.getUid(), notificationMessage);
 
         return ResponseEntity.ok("Comment added successfully");
     }
