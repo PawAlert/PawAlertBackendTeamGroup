@@ -45,7 +45,7 @@ public class CommentController {
 
         CommentEntity comment = CommentEntity.builder()
                 .missingReportId(String.valueOf(post.getId()))
-                .userId(String.valueOf(userMember.getId()))
+                .userId(String.valueOf(userMember.getUid()))
                 .content(commentDto.content())
                 .timestamp(LocalDateTime.now())
                 .build();
