@@ -57,8 +57,6 @@ jobs:
                   value: ${{ secrets.MONGO_DATABASE }}
                 - name: SPRING_DATA_MONGODB_PASSWORD
                   value: ${{ secrets.MONGO_PASSWORD }}
-                - name: SPRING_DATA_REDIS_PASSWORD
-                  value: ${{ secrets.REDIS_PASSWORD }}
               buildenv: []
             context:
               git:
