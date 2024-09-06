@@ -6,7 +6,6 @@ import com.pawalert.backend.domain.comment.entity.CommentEntity;
 import com.pawalert.backend.domain.comment.repository.MongoCommentRepository;
 import com.pawalert.backend.domain.missing.entity.MissingReportEntity;
 import com.pawalert.backend.domain.missing.repository.MissingReportRepository;
-import com.pawalert.backend.domain.notification.service.NotificationService;
 import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
@@ -26,7 +25,6 @@ public class CommentController {
     private final MissingReportRepository missingReportRepository;
     private final UserRepository userRepository;
     private final MongoCommentRepository commentRepository;
-    private final NotificationService notificationService;
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/{postId}/comments")
@@ -55,7 +53,6 @@ public class CommentController {
 
         // 알림 전송
         String notificationMessage = "게시글 '" + post.getTitle() + "'에 새로운 댓글이 작성되었습니다.";
-        notificationService.sendNotification(userMember.getUid(), notificationMessage);
 
         return ResponseEntity.ok("Comment added successfully");
     }
