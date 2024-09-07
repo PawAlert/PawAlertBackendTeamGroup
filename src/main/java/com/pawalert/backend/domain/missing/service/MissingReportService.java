@@ -1,8 +1,7 @@
 package com.pawalert.backend.domain.missing.service;
 
 
-import com.pawalert.backend.domain.comment.entity.CommentEntity;
-import com.pawalert.backend.domain.comment.repository.MongoCommentRepository;
+
 import com.pawalert.backend.domain.missing.entity.MissingReportEntity;
 import com.pawalert.backend.domain.missing.entity.MissingReportImageEntity;
 import com.pawalert.backend.domain.missing.model.*;
@@ -44,7 +43,6 @@ public class MissingReportService {
     private final SaveImage saveImage;
     private final PetRepository petRepository;
     private final MissingImageRepository missingImageRepository;
-    private final MongoCommentRepository commentRepository;
 
     // 실종글 수정
     @Transactional
@@ -200,11 +198,6 @@ public class MissingReportService {
             isMine = missingReport.getUser().getId().equals(userMember.getId());
         }
 
-        // 비동기로 댓글을 가져옴
-        CompletableFuture<List<CommentEntity>> commentsFuture = commentRepository.findByMissingReportId(missingReport.getId().toString());
-
-        // 비동기 작업의 결과를 기다림
-        List<CommentEntity> comments = commentsFuture.join();
 
         MissingDetailResponse response = new MissingDetailResponse(
                 missingReport.getUser().getUserName(),
@@ -230,8 +223,7 @@ public class MissingReportService {
                         .map(image -> new PetImageListRecord(image.getId(), image.getMissingPhotoUrl()))
                         .toList(),
                 missingReport.getRewardAmount(),
-                missingReport.getRewardStatus(),
-                comments
+                missingReport.getRewardStatus()
         );
         return ResponseHandler.generateResponse(HttpStatus.OK, "Missing report detail retrieved successfully", response);
 

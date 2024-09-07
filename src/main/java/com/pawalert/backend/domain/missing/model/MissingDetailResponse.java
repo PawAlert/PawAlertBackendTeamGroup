@@ -1,6 +1,5 @@
 package com.pawalert.backend.domain.missing.model;
 
-import com.pawalert.backend.domain.comment.entity.CommentEntity;
 import com.pawalert.backend.domain.mypet.model.PetImageListRecord;
 import com.pawalert.backend.global.Location;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -56,7 +55,6 @@ public record MissingDetailResponse(
         @Schema(description = "사례금")
         int reward,
         @Schema(description = "사례금 지급 상태")
-        String rewardStatus,
-        List<CommentEntity> comments
+        String rewardStatus
 ) {
 }

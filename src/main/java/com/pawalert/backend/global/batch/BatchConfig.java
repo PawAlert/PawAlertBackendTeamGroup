@@ -66,6 +66,7 @@ public class BatchConfig {
     @Bean
     public Step step1() {
         return new StepBuilder("step1", jobRepository)
+                .allowStartIfComplete(true)
                 .tasklet((contribution, chunkContext) -> {
                     String url = "https://www.animal.go.kr/front/awtis/shop/hospitalExcelList.do";
                     String fileName = "hospital_data.xlsx";
@@ -91,6 +92,7 @@ public class BatchConfig {
     @Bean
     public Step step2() {
         return new StepBuilder("step2", jobRepository)
+                .allowStartIfComplete(true)
                 .tasklet((contribution, chunkContext) -> {
                     String url = "https://www.animal.go.kr/front/awtis/institution/poiExcel.do";
                     String fileName = "poiExcel_data.xlsx";
@@ -114,8 +116,7 @@ public class BatchConfig {
                 .build();
     }
 
-    //    @Scheduled(cron = "0 0 1 * * ?") // 매일 새벽 1시에 실행
-    @Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(cron = "0 0 2 1 * ?")
     public void performJob() {
         try {
             jobLauncher.run(importHospitalJob(), new JobParametersBuilder().toJobParameters());
@@ -124,7 +125,7 @@ public class BatchConfig {
             e.printStackTrace();
         }
     }
-    @Scheduled(cron = "0 0 2 * * ?")
+    @Scheduled(cron = "0 0 3 1 * ?")
     public void performJob2() {
         try {
             jobLauncher.run(importAnimalJob(), new JobParametersBuilder().toJobParameters());
