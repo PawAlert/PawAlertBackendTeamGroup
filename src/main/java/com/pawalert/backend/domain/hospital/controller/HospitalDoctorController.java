@@ -1,10 +1,7 @@
 package com.pawalert.backend.domain.hospital.controller;
 
 
-import com.pawalert.backend.domain.hospital.dto.CertificationHospitalDoctorResponse;
-import com.pawalert.backend.domain.hospital.dto.HospitalDoctorRequest;
-import com.pawalert.backend.domain.hospital.dto.HospitalDoctorUpdateRequest;
-import com.pawalert.backend.domain.hospital.dto.HospitalDoctorViewResponse;
+import com.pawalert.backend.domain.hospital.dto.*;
 import com.pawalert.backend.domain.hospital.service.HospitalDoctorService;
 import com.pawalert.backend.global.httpstatus.exception.SuccessResponse;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
@@ -28,6 +25,12 @@ public class HospitalDoctorController {
                                                                         @RequestPart("image") MultipartFile file
     ) {
         return hospitalDoctorService.createHospitalDoctor(user, request, file);
+    }
+
+    @PostMapping(value = "/signupCreate")
+    public ResponseEntity<SuccessResponse<String>> createHospitalDoctor(@RequestBody SignupHospitalDoctorRequest request
+    ) {
+        return hospitalDoctorService.signupHospitalDoctor(request);
     }
     // 병원 정보 수정
     @PatchMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

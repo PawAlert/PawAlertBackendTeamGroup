@@ -51,6 +51,7 @@ public class SecurityConfig {
                                         "/api/user/login",
                                         "/oauth2/**",
                                         "/api/hospital/doctor/certification",
+                                        "/api/hospital/doctor/signupCreate",
                                         "/api/user/register",
                                         "/api/shelter/certification",
                                         "/api/missing/getdetail/**").permitAll()

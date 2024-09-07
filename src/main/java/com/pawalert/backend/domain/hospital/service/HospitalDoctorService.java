@@ -1,9 +1,6 @@
 package com.pawalert.backend.domain.hospital.service;
 
-import com.pawalert.backend.domain.hospital.dto.CertificationHospitalDoctorResponse;
-import com.pawalert.backend.domain.hospital.dto.HospitalDoctorRequest;
-import com.pawalert.backend.domain.hospital.dto.HospitalDoctorUpdateRequest;
-import com.pawalert.backend.domain.hospital.dto.HospitalDoctorViewResponse;
+import com.pawalert.backend.domain.hospital.dto.*;
 import com.pawalert.backend.domain.hospital.entity.HospitalDoctorEntity;
 import com.pawalert.backend.domain.hospital.entity.HospitalExcelInfoEntity;
 import com.pawalert.backend.domain.hospital.repository.HospitalDoctorRepository;
@@ -20,9 +17,12 @@ import com.pawalert.backend.global.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,9 +32,10 @@ public class HospitalDoctorService {
     private final HospitalExcelInfoRepository hospitalExcelInfoRepository;
     private final SaveImage saveImage;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
-    // 동물병원 등록
+    // 인증회원에서 동물병원 등록
     @Transactional
     public ResponseEntity<SuccessResponse<String>> createHospitalDoctor(CustomUserDetails user,
                                                                         HospitalDoctorRequest request,
@@ -94,6 +95,47 @@ public class HospitalDoctorService {
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.ERROR_MISSING_REPORT);
         }
+    }
+
+    // 회원가입 시 병원 정보 등록
+    public ResponseEntity<SuccessResponse<String>> signupHospitalDoctor(SignupHospitalDoctorRequest request) {
+        // todo : email 중복체크
+
+
+        UserEntity newUser = UserEntity.builder()
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
+                .role(UserRole.ROLE_USER)
+                .uid(UUID.randomUUID().toString())
+                .authProvider("localUser")
+                .build();
+        newUser.setProfilePictureUrl(saveImage.saveProfileImage(newUser));
+        userRepository.save(newUser);
+
+
+        Location detailAddress = Location.builder()
+                .latitude(request.locataionRecord().latitude())
+                .longitude(request.locataionRecord().longitude())
+                .postcode(request.locataionRecord().postcode())
+                .address(request.locataionRecord().address())
+                .addressDetail1(request.locataionRecord().addressDetail1())
+                .extraAddress(request.locataionRecord().extraAddress())
+                .build();
+
+        HospitalDoctorEntity hospitalDoctor = HospitalDoctorEntity.builder()
+                .phoneNumber(request.phoneNumber())
+                .hospitalName(request.hospitalName())
+                .licenseNumber(request.licenseNumber())
+                .major(request.major())
+                .userId(newUser.getId())
+                .detailAddress(detailAddress)
+                .build();
+
+        hospitalDoctorRepository.save(hospitalDoctor);
+
+        return ResponseHandler.generateResponse(HttpStatus.CREATED, "병원 의사 등록 성공",
+                String.format("사용자 ID %s 유저 권한 : %s",
+                        newUser.getEmail(), newUser.getRole()));
     }
 
     //정보 업데이트
