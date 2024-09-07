@@ -1,6 +1,8 @@
 package com.pawalert.backend.domain.organization.controller;
 
+import com.pawalert.backend.domain.hospital.dto.CertificationHospitalDoctorResponse;
 import com.pawalert.backend.domain.hospital.dto.HospitalDoctorViewResponse;
+import com.pawalert.backend.domain.organization.model.CertificationShelterResponse;
 import com.pawalert.backend.domain.organization.model.ShelterUpdateOrCreateRequest;
 import com.pawalert.backend.domain.organization.model.ShelterViewResponse;
 import com.pawalert.backend.domain.organization.service.ShelterService;
@@ -46,5 +48,10 @@ private final ShelterService shelterService;
     // todo 병원 정보 삭제
     // todo 병원 정보 검색 조회
 
+    // 동물병원 인증
+    @PostMapping("/certification")
+    public ResponseEntity<SuccessResponse<String>> certificationHospitalDoctor(@RequestBody CertificationShelterResponse request) {
+        return shelterService.certificationShelter(request);
+    }
 
 }

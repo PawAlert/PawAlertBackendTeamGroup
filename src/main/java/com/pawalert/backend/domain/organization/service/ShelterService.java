@@ -2,6 +2,7 @@ package com.pawalert.backend.domain.organization.service;
 
 import com.pawalert.backend.domain.organization.entity.AnimalRescueOrganizationEntity;
 import com.pawalert.backend.domain.organization.entity.AnimalShelterEntity;
+import com.pawalert.backend.domain.organization.model.CertificationShelterResponse;
 import com.pawalert.backend.domain.organization.model.ShelterUpdateOrCreateRequest;
 import com.pawalert.backend.domain.organization.model.ShelterViewResponse;
 import com.pawalert.backend.domain.organization.repository.AnimalShelterRepository;
@@ -48,7 +49,7 @@ public class ShelterService {
         AnimalShelterEntity shelter = animalShelterRepository.findByJurisdictionAndShelterName(request.jurisdiction(), request.shelterName());
 
         log.info("shelter : {}", shelter);
-        if(Objects.isNull(shelter)){
+        if (Objects.isNull(shelter)) {
             throw new BusinessException(ErrorCode.DUPLICATE_SHELTER);
         }
 
@@ -100,6 +101,7 @@ public class ShelterService {
 
 
     }
+
     @Transactional
     public ResponseEntity<SuccessResponse<String>> updateShelter(CustomUserDetails user,
                                                                  ShelterUpdateOrCreateRequest request,
@@ -183,6 +185,16 @@ public class ShelterService {
             return ResponseHandler.generateResponse(HttpStatus.OK, "보호센터 정보 조회 성공", response);
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.ERROR_MISSING_REPORT);
+        }
+    }
+
+    //    쉘터 인증
+    public ResponseEntity<SuccessResponse<String>> certificationShelter(CertificationShelterResponse request) {
+        try {
+            AnimalShelterEntity result = animalShelterRepository.findByJurisdictionAndShelterName(request.jurisdiction(), request.shelterName());
+            return ResponseHandler.generateResponse(HttpStatus.OK, "보호센터 인증 성공", result.getShelterName());
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.DUPLICATE_SHELTER);
         }
 
     }

@@ -1,9 +1,11 @@
 package com.pawalert.backend.domain.hospital.service;
 
+import com.pawalert.backend.domain.hospital.dto.CertificationHospitalDoctorResponse;
 import com.pawalert.backend.domain.hospital.dto.HospitalDoctorRequest;
 import com.pawalert.backend.domain.hospital.dto.HospitalDoctorUpdateRequest;
 import com.pawalert.backend.domain.hospital.dto.HospitalDoctorViewResponse;
 import com.pawalert.backend.domain.hospital.entity.HospitalDoctorEntity;
+import com.pawalert.backend.domain.hospital.entity.HospitalExcelInfoEntity;
 import com.pawalert.backend.domain.hospital.repository.HospitalDoctorRepository;
 import com.pawalert.backend.domain.hospital.repository.HospitalExcelInfoRepository;
 import com.pawalert.backend.domain.user.entity.UserEntity;
@@ -21,8 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +42,6 @@ public class HospitalDoctorService {
 
         UserEntity memberUser = userRepository.findByUid(user.getUid())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
-
 
 
         String fileName = saveImage.saveProfileImage(memberUser);
@@ -147,8 +146,8 @@ public class HospitalDoctorService {
     public ResponseEntity<SuccessResponse<HospitalDoctorViewResponse>> getHospitalDoctorView(CustomUserDetails user) {
 
 
-      HospitalDoctorEntity hospitalDoctor = hospitalDoctorRepository.findByUserId(user.getId())
-              .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+        HospitalDoctorEntity hospitalDoctor = hospitalDoctorRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
         LocataionRecord getDetailAddress = new LocataionRecord(
                 hospitalDoctor.getDetailAddress().getLatitude(),
@@ -163,7 +162,7 @@ public class HospitalDoctorService {
                 hospitalDoctor.getHospitalImage().getImageUrl()
         );
 
-        try{
+        try {
             HospitalDoctorViewResponse response = new HospitalDoctorViewResponse(
                     hospitalDoctor.getId(),
                     hospitalDoctor.getHospitalName(),
@@ -180,6 +179,17 @@ public class HospitalDoctorService {
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.ERROR_MISSING_REPORT);
         }
+    }
 
+    // 회원가입 병원 정보 인증
+    public ResponseEntity<SuccessResponse<String>> certificationHospitalDoctor(CertificationHospitalDoctorResponse request) {
+        HospitalExcelInfoEntity result = hospitalExcelInfoRepository.findByLicenseNumber(request.licenseNumber())
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_LICENSE));
+
+        if (result.getName().equals(request.hospitalName())) {
+            return ResponseHandler.generateResponse(HttpStatus.OK, "병원 인증 성공", result.getName());
+        } else {
+            throw new BusinessException(ErrorCode.NOT_FOUND_LICENSE);
+        }
     }
 }

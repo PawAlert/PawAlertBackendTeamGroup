@@ -1,6 +1,7 @@
 package com.pawalert.backend.domain.hospital.controller;
 
 
+import com.pawalert.backend.domain.hospital.dto.CertificationHospitalDoctorResponse;
 import com.pawalert.backend.domain.hospital.dto.HospitalDoctorRequest;
 import com.pawalert.backend.domain.hospital.dto.HospitalDoctorUpdateRequest;
 import com.pawalert.backend.domain.hospital.dto.HospitalDoctorViewResponse;
@@ -46,5 +47,10 @@ public class HospitalDoctorController {
     // todo 병원 정보 삭제
 
 
+    // 동물병원 인증
+    @PostMapping("/certification")
+    public ResponseEntity<SuccessResponse<String>> certificationHospitalDoctor(@RequestBody CertificationHospitalDoctorResponse request) {
+        return hospitalDoctorService.certificationHospitalDoctor(request);
+    }
 
 }
