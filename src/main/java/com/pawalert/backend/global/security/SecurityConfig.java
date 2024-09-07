@@ -58,8 +58,8 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2Login ->
                         oauth2Login
-                                .loginPage("https://web-pawalertfrontteam-m06zwfj8628a2164.sel4.cloudtype.app/home")
-                                .failureUrl("https://web-pawalertfrontteam-m06zwfj8628a2164.sel4.cloudtype.app/login?error=true")
+                                .loginPage("https://pawalert.co.kr/home")
+                                .failureUrl("https://pawalert.co.kr/login?error=true")
                                 .userInfoEndpoint(userInfoEndpoint ->
                                         userInfoEndpoint
                                                 .userService(customOAuth2UserService)
