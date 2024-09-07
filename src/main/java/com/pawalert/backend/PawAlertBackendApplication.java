@@ -8,10 +8,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @SpringBootApplication
 @EnableJpaAuditing
-@EnableMongoRepositories(basePackages = {
-        "com.pawalert.backend.domain.comment.repository",
-        "com.pawalert.backend.domain.notification.repository"
-})
 public class PawAlertBackendApplication {
 
     public static void main(String[] args) {
