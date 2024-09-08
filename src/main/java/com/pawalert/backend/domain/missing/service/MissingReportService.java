@@ -121,8 +121,7 @@ public class MissingReportService {
             Location location = Location.builder()
                     .postcode(request.postcode())
                     .address(request.address())
-                    .addressDetail1(request.addressDetail1())
-                    .extraAddress(request.extraAddress())
+                    .addressDetail(request.addressDetail())
                     .latitude(request.latitude())
                     .longitude(request.longitude())
                     .build();

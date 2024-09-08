@@ -72,8 +72,7 @@ public class ShelterService {
 
             Location location = Location.builder()
                     .address(request.location().address())
-                    .addressDetail1(request.location().addressDetail1())
-                    .extraAddress(request.location().extraAddress())
+                    .addressDetail(request.location().addressDetail())
                     .latitude(request.location().latitude())
                     .longitude(request.location().longitude())
                     .postcode(request.location().postcode())
@@ -124,8 +123,7 @@ public class ShelterService {
             // todo : 변수화 하자 (중복)
             Location location = Location.builder()
                     .address(request.location().address())
-                    .addressDetail1(request.location().addressDetail1())
-                    .extraAddress(request.location().extraAddress())
+                    .addressDetail(request.location().addressDetail())
                     .latitude(request.location().latitude())
                     .longitude(request.location().longitude())
                     .postcode(request.location().postcode())
@@ -159,8 +157,7 @@ public class ShelterService {
                     shelter.getDetailAddress().getLatitude(),
                     shelter.getDetailAddress().getLongitude(),
                     shelter.getDetailAddress().getAddress(),
-                    shelter.getDetailAddress().getAddressDetail1(),
-                    shelter.getDetailAddress().getExtraAddress(),
+                    shelter.getDetailAddress().getAddressDetail(),
                     shelter.getDetailAddress().getPostcode()
             );
 

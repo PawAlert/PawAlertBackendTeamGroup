@@ -36,8 +36,8 @@ public class MissingReportRepositoryCustomImpl implements MissingReportRepositor
         if (!request.address().isEmpty()) {
             builder.and(missingReport.location.address.eq(request.address()));
         }
-        if (!request.addressDetail1().isEmpty()) {
-            builder.and(missingReport.location.addressDetail1.eq(request.addressDetail1()));
+        if (!request.addressDetail().isEmpty()) {
+            builder.and(missingReport.location.addressDetail.eq(request.addressDetail()));
         }
 
 
@@ -52,8 +52,7 @@ public class MissingReportRepositoryCustomImpl implements MissingReportRepositor
                         missingReport.dateLost, // 실종날짜
                         missingReport.location.postcode, // 위치코드
                         missingReport.location.address, // 주소
-                        missingReport.location.addressDetail1, // 상세주소
-                        missingReport.location.extraAddress, // 추가주소
+                        missingReport.location.addressDetail, // 상세주소
                         missingReport.status.stringValue(), // 실종상태
                         missingReport.pet.petName, // 펫 이름
                         missingReport.pet.species, // 펫 품종

@@ -9,7 +9,6 @@ public record LocataionRecord(
         BigDecimal longitude,
         String postcode,
         String address,
-        String addressDetail1,
-        String extraAddress
+        String addressDetail
 ) {
 }
