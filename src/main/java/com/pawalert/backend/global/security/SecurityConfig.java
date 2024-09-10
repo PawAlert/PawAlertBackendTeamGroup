@@ -55,26 +55,26 @@ public class SecurityConfig {
                                         "/api/shelter/signupCreate",
                                         "/api/user/register",
                                         "/api/shelter/certification",
-                                        "/api/missing/getdetail/**").permitAll()
-                                .anyRequest().authenticated()
+                                        "/api/missing/getdetail/**").permitAll() // 위 경로들은 모두 인증 없이 접근 가능
+                                .anyRequest().authenticated() // 나머지 모든 요청은 인증이 필요함
                 )
                 .oauth2Login(oauth2Login ->
                         oauth2Login
-                                .loginPage("https://pawalert.co.kr/login")
-                                .failureUrl("https://pawalert.co.kr/login?error=true")
+                                .loginPage("https://pawalert.co.kr/login") // 사용자 정의 로그인 페이지 설정
+                                .failureUrl("https://pawalert.co.kr/login?error=true") // 로그인 실패 시 리디렉션 URL 설정
                                 .userInfoEndpoint(userInfoEndpoint ->
                                         userInfoEndpoint
-                                                .userService(customOAuth2UserService)
+                                                .userService(customOAuth2UserService) // 커스텀 OAuth2UserService 사용
                                 )
-                                .successHandler(oAuth2AuthenticationSuccessHandler)
+                                .successHandler(oAuth2AuthenticationSuccessHandler) // 인증 성공 시 사용자 정의 핸들러 사용
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class) // JWT 인증 필터를 UsernamePasswordAuthenticationFilter 앞에 추가
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용하지 않음
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 사용하지 않음, JWT로 상태 관리
                 )
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling
-                                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                                .authenticationEntryPoint(customAuthenticationEntryPoint) // 인증 실패 시 사용자 정의 엔트리 포인트 사용
                 );
 
         return http.build();
