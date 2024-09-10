@@ -5,6 +5,7 @@ import com.pawalert.backend.global.jwt.JwtTokenProvider;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
@@ -41,6 +42,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         // 응답 데이터를 생성
         Map<String, String> tokenResponse = new HashMap<>();
         tokenResponse.put("token", jwtToken);
+        tokenResponse.put("status", HttpStatus.OK.toString());
 
         // 응답을 JSON 형식으로 변환하여 클라이언트에 전송
         response.setContentType("application/json");
