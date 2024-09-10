@@ -1,47 +1,44 @@
 package com.pawalert.backend.global.oauth;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.pawalert.backend.global.jwt.JwtTokenProvider;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
+
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+
 
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private final RestTemplate restTemplate = new RestTemplate(); // HTTP 요청을 위한 RestTemplate
 
     public OAuth2AuthenticationSuccessHandler(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        System.out.println("OAuth2AuthenticationSuccessHandler: onAuthenticationSuccess called");
-
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, IOException {
         // JWT 토큰 생성
         String jwtToken = jwtTokenProvider.generateToken(authentication.getName());
 
+        // JWT 토큰을 쿠키로 설정
+        Cookie jwtCookie = new Cookie("jwtToken", jwtToken);
+        jwtCookie.setHttpOnly(true); // 클라이언트에서 자바스크립트로 접근 불가하게 설정
+        jwtCookie.setSecure(true); // HTTPS 사용 시에만 전송되도록 설정 (보안 강화)
+        jwtCookie.setPath("/"); // 쿠키가 모든 경로에서 사용되도록 설정
+        jwtCookie.setMaxAge(60 * 60); // 쿠키 유효기간을 1시간으로 설정
 
-        // 응답의 Content-Type을 JSON으로 설정
-        response.setContentType("application/json");
-        response.setStatus(HttpStatus.OK.value());
+        // 쿠키를 응답에 추가
+        response.addCookie(jwtCookie);
 
-        // 응답 바디에 JWT 토큰 포함
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("token", jwtToken);
+        // 리다이렉트 URL 설정
+        String targetUrl = determineTargetUrl(request, response);
 
-        // JSON 응답 작성
-        objectMapper.writeValue(response.getWriter(), responseBody);
+        // 리다이렉트 처리
+        getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }
