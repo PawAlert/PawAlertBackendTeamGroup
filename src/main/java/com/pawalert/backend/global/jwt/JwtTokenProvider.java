@@ -39,7 +39,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // JWT 토큰에서 email 추출
+    // JWT 토큰에서 정보
     public String getUserIdFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(secretKey)
@@ -61,8 +61,8 @@ public class JwtTokenProvider {
 
     // 토큰을 기반으로 인증 객체 생성
     public Authentication getAuthentication(String token) {
-        String userId = getUserIdFromToken(token);
-        CustomUserDetails userDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(userId);
+        String uid = getUserIdFromToken(token);
+        CustomUserDetails userDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(uid);
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
