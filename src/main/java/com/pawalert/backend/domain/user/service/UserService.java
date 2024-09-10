@@ -73,7 +73,7 @@ public class UserService {
 
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            user.getEmail(),
+                            user.getUid(),
                             loginRequest.password()
                     )
             );
