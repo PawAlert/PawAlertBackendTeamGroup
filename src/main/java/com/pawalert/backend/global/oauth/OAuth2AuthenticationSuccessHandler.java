@@ -40,11 +40,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         response.setContentType("application/json");
         response.setStatus(HttpStatus.OK.value());
 
-        // 캐시 비활성화 헤더 추가
-        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-        response.setHeader("Pragma", "no-cache");
-        response.setHeader("Expires", "0");
-
         // 응답 바디에 JWT 토큰 포함
         Map<String, String> responseBody = new HashMap<>();
         responseBody.put("token", jwtToken);
