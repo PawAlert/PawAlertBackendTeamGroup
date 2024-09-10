@@ -23,10 +23,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, IOException {
         // JWT 토큰 생성
-        System.out.println("authentication.getName() = " + authentication.getName());
         String jwtToken = jwtTokenProvider.generateToken(authentication.getName());
-        System.out.println("success onAuthenticationSuccess");
-        System.out.println("authentication = " + authentication);
+
 
         // JWT 토큰을 헤더로 설정
         response.setHeader("Authorization", "Bearer " + jwtToken); // "Authorization" 헤더에 JWT 토큰 설정
