@@ -61,12 +61,13 @@ public class SecurityConfig {
                 .oauth2Login(oauth2Login ->
                         oauth2Login
                                 .loginPage("https://pawalert.co.kr/login")
-                                .successHandler(oAuth2AuthenticationSuccessHandler)
                                 .failureUrl("https://pawalert.co.kr/login?error=true")
                                 .userInfoEndpoint(userInfoEndpoint ->
                                         userInfoEndpoint
                                                 .userService(customOAuth2UserService)
                                 )
+                                .successHandler(oAuth2AuthenticationSuccessHandler)
+
 
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
