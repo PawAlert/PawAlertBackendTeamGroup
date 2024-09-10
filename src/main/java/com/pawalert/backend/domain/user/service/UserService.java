@@ -68,9 +68,12 @@ public class UserService {
     public ResponseEntity<?> login(LoginRequest loginRequest) {
 
         try {
+            UserEntity user = userRepository.findByEmail(loginRequest.email())
+                    .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            loginRequest.email(),
+                            user.getEmail(),
                             loginRequest.password()
                     )
             );
