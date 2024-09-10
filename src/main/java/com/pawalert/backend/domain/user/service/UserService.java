@@ -78,8 +78,8 @@ public class UserService {
                     )
             );
 
-            String uid = ((CustomUserDetails) authentication.getPrincipal()).getUid(); // email 가져오기
-            String jwt = jwtTokenProvider.generateToken(uid); //email 기반으로
+            String uid = ((CustomUserDetails) authentication.getPrincipal()).getUid(); // uid 가져오기
+            String jwt = jwtTokenProvider.generateToken(uid); //uid 기반으로
 
             // 성공적인 응답 생성
             SuccessResponse<JwtResponse> response = new SuccessResponse<>(
