@@ -23,20 +23,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, IOException {
         // JWT 토큰 생성
+        System.out.println("authentication.getName() = " + authentication.getName());
         String jwtToken = jwtTokenProvider.generateToken(authentication.getName());
         System.out.println("success onAuthenticationSuccess");
-        // JWT 토큰을 쿠키로 설정
-        Cookie jwtCookie = new Cookie("jwtToken", jwtToken);
-        jwtCookie.setHttpOnly(true); // 클라이언트에서 자바스크립트로 접근 불가하게 설정
-        jwtCookie.setSecure(true); // HTTPS 사용 시에만 전송되도록 설정 (보안 강화)
-        jwtCookie.setPath("/"); // 쿠키가 모든 경로에서 사용되도록 설정
-        jwtCookie.setMaxAge(60 * 60); // 쿠키 유효기간을 1시간으로 설정
 
-        // 쿠키를 응답에 추가
-        response.addCookie(jwtCookie);
+        // JWT 토큰을 헤더로 설정
+        response.setHeader("Authorization", "Bearer " + jwtToken); // "Authorization" 헤더에 JWT 토큰 설정
 
         // 리다이렉트 URL 설정
-        String targetUrl = determineTargetUrl(request, response);
+        String targetUrl = "https://pawalert.co.kr"; // 리다이렉트할 URL 설정
 
         // 리다이렉트 처리
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
