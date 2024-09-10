@@ -127,6 +127,11 @@ public class UserService {
     // myPage 조회
     public ResponseEntity<SuccessResponse<MyPageGetRequest>> getMyPage(CustomUserDetails user) {
         // 사용자 정보 조회, 없을 경우 예외 발생
+
+        System.out.println("user.getId() = " + user.getId());
+        System.out.println("user.getUsername() = " + user.getUsername());
+        System.out.println("user.getAuthProvider() = " + user.getAuthProvider());
+
         UserEntity memberUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
