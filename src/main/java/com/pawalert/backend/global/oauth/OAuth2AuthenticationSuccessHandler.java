@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -27,23 +26,31 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        // DefaultOAuth2User로 캐스팅
-        DefaultOAuth2User oAuth2User = (DefaultOAuth2User) authentication.getPrincipal();
+        // 디버깅을 위한 로그 추가
+        System.out.println("OAuth2AuthenticationSuccessHandler: onAuthenticationSuccess called");
 
-        // 사용자 이름(email)을 가져옵니다.
+        // 인증된 사용자 정보 가져오기
+        DefaultOAuth2User oAuth2User = (DefaultOAuth2User) authentication.getPrincipal();
         String username = oAuth2User.getAttribute("email");
 
         // JWT 토큰 생성
         String jwtToken = jwtTokenProvider.generateToken(username);
 
-        // 응답 바디에 JWT 토큰을 포함시킵니다.
+        // 응답의 Content-Type을 JSON으로 설정
         response.setContentType("application/json");
         response.setStatus(HttpStatus.OK.value());
 
+        // 캐시 비활성화 헤더 추가
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Expires", "0");
+
+        // 응답 바디에 JWT 토큰 포함
         Map<String, String> responseBody = new HashMap<>();
         responseBody.put("token", jwtToken);
         responseBody.put("test", "test");
 
+        // JSON 응답 작성
         objectMapper.writeValue(response.getWriter(), responseBody);
     }
 }

@@ -63,8 +63,7 @@ public class SecurityConfig {
                                 .loginPage("https://pawalert.co.kr/login") // 사용자 정의 로그인 페이지 설정
                                 .failureUrl("https://pawalert.co.kr/login?error=true") // 로그인 실패 시 리디렉션 URL 설정
                                 .userInfoEndpoint(userInfoEndpoint ->
-                                        userInfoEndpoint
-                                                .userService(customOAuth2UserService) // 커스텀 OAuth2UserService 사용
+                                        userInfoEndpoint.userService(customOAuth2UserService) // 커스텀 OAuth2UserService 사용
                                 )
                                 .successHandler(oAuth2AuthenticationSuccessHandler) // 인증 성공 시 사용자 정의 핸들러 사용
                 )
