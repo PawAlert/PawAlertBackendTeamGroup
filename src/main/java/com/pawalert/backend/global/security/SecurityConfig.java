@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/",
+                                        "https://accounts.google.com/**",
                                         "/files/**",
                                         "/login",
                                         "/api/missing/search/**",
@@ -60,7 +61,7 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2Login ->
                         oauth2Login
-                                .loginPage("https://pawalert.co.kr/home")
+                                .loginPage("https://pawalert.co.kr/login")
                                 .failureUrl("https://pawalert.co.kr/login?error=true")
                                 .userInfoEndpoint(userInfoEndpoint ->
                                         userInfoEndpoint
