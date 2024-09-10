@@ -17,11 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -29,30 +24,26 @@ public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
-    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final OAuth2AuthenticationFailureHandler failureHandler;
 
     public SecurityConfig(CustomOAuth2UserService customOAuth2UserService,
                           OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
-                          OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
                           JwtTokenProvider jwtTokenProvider,
-                          CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
+                          CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
+                          OAuth2AuthenticationFailureHandler failureHandler) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
-        this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
         this.jwtTokenProvider = jwtTokenProvider;
         this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
+        this.failureHandler = failureHandler;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(customAuthenticationEntryPoint))
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/", "/files/**", "/login", "/api/missing/search/**",
@@ -64,19 +55,21 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2Login ->
                         oauth2Login
-                                .authorizationEndpoint(authorizationEndpoint ->
-                                        authorizationEndpoint
-                                                .baseUri("/oauth2/authorize"))
-                                .redirectionEndpoint(redirectionEndpoint ->
-                                        redirectionEndpoint
-                                                .baseUri("/login/oauth2/code/*"))
+                                .loginPage("https://pawalert.co.kr/Login")
+                                .defaultSuccessUrl("/")
+                                .failureUrl("/login?error=true")
                                 .userInfoEndpoint(userInfoEndpoint ->
                                         userInfoEndpoint
-                                                .userService(customOAuth2UserService))
+                                                .userService(customOAuth2UserService)
+                                )
                                 .successHandler(oAuth2AuthenticationSuccessHandler)
-                                .failureHandler(oAuth2AuthenticationFailureHandler)
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(customAuthenticationEntryPoint))
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용하지 않음
+                );
 
         return http.build();
     }
