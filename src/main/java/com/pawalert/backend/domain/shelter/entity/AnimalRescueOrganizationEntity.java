@@ -1,4 +1,4 @@
-package com.pawalert.backend.domain.organization.entity;
+package com.pawalert.backend.domain.shelter.entity;
 
 import com.pawalert.backend.global.BaseEntity;
 import com.pawalert.backend.global.ImageInfo;

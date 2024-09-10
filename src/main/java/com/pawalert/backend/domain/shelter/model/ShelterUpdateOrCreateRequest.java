@@ -1,10 +1,9 @@
-package com.pawalert.backend.domain.organization.model;
+package com.pawalert.backend.domain.shelter.model;
 
-import com.pawalert.backend.global.ImageInfoRecord;
 import com.pawalert.backend.global.LocataionRecord;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public record ShelterViewResponse(
+public record ShelterUpdateOrCreateRequest(
         @Schema(description = "보호센터 ID")
         Long shelterId,
         @Schema(description = "관할구역")
@@ -16,12 +15,8 @@ public record ShelterViewResponse(
         @Schema(description = "보호센터 위치 (위도/경도) 및 상세주소")
         LocataionRecord location,
         @Schema(description = "보호센터 website URL")
-        ImageInfoRecord shelterImage,
+        String websiteUrl,
         @Schema(description = "보호센터 email")
-        String shelterEmail,
-        @Schema(description = "사용자 ID")
-        Long userId
-
-
+        String contactEmail
 ) {
 }

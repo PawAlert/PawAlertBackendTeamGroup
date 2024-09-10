@@ -1,6 +1,6 @@
-package com.pawalert.backend.domain.organization.repository;
+package com.pawalert.backend.domain.shelter.repository;
 
-import com.pawalert.backend.domain.organization.entity.AnimalShelterEntity;
+import com.pawalert.backend.domain.shelter.entity.AnimalShelterEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AnimalShelterRepository extends JpaRepository<AnimalShelterEntity, Long> {

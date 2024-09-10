@@ -1,8 +1,6 @@
 package com.pawalert.backend.domain.user.entity;
 
-import com.pawalert.backend.domain.hospital.entity.HospitalDoctorEntity;
 import com.pawalert.backend.domain.mypet.entity.PetEntity;
-import com.pawalert.backend.domain.organization.entity.AnimalRescueOrganizationEntity;
 import com.pawalert.backend.global.BaseEntity;
 import com.pawalert.backend.domain.user.model.UserRole;
 import io.swagger.v3.oas.annotations.media.Schema;

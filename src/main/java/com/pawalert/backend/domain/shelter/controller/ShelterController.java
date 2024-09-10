@@ -1,11 +1,11 @@
-package com.pawalert.backend.domain.organization.controller;
+package com.pawalert.backend.domain.shelter.controller;
 
-import com.pawalert.backend.domain.hospital.dto.CertificationHospitalDoctorResponse;
-import com.pawalert.backend.domain.hospital.dto.HospitalDoctorViewResponse;
-import com.pawalert.backend.domain.organization.model.CertificationShelterResponse;
-import com.pawalert.backend.domain.organization.model.ShelterUpdateOrCreateRequest;
-import com.pawalert.backend.domain.organization.model.ShelterViewResponse;
-import com.pawalert.backend.domain.organization.service.ShelterService;
+import com.pawalert.backend.domain.hospital.dto.SignupHospitalDoctorRequest;
+import com.pawalert.backend.domain.shelter.model.CertificationShelterResponse;
+import com.pawalert.backend.domain.shelter.model.ShelterUpdateOrCreateRequest;
+import com.pawalert.backend.domain.shelter.model.ShelterViewResponse;
+import com.pawalert.backend.domain.shelter.model.SignupShelterRequest;
+import com.pawalert.backend.domain.shelter.service.ShelterService;
 import com.pawalert.backend.global.httpstatus.exception.SuccessResponse;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +52,14 @@ private final ShelterService shelterService;
     @PostMapping("/certification")
     public ResponseEntity<SuccessResponse<String>> certificationHospitalDoctor(@RequestBody CertificationShelterResponse request) {
         return shelterService.certificationShelter(request);
+    }
+
+    // 비회원 동물병원 정보 등록
+    // todo : 비회원 인증 로직 다른 파일로 합치기
+    @PostMapping(value = "/signupCreate")
+    public ResponseEntity<SuccessResponse<String>> createHospitalDoctor(@RequestBody SignupShelterRequest request
+    ) {
+        return shelterService.signupShelterInfo(request);
     }
 
 }

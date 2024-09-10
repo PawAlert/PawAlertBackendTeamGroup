@@ -52,6 +52,7 @@ public class SecurityConfig {
                                         "/oauth2/**",
                                         "/api/hospital/doctor/certification",
                                         "/api/hospital/doctor/signupCreate",
+                                        "/api/shelter/signupCreate",
                                         "/api/user/register",
                                         "/api/shelter/certification",
                                         "/api/missing/getdetail/**").permitAll()
@@ -73,7 +74,7 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling
-                                .authenticationEntryPoint(customAuthenticationEntryPoint) // 변경된 부분
+                                .authenticationEntryPoint(customAuthenticationEntryPoint)
                 );
 
         return http.build();

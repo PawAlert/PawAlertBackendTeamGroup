@@ -2,8 +2,8 @@ package com.pawalert.backend.global.excel;
 
 import com.pawalert.backend.domain.hospital.entity.HospitalExcelInfoEntity;
 import com.pawalert.backend.domain.hospital.repository.HospitalExcelInfoRepository;
-import com.pawalert.backend.domain.organization.entity.AnimalShelterEntity;
-import com.pawalert.backend.domain.organization.repository.AnimalShelterRepository;
+import com.pawalert.backend.domain.shelter.entity.AnimalShelterEntity;
+import com.pawalert.backend.domain.shelter.repository.AnimalShelterRepository;
 import jakarta.transaction.Transactional;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;

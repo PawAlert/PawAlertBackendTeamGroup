@@ -1,4 +1,4 @@
-package com.pawalert.backend.domain.organization.entity;
+package com.pawalert.backend.domain.shelter.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

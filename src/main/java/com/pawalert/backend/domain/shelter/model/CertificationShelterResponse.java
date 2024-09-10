@@ -1,4 +1,4 @@
-package com.pawalert.backend.domain.organization.model;
+package com.pawalert.backend.domain.shelter.model;
 
 public record CertificationShelterResponse(
         String shelterName,

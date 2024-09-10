@@ -1,12 +1,13 @@
-package com.pawalert.backend.domain.organization.service;
+package com.pawalert.backend.domain.shelter.service;
 
-import com.pawalert.backend.domain.organization.entity.AnimalRescueOrganizationEntity;
-import com.pawalert.backend.domain.organization.entity.AnimalShelterEntity;
-import com.pawalert.backend.domain.organization.model.CertificationShelterResponse;
-import com.pawalert.backend.domain.organization.model.ShelterUpdateOrCreateRequest;
-import com.pawalert.backend.domain.organization.model.ShelterViewResponse;
-import com.pawalert.backend.domain.organization.repository.AnimalShelterRepository;
-import com.pawalert.backend.domain.organization.repository.ShelterRepository;
+import com.pawalert.backend.domain.shelter.entity.AnimalRescueOrganizationEntity;
+import com.pawalert.backend.domain.shelter.entity.AnimalShelterEntity;
+import com.pawalert.backend.domain.shelter.model.CertificationShelterResponse;
+import com.pawalert.backend.domain.shelter.model.ShelterUpdateOrCreateRequest;
+import com.pawalert.backend.domain.shelter.model.ShelterViewResponse;
+import com.pawalert.backend.domain.shelter.model.SignupShelterRequest;
+import com.pawalert.backend.domain.shelter.repository.AnimalShelterRepository;
+import com.pawalert.backend.domain.shelter.repository.ShelterRepository;
 import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.model.UserRole;
 import com.pawalert.backend.domain.user.repository.UserRepository;
@@ -21,23 +22,27 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-
+// todo : 진짜 중복 코드 너무 많다 날잡고 정리하자 제발 미루지말라고.. 내일 꼭하자..^^;
 public class ShelterService {
     private final ShelterRepository shelterRepository;
     private final SaveImage saveImage;
     private final UserRepository userRepository;
     private final AnimalShelterRepository animalShelterRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
+    // 등록 ( 회원 )
     @Transactional
     public ResponseEntity<SuccessResponse<String>> createShelter(CustomUserDetails user,
                                                                  ShelterUpdateOrCreateRequest request,
@@ -101,6 +106,7 @@ public class ShelterService {
 
     }
 
+    // 업데이트
     @Transactional
     public ResponseEntity<SuccessResponse<String>> updateShelter(CustomUserDetails user,
                                                                  ShelterUpdateOrCreateRequest request,
@@ -109,9 +115,7 @@ public class ShelterService {
         AnimalRescueOrganizationEntity shelter = shelterRepository.findById(request.shelterId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_SHELTER));
 
-
         try {
-
 
             // todo : 변수화 하자 (중복)
             ImageInfo imageUpload = ImageInfo.builder()
@@ -185,7 +189,7 @@ public class ShelterService {
         }
     }
 
-    //    쉘터 인증
+    // 쉘터 인증
     public ResponseEntity<SuccessResponse<String>> certificationShelter(CertificationShelterResponse request) {
         try {
             AnimalShelterEntity result = animalShelterRepository.findByJurisdictionAndShelterName(request.jurisdiction(), request.shelterName());
@@ -195,4 +199,44 @@ public class ShelterService {
         }
 
     }
+
+    public ResponseEntity<SuccessResponse<String>> signupShelterInfo(SignupShelterRequest request) {
+
+        try {
+            UserEntity newUser = UserEntity.builder()
+                    .email(request.email())
+                    .password(passwordEncoder.encode(request.password()))
+                    .role(UserRole.ROLE_ASSOCIATION_USER)
+                    .uid(UUID.randomUUID().toString())
+                    .authProvider("localUser")
+                    .build();
+            newUser.setProfilePictureUrl(saveImage.saveProfileImage(newUser));
+            userRepository.save(newUser);
+
+            Location location = Location.builder()
+                    .address(request.locataionRecord().address())
+                    .addressDetail(request.locataionRecord().addressDetail())
+                    .latitude(request.locataionRecord().latitude())
+                    .longitude(request.locataionRecord().longitude())
+                    .postcode(request.locataionRecord().postcode())
+                    .build();
+
+            AnimalRescueOrganizationEntity shelterMember = AnimalRescueOrganizationEntity.builder()
+                    .shelterName(request.shelterName())
+                    .jurisdiction(request.jurisdiction())
+                    .contactPhone(request.contactPhone())
+                    .contactEmail(request.email())
+                    .detailAddress(location)
+                    .userId(newUser.getId())
+                    .build();
+
+            shelterRepository.save(shelterMember);
+            return ResponseHandler.generateResponse(HttpStatus.CREATED, "비회원 보호센터 정보 등록 성공",
+                    String.format("동물보호단체 id %s", shelterMember.getId()));
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.ERROR_MISSING_REPORT);
+        }
+    }
+
+
 }

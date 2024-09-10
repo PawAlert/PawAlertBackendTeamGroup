@@ -27,11 +27,14 @@ public class HospitalDoctorController {
         return hospitalDoctorService.createHospitalDoctor(user, request, file);
     }
 
+    // 비회원 동물병원 정보 등록
     @PostMapping(value = "/signupCreate")
     public ResponseEntity<SuccessResponse<String>> createHospitalDoctor(@RequestBody SignupHospitalDoctorRequest request
     ) {
         return hospitalDoctorService.signupHospitalDoctor(request);
     }
+
+
     // 병원 정보 수정
     @PatchMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SuccessResponse<String>> updateHospitalDoctor(@AuthenticationPrincipal CustomUserDetails user,
