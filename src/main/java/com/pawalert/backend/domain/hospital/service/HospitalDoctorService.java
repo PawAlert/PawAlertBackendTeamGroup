@@ -104,7 +104,7 @@ public class HospitalDoctorService {
         UserEntity newUser = UserEntity.builder()
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
-                .role(UserRole.ROLE_USER)
+                .role(UserRole.ROLE_ANIMAL_HOSPITAL_USER)
                 .uid(UUID.randomUUID().toString())
                 .authProvider("localUser")
                 .build();
