@@ -11,8 +11,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,11 +23,9 @@ import java.util.Map;
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final ObjectMapper objectMapper; // JSON 응답을 위한 ObjectMapper
 
-    public OAuth2AuthenticationSuccessHandler(JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+    public OAuth2AuthenticationSuccessHandler(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -39,15 +39,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         // JWT 토큰 생성
         String jwtToken = jwtTokenProvider.generateToken(username);
 
-        // 응답 데이터를 생성
-        Map<String, String> tokenResponse = new HashMap<>();
-        tokenResponse.put("token", jwtToken);
-        tokenResponse.put("status", HttpStatus.OK.toString());
+        response.addHeader("Authorization", jwtToken);
 
-        // 응답을 JSON 형식으로 변환하여 클라이언트에 전송
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(objectMapper.writeValueAsString(tokenResponse));
+
+        String targetUrl = UriComponentsBuilder.fromUriString("https://pawalert.co.kr/")
+                .queryParam("token", jwtToken)
+                .build()
+                .encode(StandardCharsets.UTF_8)
+                .toUriString();
+        response.sendRedirect(targetUrl);
 
     }
 }

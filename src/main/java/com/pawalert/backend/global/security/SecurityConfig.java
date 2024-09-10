@@ -44,7 +44,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/",
-                                        "/api/user/profile",
                                         "/files/**",
                                         "/login",
                                         "/api/missing/search/**",
