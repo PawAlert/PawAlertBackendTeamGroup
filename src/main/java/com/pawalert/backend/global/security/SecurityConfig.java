@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/",
-                                        "https://pawalert.co.kr",
+                                        "https://port-0-pawalertbackendteamgroup-m06zwfj8628a2164.sel4.cloudtype.app/api/user/profile",
                                         "/files/**",
                                         "/login",
                                         "/api/missing/search/**",
