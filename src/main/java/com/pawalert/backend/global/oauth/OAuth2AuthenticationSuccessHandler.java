@@ -42,7 +42,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String jwtToken = jwtTokenProvider.generateToken(authentication.getName());
 
         // 리다이렉트 URL 설정 (JWT 토큰을 쿼리 파라미터로 포함)
-        String targetUrl = "https://pawalert.co.kr?token=" + jwtToken; // 클라이언트가 받을 URL
+        String targetUrl = "https://pawalert.co.kr/?token=" + jwtToken; // 클라이언트가 받을 URL
 
         // 리다이렉트 처리
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
