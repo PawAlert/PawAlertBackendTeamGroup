@@ -56,7 +56,6 @@ public class SecurityConfig {
                 .oauth2Login(oauth2Login ->
                         oauth2Login
                                 .loginPage("https://pawalert.co.kr/Login")
-                                .defaultSuccessUrl("/")
                                 .failureUrl("/login?error=true")
                                 .userInfoEndpoint(userInfoEndpoint ->
                                         userInfoEndpoint
