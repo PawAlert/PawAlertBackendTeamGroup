@@ -20,17 +20,29 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    //
+//    @Override
+//    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, IOException {
+//        // JWT 토큰 생성
+//        String jwtToken = jwtTokenProvider.generateToken(authentication.getName());
+//
+//
+//        // JWT 토큰을 헤더로 설정
+//        response.setHeader("Authorization", "Bearer " + jwtToken); // "Authorization" 헤더에 JWT 토큰 설정
+//
+//        // 리다이렉트 URL 설정
+//        String targetUrl = "https://pawalert.co.kr"; // 리다이렉트할 URL 설정
+//
+//        // 리다이렉트 처리
+//        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+//    }
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, IOException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         // JWT 토큰 생성
         String jwtToken = jwtTokenProvider.generateToken(authentication.getName());
 
-
-        // JWT 토큰을 헤더로 설정
-        response.setHeader("Authorization", "Bearer " + jwtToken); // "Authorization" 헤더에 JWT 토큰 설정
-
-        // 리다이렉트 URL 설정
-        String targetUrl = "https://pawalert.co.kr"; // 리다이렉트할 URL 설정
+        // 리다이렉트 URL 설정 (JWT 토큰을 쿼리 파라미터로 포함)
+        String targetUrl = "https://pawalert.co.kr?token=" + jwtToken; // 클라이언트가 받을 URL
 
         // 리다이렉트 처리
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
