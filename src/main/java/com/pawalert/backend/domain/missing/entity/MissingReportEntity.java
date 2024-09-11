@@ -59,6 +59,9 @@ public class MissingReportEntity extends BaseEntity {
     @Schema(description = "실종 위치 (위도/경도)")
     private Location location;
 
+    private String contact1;
+    private String contact2;
+
     @Lob
     @Column(name = "description")
     @Schema(description = "특징 및 설명")

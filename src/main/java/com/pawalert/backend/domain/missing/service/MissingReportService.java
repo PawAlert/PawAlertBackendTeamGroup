@@ -119,11 +119,11 @@ public class MissingReportService {
 
         try {
             Location location = Location.builder()
-                    .postcode(request.postcode())
-                    .address(request.address())
-                    .addressDetail(request.addressDetail())
-                    .latitude(request.latitude())
-                    .longitude(request.longitude())
+                    .postcode(request.locataionRecord().postcode())
+                    .address(request.locataionRecord().address())
+                    .addressDetail(request.locataionRecord().addressDetail())
+                    .latitude(request.locataionRecord().latitude())
+                    .longitude(request.locataionRecord().longitude())
                     .build();
 
 
@@ -149,9 +149,10 @@ public class MissingReportService {
                     .location(location)
                     .description(request.description())
                     .status(request.status())
+                    .contact1(request.contact1())
+                    .contact2(request.contact2())
                     .user(userMember)
                     .pet(pet)
-                    .rewardAmount(request.rewardAmount())
                     .build();
 
             missingReportRepository.save(missingReport);
