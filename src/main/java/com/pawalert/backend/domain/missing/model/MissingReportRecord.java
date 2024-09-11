@@ -1,5 +1,6 @@
 package com.pawalert.backend.domain.missing.model;
 
+import com.pawalert.backend.global.LocataionRecord;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
@@ -13,10 +14,11 @@ public record MissingReportRecord(
         String content,
         @Schema(description = "실종날짜 2024-12-31T23:59:59")
         LocalDateTime dateLost,
-        @Schema(description = "실종 위치 위도")
-        BigDecimal latitude,
-        @Schema(description = "실종 위치 경도")
-        BigDecimal longitude,
+        @Schema(description = "연락처1")
+        String contact1,
+        @Schema(description = "연락처2")
+        String contact2,
+
         @Schema(description = "특징 및 설명")
         String description,
         @Schema(description = "상태 예: 실종 중, 발견됨, 종료 = 기본값 MISSING")
@@ -35,20 +37,7 @@ public record MissingReportRecord(
         String petGender,
         @Schema(description = "펫 특징")
         String petDescription,
+        LocataionRecord locataionRecord
 
-        @Schema(description = "포상 금액")
-        int rewardAmount,
-        @Schema(description = "포상 내용")
-        String rewardDescription,
-
-        String postcode,
-        @Schema(description = "실종된 주소")
-        String address,
-        // todo : 이름 수정하자!
-        @Schema(description = "상세 주소1")
-        String addressDetail
-
-//        @Schema(description = "펫 사진 URL")
-//                List<String> petImageUrl,
 ) {
 }
