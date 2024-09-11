@@ -42,10 +42,6 @@ public class PetEntity extends BaseEntity {
     @Schema(description = "품종 : 강아지, 고양이")
     private String species;
 
-    @Size(max = 50)
-    @Column(name = "breed", length = 50)
-    @Schema(description = "상세품종")
-    private String breed;
 
     // todo 중성화 여부
     @Column(name = "neutering")
