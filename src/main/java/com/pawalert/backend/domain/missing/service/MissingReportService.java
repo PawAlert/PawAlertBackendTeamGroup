@@ -1,7 +1,6 @@
 package com.pawalert.backend.domain.missing.service;
 
 
-
 import com.pawalert.backend.domain.missing.entity.MissingReportEntity;
 import com.pawalert.backend.domain.missing.entity.MissingReportImageEntity;
 import com.pawalert.backend.domain.missing.model.*;
@@ -31,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 
 @Slf4j
@@ -229,6 +227,39 @@ public class MissingReportService {
 
     }
 
+    // 실종글 리스트 조회
+    public Page<MissingViewListResponse> getMissingReports(Pageable pageable) {
+        Page<MissingReportEntity> reportsPage = missingReportRepository.findAll(pageable);
+
+        Page<MissingViewListResponse> responsePage = reportsPage.map(missingReport -> {
+            String firstImageUrl = missingReport.getMissingPetImages().isEmpty() ?
+                    null :
+                    missingReport.getMissingPetImages().get(0).getMissingPhotoUrl();
+
+            // DTO 생성
+            return new MissingViewListResponse(
+                    missingReport.getId(),
+                    missingReport.getUser().getId(),
+                    missingReport.getTitle(),
+                    missingReport.getDateLost(),
+                    missingReport.getLocation().getPostcode(),
+                    missingReport.getLocation().getAddress(),
+                    missingReport.getLocation().getAddressDetail(),
+                    missingReport.getStatus().name(),
+                    missingReport.getPet().getPetName(),
+                    missingReport.getPet().getSpecies(),
+                    missingReport.getPet().getColor(),
+                    missingReport.getPet().getAge(),
+                    missingReport.getPet().getGender(),
+                    firstImageUrl,
+                    missingReport.getContent(),
+                    missingReport.getContact1()
+            );
+        });
+        return responsePage;
+    }
+
+
     // 실종글 삭제
     @Transactional
     public ResponseEntity<String> deleteMissingReport(Long missingReportId, CustomUserDetails user) {
@@ -266,7 +297,6 @@ public class MissingReportService {
     public ResponseEntity<SuccessResponse<String>> changeMissingStatus(ChangeMissingStatusRecord request, CustomUserDetails user) {
 
 
-
         MissingReportEntity missingReport = missingReportRepository.findById(request.missingReportId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MISSING_REPORT));
 
@@ -279,8 +309,10 @@ public class MissingReportService {
         return ResponseHandler.generateResponse(HttpStatus.OK, "Missing report status changed successfully", "변경 : " + request.status().toString());
 
     }
+
     // 상태, 주소로 조회
     public Page<MissingViewListResponse> getMissingReports(MissingViewListRequest request, Pageable pageable) {
         return missingReportRepository.searchMissingReports(request, pageable);
     }
+
 }

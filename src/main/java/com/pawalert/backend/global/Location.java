@@ -15,12 +15,12 @@ import java.math.BigDecimal;
 public class Location {
 
     // 우편번호
-    String postcode;
+    private String postcode;
 
     // 서울특별시 강남구
-    String address;
-//     상세주소
-    String addressDetail;
+    private String address;
+    //     상세주소
+    private String addressDetail;
 
     @Column(name = "latitude", nullable = false, precision = 10, scale = 8)
     private BigDecimal latitude;

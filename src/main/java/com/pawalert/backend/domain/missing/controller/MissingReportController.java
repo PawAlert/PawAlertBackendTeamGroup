@@ -69,7 +69,13 @@ public class MissingReportController {
     }
 
 
-    //todo : 실종신고 검색 조회
+    //todo : 실종신고 전체 조회
+    @GetMapping("/list")
+    public Page<MissingViewListResponse> MissingPostList(@PageableDefault(size = 10) Pageable pageable) {
+        return missingReportService.getMissingReports(pageable);
+    }
+
+
     //todo : 실종신고 검색 조회
     @GetMapping("/search")
     public Page<MissingViewListResponse> searchMissingReports(

@@ -50,7 +50,7 @@ public class SecurityConfig {
                                         "/swagger-ui/**", "/api/user/login", "/oauth2/**",
                                         "/api/hospital/doctor/certification", "/api/hospital/doctor/signupCreate",
                                         "/api/shelter/signupCreate", "/api/user/register",
-                                        "/api/shelter/certification", "/api/missing/getdetail/**").permitAll()
+                                        "/api/shelter/certification", "/api/missing/getdetail/**","/api/missing/list").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2Login ->
