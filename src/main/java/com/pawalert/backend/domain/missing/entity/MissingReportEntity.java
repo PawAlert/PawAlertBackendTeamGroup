@@ -15,6 +15,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class MissingReportEntity extends BaseEntity {
 
     @Column(name = "date_lost", nullable = false)
     @Schema(description = "실종날짜")
-    private LocalDateTime dateLost;
+    private LocalDate dateLost;
 
     @Embedded
     @Schema(description = "실종 위치 (위도/경도)")

@@ -4,6 +4,7 @@ import com.pawalert.backend.global.LocataionRecord;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public record MissingReportRecord(
         @Schema(description = "게시글 내용")
         String content,
         @Schema(description = "실종날짜 2024-12-31T23:59:59")
-        LocalDateTime dateLost,
+        LocalDate dateLost,
         @Schema(description = "연락처1")
         String contact1,
         @Schema(description = "연락처2")

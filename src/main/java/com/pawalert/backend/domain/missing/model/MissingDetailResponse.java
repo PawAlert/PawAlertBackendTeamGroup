@@ -4,6 +4,7 @@ import com.pawalert.backend.domain.mypet.model.PetImageListRecord;
 import com.pawalert.backend.global.Location;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public record MissingDetailResponse(
         @Schema(description = "게시글 내용")
         String content,
         @Schema(description = "실종날짜 2024-12-31T23:59:59")
-        LocalDateTime dateLost,
+        LocalDate dateLost,
         @Schema(description = "실종 위치 위도/경도")
         Location location,
         @Schema(description = "특징 및 설명")

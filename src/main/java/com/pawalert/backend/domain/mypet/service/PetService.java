@@ -41,8 +41,6 @@ public class PetService {
                 .user(userMember)
                 .petName(request.petName())
                 .species(request.species())
-                .breed(request.breed())
-                //boolean
                 .neutering(request.neutering())
                 .color(request.color())
                 .age(request.age())
@@ -113,7 +111,6 @@ public class PetService {
         // 펫 정보 업데이트
         pet.setPetName(request.petName());
         pet.setSpecies(request.species());
-        pet.setBreed(request.breed());
         pet.setColor(request.color());
         pet.setGender(request.gender());
         pet.setMicrochipId(request.microchipId());
@@ -145,7 +142,6 @@ public class PetService {
                             pet.getId(),
                             pet.getPetName(),
                             pet.getSpecies(),
-                            pet.getBreed(),
                             pet.getColor(),
                             pet.getGender(),
                             pet.getMicrochipId(),

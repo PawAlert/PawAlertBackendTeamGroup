@@ -11,8 +11,6 @@ public record PetGetResponse(
         String petName,
         @Schema(description = "품종 : 강아지, 고양이")
         String species,
-        @Schema(description = "상세품종")
-        String breed,
         @Schema(description = "색상")
         String color,
         @Schema(description = "성별")
