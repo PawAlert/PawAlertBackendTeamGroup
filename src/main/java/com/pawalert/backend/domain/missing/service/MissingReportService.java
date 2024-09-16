@@ -252,7 +252,7 @@ public class MissingReportService {
                     missingReport.getPet().getAge(),
                     missingReport.getPet().getGender(),
                     firstImageUrl,
-                    missingReport.getContent(),
+                    missingReport.getDescription(),
                     missingReport.getContact1()
             );
         });
