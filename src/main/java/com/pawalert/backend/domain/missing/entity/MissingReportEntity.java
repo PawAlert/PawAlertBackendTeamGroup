@@ -73,14 +73,7 @@ public class MissingReportEntity extends BaseEntity {
     @Schema(description = "상태 예: 실종 중, 발견됨, 종료")
     private MissingStatus status = MissingStatus.MISSING;
 
-    @Column(name = "reward_amount", precision = 10, scale = 2)
-    @Schema(description = "포상금액")
-    private int rewardAmount;
 
-    @ColumnDefault("'PENDING'")
-    @Column(name = "reward_status")
-    @Schema(description = "포상 상태, default: 대기, 지급")
-    private String rewardStatus = "PENDING";
 
     @OneToMany(mappedBy = "missingReport", cascade = CascadeType.ALL, orphanRemoval = true)
     @Schema(description = "반려동물 사진 목록")

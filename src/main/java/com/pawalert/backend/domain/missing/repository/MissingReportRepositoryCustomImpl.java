@@ -60,7 +60,6 @@ public class MissingReportRepositoryCustomImpl implements MissingReportRepositor
                         missingReport.pet.age, // 펫 나이
                         missingReport.pet.gender, // 펫 성별
                         missingPetImage.missingPhotoUrl.coalesce(""), // 첫 번째 펫 이미지 URL
-                        missingReport.rewardAmount, // 포상금액
                         missingReport.content, // 설명
                         missingReport.user.phoneNumber // 연락처
 

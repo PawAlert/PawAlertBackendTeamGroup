@@ -70,7 +70,6 @@ public class MissingReportService {
         missingReport.setContent(request.content());
         missingReport.setDescription(request.description());
         missingReport.setStatus(request.status());
-        missingReport.setRewardAmount(request.rewardAmount());
 
         // 삭제할 이미지 처리
         if (!request.deleteImageIdList().isEmpty()) {
