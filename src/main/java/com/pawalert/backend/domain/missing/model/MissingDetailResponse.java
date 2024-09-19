@@ -1,5 +1,6 @@
 package com.pawalert.backend.domain.missing.model;
 
+import com.pawalert.backend.domain.comment.dto.CommentResponse;
 import com.pawalert.backend.domain.mypet.model.PetImageListRecord;
 import com.pawalert.backend.global.Location;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -56,6 +57,8 @@ public record MissingDetailResponse(
         @Schema(description = "연락처1")
         String contact1,
         @Schema(description = "연락처2")
-        String contact2
+        String contact2,
+        @Schema(description = "댓글")
+        List<CommentResponse> comments
         ) {
 }

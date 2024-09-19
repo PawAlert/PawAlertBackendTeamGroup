@@ -1,6 +1,9 @@
 package com.pawalert.backend.domain.missing.service;
 
 
+import com.pawalert.backend.domain.comment.dto.CommentResponse;
+import com.pawalert.backend.domain.comment.entity.CommentEntity;
+import com.pawalert.backend.domain.comment.repository.CommentRepository;
 import com.pawalert.backend.domain.missing.entity.MissingReportEntity;
 import com.pawalert.backend.domain.missing.entity.MissingReportImageEntity;
 import com.pawalert.backend.domain.missing.model.*;
@@ -29,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -41,6 +45,7 @@ public class MissingReportService {
     private final SaveImage saveImage;
     private final PetRepository petRepository;
     private final MissingImageRepository missingImageRepository;
+    private final CommentRepository commentRepository;
 
     // 실종글 수정
     @Transactional
@@ -185,8 +190,29 @@ public class MissingReportService {
     public ResponseEntity<SuccessResponse<MissingDetailResponse>> getMissingReportDetail(Long missingReportId, CustomUserDetails user) {
         UserEntity userMember = null;
         boolean isMine = false;
+
+        List<CommentEntity> comments = commentRepository.findByMissingReportId(missingReportId);
+
         MissingReportEntity missingReport = missingReportRepository.findById(missingReportId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MISSING_REPORT));
+
+        // CommentEntity 리스트를 CommentResponse 리스트로 변환
+        List<CommentResponse> commentResponses = comments.stream()
+                .map(comment -> {
+                    // 내가 작성한 댓글인지
+                    boolean isCommentMine = Optional.ofNullable(user).isPresent() &&
+                            comment.getUserId().equals(user.getUid());
+                    return new CommentResponse(
+                            comment.getId(),
+                            comment.getUserId(),
+                            comment.getMissingReportId(),
+                            comment.getContent(),
+                            comment.isDeleted(),
+                            comment.getTimestamp(),
+                            isCommentMine
+                    );
+                }).toList();
+
 
         if (Optional.ofNullable(user).isPresent()) {
             userMember = userRepository.findByUid(user.getUid())
@@ -220,7 +246,8 @@ public class MissingReportService {
                         .map(image -> new PetImageListRecord(image.getId(), image.getMissingPhotoUrl()))
                         .toList(),
                 missingReport.getContact1(),
-                missingReport.getContact2()
+                missingReport.getContact2(),
+                commentResponses
         );
         return ResponseHandler.generateResponse(HttpStatus.OK, "Missing report detail retrieved successfully", response);
 
