@@ -48,9 +48,10 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers("/", "/files/**", "/login", "/api/missing/search/**",
                                         "/swagger-ui/**", "/api/user/login", "/oauth2/**",
+                                        "/api/posts/comments/**",
                                         "/api/hospital/doctor/certification", "/api/hospital/doctor/signupCreate",
                                         "/api/shelter/signupCreate", "/api/user/register",
-                                        "/api/shelter/certification", "/api/missing/getdetail/**","/api/missing/list").permitAll()
+                                        "/api/shelter/certification", "/api/missing/getdetail/**", "/api/missing/list").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2Login ->

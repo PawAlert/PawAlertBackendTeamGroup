@@ -11,19 +11,25 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/posts")
+@RequestMapping("api/posts/")
 @RequiredArgsConstructor
 public class CommentController {
 
 private final CommentService commentService;
 
 
-    @PostMapping("/{postId}/comments")
+    @PostMapping("comments/{postId}")
     public ResponseEntity<SuccessResponse<Object>> addComment(@AuthenticationPrincipal CustomUserDetails user,
                                                               @PathVariable Long postId,
                                                               @RequestBody CommentRequestRecord commentDto) {
 
         return commentService.createComment(commentDto, user, postId);
+    }
 
+    @GetMapping("comments/{postId}")
+    public ResponseEntity<SuccessResponse<Object>> getComments(@AuthenticationPrincipal CustomUserDetails user,
+                                                               @PathVariable Long postId
+                                                               ) {
+        return commentService.getComments(user, postId);
     }
 }
