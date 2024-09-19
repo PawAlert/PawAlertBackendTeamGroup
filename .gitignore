@@ -33,6 +33,7 @@ application_key.properties
 /dist/
 /nbdist/
 /.nb-gradle/
+/src/main/resources
 
 ### VS Code ###
 .vscode/

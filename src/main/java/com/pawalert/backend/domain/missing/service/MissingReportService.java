@@ -220,8 +220,8 @@ public class MissingReportService {
                 missingReport.getMissingPetImages().stream()
                         .map(image -> new PetImageListRecord(image.getId(), image.getMissingPhotoUrl()))
                         .toList(),
-                missingReport.getRewardAmount(),
-                missingReport.getRewardStatus()
+                missingReport.getContact1(),
+                missingReport.getContact2()
         );
         return ResponseHandler.generateResponse(HttpStatus.OK, "Missing report detail retrieved successfully", response);
 

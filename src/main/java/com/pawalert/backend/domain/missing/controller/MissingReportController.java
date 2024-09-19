@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-
 @RestController
 @RequestMapping("/api/missing")
 @RequiredArgsConstructor
@@ -69,7 +68,7 @@ public class MissingReportController {
     }
 
 
-    //todo : 실종신고 전체 조회
+    // 실종신고 전체 조회
     @GetMapping("/list")
     public Page<MissingViewListResponse> MissingPostList(@PageableDefault(size = 10) Pageable pageable) {
         return missingReportService.getMissingReports(pageable);
