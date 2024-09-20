@@ -61,6 +61,7 @@ public class MissingReportEntity extends BaseEntity {
     private Location location;
 
     private String contact1;
+
     private String contact2;
 
     @Lob

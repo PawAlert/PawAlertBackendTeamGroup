@@ -34,10 +34,10 @@ public class MissingReportController {
     // 실종글 수정
     @PatchMapping("/update")
     public ResponseEntity<?> updateMissingReport(@AuthenticationPrincipal CustomUserDetails user,
-                                                 @RequestPart("MissingUpdatePost") MissingUpdateRequest request,
-                                                 @RequestPart("MissingUpdateImage") List<MultipartFile> images) {
+                                                 @RequestBody MissingUpdateRequest request
+                                                 ) {
 
-        return missingReportService.updateMissingReport(request, user, images);
+        return missingReportService.updateMissingReport(request, user);
 
     }
 

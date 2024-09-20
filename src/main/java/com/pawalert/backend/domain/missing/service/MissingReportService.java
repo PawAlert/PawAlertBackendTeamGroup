@@ -51,8 +51,7 @@ public class MissingReportService {
     @Transactional
     public ResponseEntity<SuccessResponse<String>> updateMissingReport(
             MissingUpdateRequest request,
-            CustomUserDetails user,
-            List<MultipartFile> images) {
+            CustomUserDetails user) {
 
         // 사용자 정보를 가져옵니다.
         UserEntity userMember = userRepository.findByUid(user.getUid())
@@ -62,8 +61,6 @@ public class MissingReportService {
         MissingReportEntity missingReport = missingReportRepository.findById(request.missingReportId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MISSING_REPORT));
 
-        // 게시글의 이미지를 가져옵니다.
-        List<MissingReportImageEntity> missingImages = missingReport.getMissingPetImages();
 
         // 게시글 작성자가 현재 사용자와 일치하는지 확인합니다.
         if (!missingReport.getUser().getId().equals(userMember.getId())) {
@@ -72,39 +69,13 @@ public class MissingReportService {
 
         // 게시글 정보를 업데이트합니다.
         missingReport.setTitle(request.title());
-        missingReport.setContent(request.content());
-        missingReport.setDescription(request.description());
-        missingReport.setStatus(request.status());
+        missingReport.setDescription(request.petDescription());
+        missingReport.setContact1(request.contact1());
+        missingReport.setContact2(request.contact2());
+        missingReport.getPet().setSpecies(request.petSpecies());
+        missingReport.getPet().setMicrochipId(request.microchipId());
+        missingReport.getPet().setDescription(request.description());
 
-        // 삭제할 이미지 처리
-        if (!request.deleteImageIdList().isEmpty()) {
-            for (Long imageId : request.deleteImageIdList()) {
-                MissingReportImageEntity image = missingImages.stream()
-                        .filter(img -> img.getId().equals(imageId))
-                        .findFirst()
-                        .orElseThrow(() -> new BusinessException(ErrorCode.UPLOAD_ERROR_IMAGE));
-
-                // 이미지 소유자가 현재 사용자와 일치하는지 확인합니다.
-                if (!image.getMissingReport().getUser().equals(userMember)) {
-                    throw new BusinessException(ErrorCode.FORBIDDEN);
-                }
-
-                // 이미지 삭제 마킹
-                image.setDeleted(true);
-            }
-        }
-
-        // 새로운 이미지 저장
-        List<MissingReportImageEntity> newImages = images.stream()
-                .map(image -> {
-                    String imageUrl = saveImage.SaveImages(image);
-                    return MissingReportImageEntity.builder()
-                            .missingPhotoUrl(imageUrl)
-                            .missingReport(missingReport)
-                            .isDeleted(false)
-                            .build();
-                }).toList();
-        missingImageRepository.saveAll(newImages);
 
         // 응답 생성
         return ResponseHandler.generateResponse(HttpStatus.OK, "Missing report updated successfully", userMember.getEmail());
