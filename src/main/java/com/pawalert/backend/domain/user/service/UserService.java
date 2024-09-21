@@ -98,21 +98,12 @@ public class UserService {
         }
     }
     // 마이페이지 수정
-    public ResponseEntity<?> updateMyPage(UserUpdateRequest request, CustomUserDetails user, MultipartFile images) {
+    public ResponseEntity<?> updateMyPage(UserUpdateRequest request, CustomUserDetails user) {
         // 사용자 정보 조회
         UserEntity userEntity = userRepository.findById(user.getId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
         try {
-            // 이미지가 있는 경우 프로필 이미지 업데이트
-            if (images != null && !images.isEmpty()) {
-                userEntity.setProfilePictureUrl(saveImage.SaveImages(images));
-            }
-            // 비밀번호가 null이 아닌 경우에만 업데이트
-            if (request.password() != null && !request.password().isEmpty()) {
-                userEntity.setPassword(passwordEncoder.encode(request.password()));
-            }
-
             // 사용자 정보 업데이트
             userEntity.setUserName(request.username());
             userEntity.setPhoneNumber(request.phoneNumber());

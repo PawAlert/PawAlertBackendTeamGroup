@@ -33,9 +33,9 @@ public class UserController {
     // 내 정보 업데이트
     @PatchMapping("/update")
     public ResponseEntity<?> updateMyPage(@AuthenticationPrincipal CustomUserDetails user,
-                                          @RequestPart("userUpdateDto") UserUpdateRequest request,
-                                          @RequestPart("userImage") MultipartFile images) {
-        return userService.updateMyPage(request, user, images);
+                                          @RequestPart("userUpdateDto") UserUpdateRequest request
+                                         ) {
+        return userService.updateMyPage(request, user);
     }
 
     // 회원가입
