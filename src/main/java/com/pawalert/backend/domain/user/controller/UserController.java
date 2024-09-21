@@ -51,6 +51,12 @@ public class UserController {
         return userService.login(loginRequest);
     }
 
+    @PostMapping("/updateProfileImage")
+    public ResponseEntity<?> updateProfileImage(@AuthenticationPrincipal CustomUserDetails user,
+                                                @RequestPart("userImage") MultipartFile images) {
+        return userService.updateProfileImage(user, images);
+    }
+
     // todo : 프론트단이 완성되면 추가하기로!
 //    // 소셜 로그아웃
 //    @PostMapping("/logout/social")
