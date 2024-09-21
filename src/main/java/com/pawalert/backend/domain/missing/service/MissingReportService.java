@@ -25,6 +25,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -228,34 +229,39 @@ public class MissingReportService {
     public Page<MissingViewListResponse> getMissingReports(Pageable pageable) {
         Page<MissingReportEntity> reportsPage = missingReportRepository.findAll(pageable);
 
-        Page<MissingViewListResponse> responsePage = reportsPage.map(missingReport -> {
-            String firstImageUrl = missingReport.getMissingPetImages().isEmpty() ?
-                    null :
-                    missingReport.getMissingPetImages().get(0).getMissingPhotoUrl();
+        // List로 변환한 후 필터링
+        List<MissingViewListResponse> filteredResponseList = reportsPage.getContent().stream()
+                .filter(missingReport -> !missingReport.isDeleted()) // deleted = false인 항목만 필터링
+                .map(missingReport -> {
+                    String firstImageUrl = missingReport.getMissingPetImages().isEmpty() ?
+                            null :
+                            missingReport.getMissingPetImages().get(0).getMissingPhotoUrl();
 
-            // DTO 생성
-            return new MissingViewListResponse(
-                    missingReport.getId(),
-                    missingReport.getUser().getId(),
-                    missingReport.getTitle(),
-                    missingReport.getDateLost(),
-                    missingReport.getLocation().getPostcode(),
-                    missingReport.getLocation().getAddress(),
-                    missingReport.getLocation().getAddressDetail(),
-                    missingReport.getStatus().name(),
-                    missingReport.getPet().getPetName(),
-                    missingReport.getPet().getSpecies(),
-                    missingReport.getPet().getColor(),
-                    missingReport.getPet().getAge(),
-                    missingReport.getPet().getGender(),
-                    firstImageUrl,
-                    missingReport.getDescription(),
-                    missingReport.getContact1()
+                    // DTO 생성
+                    return new MissingViewListResponse(
+                            missingReport.getId(),
+                            missingReport.getUser().getId(),
+                            missingReport.getTitle(),
+                            missingReport.getDateLost(),
+                            missingReport.getLocation().getPostcode(),
+                            missingReport.getLocation().getAddress(),
+                            missingReport.getLocation().getAddressDetail(),
+                            missingReport.getStatus().name(),
+                            missingReport.getPet().getPetName(),
+                            missingReport.getPet().getSpecies(),
+                            missingReport.getPet().getColor(),
+                            missingReport.getPet().getAge(),
+                            missingReport.getPet().getGender(),
+                            firstImageUrl,
+                            missingReport.getDescription(),
+                            missingReport.getContact1()
+                    );
+                }).toList(); // 스트림을 다시 List로 변환
 
-            );
-        });
-        return responsePage;
+        // 필터링된 결과를 Page로 변환
+        return new PageImpl<>(filteredResponseList, pageable, reportsPage.getTotalElements());
     }
+
 
 
     // 실종글 삭제
