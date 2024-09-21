@@ -76,6 +76,7 @@ public class MissingReportService {
         missingReport.getPet().setSpecies(request.petSpecies());
         missingReport.getPet().setMicrochipId(request.microchipId());
         missingReport.getPet().setDescription(request.description());
+        missingReport.setStatus(MissingStatus.valueOf(request.missingStatus()));
 
 
         // 응답 생성

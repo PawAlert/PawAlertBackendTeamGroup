@@ -22,6 +22,8 @@ public record MissingUpdateRequest(
         @Schema(description = "마이크로칩 ID")
         String microchipId,
         @Schema(description = "특징 및 설명")
-        String description
+        String description,
+        @Schema(description = "실종 상태 변경")
+        String missingStatus
 ) {
 }
