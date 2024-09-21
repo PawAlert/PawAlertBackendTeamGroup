@@ -100,7 +100,7 @@ public class UserService {
     // 마이페이지 수정
     public ResponseEntity<?> updateMyPage(UserUpdateRequest request, CustomUserDetails user) {
         // 사용자 정보 조회
-        UserEntity userEntity = userRepository.findById(user.getId())
+        UserEntity userEntity = userRepository.findByUid(user.getUid())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
         try {
