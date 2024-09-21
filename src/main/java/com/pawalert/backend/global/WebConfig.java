@@ -15,10 +15,14 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/files/**")
-                .addResourceLocations("file:" + System.getProperty("user.dir") + "/src/main/resources/static/files/");
+        // files 경로를 동적으로 매핑
+        String uploadPath = System.getProperty("user.dir") + "/files/";
 
+        // 리소스 핸들러 등록
+        registry.addResourceHandler("/files/**")
+                .addResourceLocations("file:" + uploadPath);  // 파일 시스템 상에서의 경로를 가리킴
     }
+
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
