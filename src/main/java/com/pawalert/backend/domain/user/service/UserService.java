@@ -55,7 +55,6 @@ public class UserService {
                     .uid(UUID.randomUUID().toString())
                     .authProvider("localUser")
                     .build();
-
             user.setProfilePictureUrl(saveImage.saveProfileImage(user));
             userRepository.save(user);
             return ResponseHandler.generateResponse(HttpStatus.CREATED, "User registered successfully!", "사용자 이메일 : " + user.getEmail());

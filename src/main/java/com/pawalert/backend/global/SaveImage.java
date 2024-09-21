@@ -25,9 +25,6 @@ public class SaveImage {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
-    @Value("${file.profile-upload-dir}")
-    private String profileUploadDir;
-
     // 파일을 업로드하는 메서드 (경로 문제 해결)
     public String SaveImages(MultipartFile image) {
         try {
@@ -59,6 +56,6 @@ public class SaveImage {
     // 기본 프로필 이미지 경로를 반환하는 메서드 (UserEntity 유지)
     public String saveProfileImage(UserEntity user) {
         // 기본 프로필 이미지를 반환
-        return baseUrl + "/" + profileUploadDir;
+        return "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg";
     }
 }
