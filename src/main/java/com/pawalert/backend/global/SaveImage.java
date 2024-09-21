@@ -11,8 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 @Component
@@ -28,39 +28,37 @@ public class SaveImage {
     @Value("${file.profile-upload-dir}")
     private String profileUploadDir;
 
-    //todo : 아니 왜 유저Entity 받음?ㅠㅠㅠㅠㅠㅠㅠㅠ이거 뭐야 ㅠㅠ 괜찮아 괜찮아...고치자..
-    public @Size(max = 255) String saveProfileImage(UserEntity user) {
-        // 기본 이미지 URL 반환
-        return baseUrl + profileUploadDir;
-    }
-
-    public String SaveImages(MultipartFile images) {
-
+    // 파일을 업로드하는 메서드 (경로 문제 해결)
+    public String SaveImages(MultipartFile image) {
         try {
-            //파일 경로 가져옴
-            Path uploadPath = Paths.get(System.getProperty("user.dir") + uploadDir);
+            // 현재 실행 중인 디렉터리 가져오기
+            String currentDir = System.getProperty("user.dir"); // 애플리케이션이 실행되는 현재 디렉터리
+            Path uploadPath = Paths.get(currentDir, uploadDir); // 동적 경로로 파일 저장 경로 설정
 
+            // 경로가 없으면 생성
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-            uploadPath = Paths.get(System.getProperty("user.dir") + uploadDir);
-
-            String fileName = UUID.randomUUID() + "_" + images.getOriginalFilename();
+            // 고유한 파일명 생성
+            String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
             Path filePath = uploadPath.resolve(fileName);
 
             // 파일 저장
-            images.transferTo(filePath.toFile());
+            image.transferTo(filePath.toFile());
 
             // 저장된 파일의 URL 반환
-            return baseUrl + fileName;
-
+            return baseUrl + "/files/" + fileName;
 
         } catch (IOException e) {
             log.error("이미지 업로드 중 오류 발생", e);
             throw new BusinessException(ErrorCode.UPLOAD_ERROR_IMAGE);
         }
-
     }
 
+    // 기본 프로필 이미지 경로를 반환하는 메서드 (UserEntity 유지)
+    public String saveProfileImage(UserEntity user) {
+        // 기본 프로필 이미지를 반환
+        return baseUrl + "/" + profileUploadDir;
+    }
 }
