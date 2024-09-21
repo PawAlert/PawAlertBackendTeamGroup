@@ -108,7 +108,7 @@ public class UserService {
             userEntity.setUserName(request.username());
             userEntity.setPhoneNumber(request.phoneNumber());
             // 사용자 정보 저장
-
+            userRepository.save(userEntity);
             // 성공 응답 반환
             return ResponseHandler.generateResponse(HttpStatus.OK, "내 정보 수정 성공", "사용자 이메일 : " + userEntity.getEmail());
 
