@@ -81,4 +81,5 @@ public class MissingReportEntity extends BaseEntity {
     private List<MissingReportImageEntity> missingPetImages;
 
     private boolean deleted = false;
+
 }

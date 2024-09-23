@@ -26,9 +26,8 @@ public class CustomMissingRepositoryImpl implements CustomMissingRepository {
 
         // 작성자의 ID로 글 필터링
         List<MissingReportEntity> missingReports = queryFactory.selectFrom(missingReportEntity)
-                .where(missingReportEntity.user.id.eq(userId)
-                        .and(missingReportEntity.deleted.eq(false))
-                )// 작성자의 ID와 일치하는 글 조회
+                .where(missingReportEntity.user.id.eq(userId)// 작성자의 ID와 일치하는 글 조회
+                )
                 .fetch();
 
         return MissingViewListResponse.fromList(missingReports);
