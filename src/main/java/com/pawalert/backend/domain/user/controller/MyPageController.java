@@ -21,6 +21,7 @@ import java.util.List;
 public class MyPageController {
     private final MyPageService myPageService;
 
+    // 내가 작성한 실종 게시글
     @GetMapping("/myposts")
     public ResponseEntity<SuccessResponse<List<MissingViewListResponse>>> myPosts(@AuthenticationPrincipal CustomUserDetails user) {
         return myPageService.getMyPosts(user);

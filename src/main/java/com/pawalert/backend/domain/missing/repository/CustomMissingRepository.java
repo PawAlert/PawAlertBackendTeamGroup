@@ -1,6 +1,5 @@
 package com.pawalert.backend.domain.missing.repository;
 
-import com.pawalert.backend.domain.missing.entity.MissingReportEntity;
 import com.pawalert.backend.domain.missing.model.MissingViewListResponse;
 
 import java.util.List;
