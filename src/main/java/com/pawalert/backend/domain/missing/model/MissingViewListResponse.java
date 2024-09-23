@@ -1,9 +1,9 @@
 package com.pawalert.backend.domain.missing.model;
 
+import com.pawalert.backend.domain.missing.entity.MissingReportEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public record MissingViewListResponse(
@@ -39,6 +39,38 @@ public record MissingViewListResponse(
         String content,
         @Schema(description = "연락처")
         String contact
-
 ) {
+    // MissingReport 객체를 MissingViewListResponse로 변환하는 정적 메서드 추가
+    public static MissingViewListResponse from(MissingReportEntity missingReport) {
+        String firstImageUrl = missingReport.getMissingPetImages().isEmpty() ?
+                null :
+                missingReport.getMissingPetImages().get(0).getMissingPhotoUrl();
+
+        return new MissingViewListResponse(
+                missingReport.getId(),
+                missingReport.getUser().getId(),
+                missingReport.getTitle(),
+                missingReport.getDateLost(),
+                missingReport.getLocation().getPostcode(),
+                missingReport.getLocation().getAddress(),
+                missingReport.getLocation().getAddressDetail(),
+                missingReport.getStatus().name(),
+                missingReport.getPet().getPetName(),
+                missingReport.getPet().getSpecies(),
+                missingReport.getPet().getColor(),
+                missingReport.getPet().getAge(),
+                missingReport.getPet().getGender(),
+                firstImageUrl,
+                missingReport.getDescription(),
+                missingReport.getContact1()
+        );
+    }
+
+    // 리스트 변환도 지원하는 유틸리티 메서드 추가
+    public static List<MissingViewListResponse> fromList(List<MissingReportEntity> missingReports) {
+        return missingReports.stream()
+                .filter(missingReport -> !missingReport.isDeleted()) // deleted = false인 항목만 필터링
+                .map(MissingViewListResponse::from)
+                .toList(); // 스트림을 다시 List로 변환
+    }
 }

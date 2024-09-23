@@ -315,9 +315,5 @@ public class MissingReportService {
 
     }
 
-    // 상태, 주소로 조회
-    public Page<MissingViewListResponse> getMissingReports(MissingViewListRequest request, Pageable pageable) {
-        return missingReportRepository.searchMissingReports(request, pageable);
-    }
 
 }
