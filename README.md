@@ -7,8 +7,21 @@ PawAlert는 반려동물을 잃어버린 사람들과 동물을 찾는 사람들
 ## 🔗 주요 링크
 
 - 🌐 서비스 URL: [https://pawalert.co.kr/](https://pawalert.co.kr/)
-- 📘 프로젝트 문서: [Notion](https://jinsung7605.notion.site/PawAlert-3309da778aeb4342ad733b6ba4089be9?pvs=4)
 - 🎨 디자인: [Figma](https://www.figma.com/design/2Lqkxfy3c59ksHUiQCK6nj/PawAlert?node-id=0-1&t=uxyIHrYkqWhgKvSg-1)
+
+
+## 🚀 배포 정보
+
+이 프로젝트는 CloudType을 통해 배포되며, Git CI/CD를 사용하여 자동화된 배포 프로세스를 구현하고 있습니다.
+## 🎨 디자인
+
+프로젝트의 UI/UX 디자인은 Figma를 통해 구현되었습니다. 디자인 세부 사항은 [Figma 링크](https://www.figma.com/design/2Lqkxfy3c59ksHUiQCK6nj/PawAlert?node-id=0-1&t=uxyIHrYkqWhgKvSg-1)를 통해 확인할 수 있습니다.
+
+## 📊 API 문서
+
+API 문서는 Swagger를 통해 제공됩니다. [API 문서](https://port-0-pawalertbackendteamgroup-m06zwfj8628a2164.sel4.cloudtype.app/swagger-ui/index.html)에서 확인할 수 있습니다.
+
+
 
 ## 🛠 기술 스택
 
@@ -70,21 +83,10 @@ PawAlert는 반려동물을 잃어버린 사람들과 동물을 찾는 사람들
 - [x] 관심 지역 선택 및 해당 지역 게시글 알림
 
 
-## 🚀 배포 정보
-
-이 프로젝트는 CloudType을 통해 배포되며, Git CI/CD를 사용하여 자동화된 배포 프로세스를 구현하고 있습니다.
-## 🎨 디자인
-
-프로젝트의 UI/UX 디자인은 Figma를 통해 구현되었습니다. 디자인 세부 사항은 [Figma 링크](https://www.figma.com/design/2Lqkxfy3c59ksHUiQCK6nj/PawAlert?node-id=0-1&t=uxyIHrYkqWhgKvSg-1)를 통해 확인할 수 있습니다.
-
-## 📚 프로젝트 문서
-
-프로젝트에 대한 자세한 정보와 개발 문서는 Notion에서 관리되고 있습니다. [Notion 문서](https://jinsung7605.notion.site/PawAlert-3309da778aeb4342ad733b6ba4089be9?pvs=4)를 통해 접근할 수 있습니다.
-
-## 📊 API 문서
-
-API 문서는 Swagger를 통해 제공됩니다. [API 문서](https://api.pawalert.co.kr/swagger-ui/index.html)에서 확인할 수 있습니다.
-
+### 🐾 추가 예정 기능
+#### 1. 채팅 기능
+#### 2. 알림 기능(공지사항,게시글 댓글, 찜 글)
+#### 3. 성능부하테스트 예정
 
 
 ## 📞 연락처
