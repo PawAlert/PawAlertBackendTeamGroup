@@ -16,6 +16,10 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "user_entity", indexes = {
+        @Index(name = "idx_user_entity_email", columnList = "email"),
+        @Index(name = "idx_user_entity_uid", columnList = "uid")
+})
 public class UserEntity extends BaseEntity {
     @Id
     @Column(name = "user_id")
@@ -59,9 +63,8 @@ public class UserEntity extends BaseEntity {
 
 
     // 유저 - 반려동물 1:Nㅜ
-    @OneToMany(mappedBy = "user",orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<PetEntity> pets;
-
 
 
 }

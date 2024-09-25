@@ -10,6 +10,7 @@ import com.pawalert.backend.global.httpstatus.exception.SuccessResponse;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,11 @@ import java.util.Objects;
 public class UserController {
 
     private final UserService userService;
+
+    @GetMapping("/checkemail")
+    public ResponseEntity<SuccessResponse<HttpStatus>> checkEmailUser(@RequestParam("email") String email) {
+        return userService.checkEmail(email);
+    }
 
     // 내 정보 조회
     @GetMapping("/profile")

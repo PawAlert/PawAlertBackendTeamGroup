@@ -43,7 +43,7 @@ public class UserService {
     private final SaveImage saveImage;
 
     // 이미 존재하는 이메일 체크
-    public ResponseEntity<?> checkEmail(String email) {
+    public ResponseEntity<SuccessResponse<HttpStatus>> checkEmail(String email) {
         if (userRepository.existsByEmail(email)) {
             throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
         }
