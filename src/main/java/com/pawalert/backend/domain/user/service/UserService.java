@@ -4,6 +4,7 @@ import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.model.*;
 import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.SaveImage;
+import com.pawalert.backend.global.config.AsyncService;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
 import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
 import com.pawalert.backend.global.httpstatus.exception.ResponseHandler;
@@ -26,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @AllArgsConstructor
@@ -37,6 +39,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final AsyncService asyncService;
     private final SaveImage saveImage;
 
     // 이미 존재하는 이메일 체크
@@ -50,10 +53,7 @@ public class UserService {
     // 회원가입
     @Transactional
     public ResponseEntity<?> registerUser(RegisterRequest registerRequest) {
-        // 이미 존재하는 이메일인지 확인
-        if (userRepository.existsByEmail(registerRequest.email())) {
-            throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
-        }
+
         try {
             UserEntity user = UserEntity.builder()
                     .email(registerRequest.email())
@@ -63,8 +63,18 @@ public class UserService {
                     .uid(UUID.randomUUID().toString())
                     .authProvider("localUser")
                     .build();
-            user.setProfilePictureUrl(saveImage.saveProfileImage(user));
             userRepository.save(user);
+            System.out.println("처리 완료");
+            CompletableFuture.runAsync(() -> {
+                try {
+                    // 프로필 이미지 저장
+                    System.out.println("이미지 저장 시작");
+                    asyncService.saveProfileImage(user);
+                } catch (Exception e) {
+                    log.error("프로필 이미지 저장 중 오류 발생", e);
+                }
+            });
+
             return ResponseHandler.generateResponse(HttpStatus.CREATED, "User registered successfully!", "사용자 이메일 : " + user.getEmail());
 
         } catch (Exception e) {
