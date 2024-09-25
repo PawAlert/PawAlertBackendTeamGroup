@@ -58,7 +58,7 @@ public class ShelterService {
             throw new BusinessException(ErrorCode.DUPLICATE_SHELTER);
         }
 
-        String imageUrl = saveImage.saveProfileImage(memberUser);
+        String imageUrl = saveImage.saveProfileImage();
 
         if (!file.isEmpty()) {
             imageUrl = saveImage.SaveImages(file);
@@ -210,7 +210,7 @@ public class ShelterService {
                     .uid(UUID.randomUUID().toString())
                     .authProvider("localUser")
                     .build();
-            newUser.setProfilePictureUrl(saveImage.saveProfileImage(newUser));
+            newUser.setProfilePictureUrl(saveImage.saveProfileImage());
             userRepository.save(newUser);
 
             Location location = Location.builder()

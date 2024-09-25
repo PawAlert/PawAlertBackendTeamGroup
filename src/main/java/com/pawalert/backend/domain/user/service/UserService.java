@@ -60,17 +60,11 @@ public class UserService {
                     .userName(registerRequest.username())
                     .role(UserRole.ROLE_USER)
                     .uid(UUID.randomUUID().toString())
+                    .profilePictureUrl(saveImage.saveProfileImage())
                     .authProvider("localUser")
                     .build();
             userRepository.save(user);
-            CompletableFuture.runAsync(() -> {
-                try {
-                    // 프로필 이미지 저장
-                    asyncService.saveProfileImage(user);
-                } catch (Exception e) {
-                    log.error("프로필 이미지 저장 중 오류 발생", e);
-                }
-            });
+
             return ResponseHandler.generateResponse(HttpStatus.CREATED, "User registered successfully!", "사용자 이메일 : " + user.getEmail());
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);

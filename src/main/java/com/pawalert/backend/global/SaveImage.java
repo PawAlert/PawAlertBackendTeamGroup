@@ -53,8 +53,8 @@ public class SaveImage {
         }
     }
 
-    // 기본 프로필 이미지 경로를 반환하는 메서드 (UserEntity 유지)
-    public String saveProfileImage(UserEntity user) {
+    // todo: s3 변경 하기
+    public String saveProfileImage() {
         // 기본 프로필 이미지를 반환
         return "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg";
     }

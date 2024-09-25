@@ -45,7 +45,7 @@ public class HospitalDoctorService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
 
-        String fileName = saveImage.saveProfileImage(memberUser);
+        String fileName = saveImage.saveProfileImage();
 
         // 라이센스 번호가 존재하지 않을 경우 에러
         if (hospitalExcelInfoRepository.findByLicenseNumber(request.licenseNumber()).isEmpty()) {
@@ -108,7 +108,7 @@ public class HospitalDoctorService {
                 .uid(UUID.randomUUID().toString())
                 .authProvider("localUser")
                 .build();
-        newUser.setProfilePictureUrl(saveImage.saveProfileImage(newUser));
+        newUser.setProfilePictureUrl(saveImage.saveProfileImage());
         userRepository.save(newUser);
 
 
