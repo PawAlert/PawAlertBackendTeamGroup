@@ -58,8 +58,9 @@ public class UserController {
         return userService.login(loginRequest);
     }
 
-    @PostMapping("/updateProfileImage")
-    public ResponseEntity<?> updateProfileImage(@AuthenticationPrincipal CustomUserDetails user,
+    // 프로필 이미지 업데이트
+    @PatchMapping("/updateProfileImage")
+    public ResponseEntity<SuccessResponse<String>> updateProfileImage(@AuthenticationPrincipal CustomUserDetails user,
                                                 @RequestPart("userImage") MultipartFile images) {
         return userService.updateProfileImage(user, images);
     }

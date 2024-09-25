@@ -149,19 +149,13 @@ public class UserService {
     }
 
     // 프로필 이미지 업데이트
-    public ResponseEntity<?> updateProfileImage(CustomUserDetails user, MultipartFile images) {
+    @Transactional
+    public ResponseEntity<SuccessResponse<String>> updateProfileImage(CustomUserDetails user, MultipartFile images) {
         // 사용자 정보 조회
         UserEntity userEntity = userRepository.findByUid(user.getUid())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
-
         try {
-            // 이미지가 있는 경우 프로필 이미지 업데이트
-            if (images != null && !images.isEmpty()) {
-                userEntity.setProfilePictureUrl(saveImage.SaveImages(images));
-            }
-
-            // 사용자 정보 저장
-            userRepository.save(userEntity);
+            userEntity.setProfilePictureUrl(saveImage.SaveImages(images));
 
             // 성공 응답 반환
             return ResponseHandler.generateResponse(HttpStatus.OK, "프로필 이미지 업데이트 성공", "사용자 이메일 : " + userEntity.getEmail());
