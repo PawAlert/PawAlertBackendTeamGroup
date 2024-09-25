@@ -6,6 +6,7 @@ import com.pawalert.backend.domain.user.model.RegisterRequest;
 import com.pawalert.backend.domain.user.model.UserUpdateRequest;
 import com.pawalert.backend.domain.user.service.UserService;
 import com.pawalert.backend.global.httpstatus.exception.ResponseHandler;
+import com.pawalert.backend.global.httpstatus.exception.SuccessResponse;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,7 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<SuccessResponse<String>> registerUser(@RequestBody RegisterRequest registerRequest) {
 
         return userService.registerUser(registerRequest);
     }

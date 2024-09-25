@@ -52,8 +52,7 @@ public class UserService {
 
     // 회원가입
     @Transactional
-    public ResponseEntity<?> registerUser(RegisterRequest registerRequest) {
-
+    public ResponseEntity<SuccessResponse<String>> registerUser(RegisterRequest registerRequest) {
         try {
             UserEntity user = UserEntity.builder()
                     .email(registerRequest.email())
@@ -72,9 +71,7 @@ public class UserService {
                     log.error("프로필 이미지 저장 중 오류 발생", e);
                 }
             });
-
             return ResponseHandler.generateResponse(HttpStatus.CREATED, "User registered successfully!", "사용자 이메일 : " + user.getEmail());
-
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
