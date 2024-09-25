@@ -106,6 +106,7 @@ public class UserService {
     }
 
     // 마이페이지 수정
+    @Transactional
     public ResponseEntity<?> updateMyPage(UserUpdateRequest request, CustomUserDetails user) {
         // 사용자 정보 조회
         UserEntity userEntity = userRepository.findByUid(user.getUid())
@@ -115,8 +116,7 @@ public class UserService {
             // 사용자 정보 업데이트
             userEntity.setUserName(request.username());
             userEntity.setPhoneNumber(request.phoneNumber());
-            // 사용자 정보 저장
-            userRepository.save(userEntity);
+
             // 성공 응답 반환
             return ResponseHandler.generateResponse(HttpStatus.OK, "내 정보 수정 성공", "사용자 이메일 : " + userEntity.getEmail());
 
