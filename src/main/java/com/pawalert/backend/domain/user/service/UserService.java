@@ -50,7 +50,10 @@ public class UserService {
     // 회원가입
     @Transactional
     public ResponseEntity<?> registerUser(RegisterRequest registerRequest) {
-
+        // 이미 존재하는 이메일인지 확인
+        if (userRepository.existsByEmail(registerRequest.email())) {
+            throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
+        }
         try {
             UserEntity user = UserEntity.builder()
                     .email(registerRequest.email())
