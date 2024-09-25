@@ -19,7 +19,6 @@ public record MissingReportRecord(
         String contact1,
         @Schema(description = "연락처2")
         String contact2,
-
         @Schema(description = "특징 및 설명")
         String description,
         @Schema(description = "상태 예: 실종 중, 발견됨, 종료 = 기본값 MISSING")
@@ -38,9 +37,8 @@ public record MissingReportRecord(
         String petGender,
         @Schema(description = "펫 특징")
         String petDescription,
+        @Schema(description = "위도/경도")
         LocataionRecord locataionRecord
-
-
 
 ) {
 }

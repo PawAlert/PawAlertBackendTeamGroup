@@ -1,5 +1,6 @@
 package com.pawalert.backend.domain.missing.entity;
 
+import com.pawalert.backend.domain.missing.model.MissingReportRecord;
 import com.pawalert.backend.domain.missing.model.MissingStatus;
 import com.pawalert.backend.domain.mypet.entity.PetEntity;
 import com.pawalert.backend.global.BaseEntity;
@@ -81,5 +82,20 @@ public class MissingReportEntity extends BaseEntity {
     private List<MissingReportImageEntity> missingPetImages;
 
     private boolean deleted = false;
+
+    public static MissingReportEntity fromRequest(MissingReportRecord request, Location location, UserEntity user, PetEntity pet) {
+        return MissingReportEntity.builder()
+                .title(request.title())
+                .content(request.content())
+                .dateLost(request.dateLost())
+                .location(location)
+                .description(request.description())
+                .status(request.status())
+                .contact1(request.contact1())
+                .contact2(request.contact2())
+                .user(user)
+                .pet(pet)
+                .build();
+    }
 
 }

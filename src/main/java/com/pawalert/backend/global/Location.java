@@ -27,4 +27,15 @@ public class Location {
 
     @Column(name = "longitude", nullable = false, precision = 11, scale = 8)
     private BigDecimal longitude;
+
+    public static Location from(LocataionRecord locataionRecord) {
+        Location location = new Location();
+        location.postcode = locataionRecord.postcode();
+        location.address = locataionRecord.address();
+        location.addressDetail = locataionRecord.addressDetail();
+        location.latitude = locataionRecord.latitude();
+        location.longitude = locataionRecord.longitude();
+        return location;
+    }
+
 }

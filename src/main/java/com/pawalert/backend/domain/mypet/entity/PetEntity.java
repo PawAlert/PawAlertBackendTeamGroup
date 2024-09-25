@@ -1,5 +1,6 @@
 package com.pawalert.backend.domain.mypet.entity;
 
+import com.pawalert.backend.domain.missing.model.MissingReportRecord;
 import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.global.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -78,5 +79,19 @@ public class PetEntity extends BaseEntity {
     @Column(name = "deleted_pet")
     @Schema(description = "삭제 여부")
     private boolean deleted;
+
+    public static PetEntity fromRequest(MissingReportRecord request, UserEntity user) {
+        return PetEntity.builder()
+                .microchipId(request.microchipId())
+                .petName(request.petName())
+                .species(request.species())
+                .color(request.petColor())
+                .age(request.age())
+                .gender(request.petGender())
+                .description(request.petDescription())
+                .deleted(false)
+                .user(user)
+                .build();
+    }
 
 }

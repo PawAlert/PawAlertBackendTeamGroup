@@ -93,56 +93,23 @@ public class MissingReportService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
         try {
-            Location location = Location.builder()
-                    .postcode(request.locataionRecord().postcode())
-                    .address(request.locataionRecord().address())
-                    .addressDetail(request.locataionRecord().addressDetail())
-                    .latitude(request.locataionRecord().latitude())
-                    .longitude(request.locataionRecord().longitude())
-                    .build();
+            // 위치 저장
+            Location location = Location.from(request.locataionRecord());
 
-
-            PetEntity pet = PetEntity.builder()
-                    .microchipId(request.microchipId())
-                    .petName(request.petName())
-                    .species(request.species())
-                    .color(request.petColor())
-                    .age(request.age())
-                    .gender(request.petGender())
-                    .description(request.petDescription())
-                    .deleted(false)
-                    .user(userMember)
-                    .build();
-
+            // 펫 정보 저장
+            PetEntity pet = PetEntity.fromRequest(request, userMember);
             petRepository.save(pet);
 
-
-            MissingReportEntity missingReport = MissingReportEntity.builder()
-                    .title(request.title())
-                    .content(request.content())
-                    .dateLost(request.dateLost())
-                    .location(location)
-                    .description(request.description())
-                    .status(request.status())
-                    .contact1(request.contact1())
-                    .contact2(request.contact2())
-                    .user(userMember)
-                    .pet(pet)
-                    .build();
-
+            // 반려동물 실종 정보 저장
+            MissingReportEntity missingReport = MissingReportEntity.fromRequest(request, location, userMember, pet);
             missingReportRepository.save(missingReport);
 
             List<MissingReportImageEntity> imageUrls = images.stream()
-                    .map(image -> {
-                        String imageUrl = saveImage.SaveImages(image);
-                        return MissingReportImageEntity.builder()
-                                .missingPhotoUrl(imageUrl)
-                                .missingReport(missingReport)
-                                .isDeleted(false)
-                                .build();
-                    }).toList();
+                    .map(image -> MissingReportImageEntity.from(saveImage.SaveImages(image), missingReport))
+                    .toList();
 
             missingImageRepository.saveAll(imageUrls);
+
 
             // 넘겨줄 data 정보
             List<String> data = List.of(
@@ -262,7 +229,6 @@ public class MissingReportService {
         // 필터링된 결과를 Page로 변환
         return new PageImpl<>(filteredResponseList, pageable, reportsPage.getTotalElements());
     }
-
 
 
     // 실종글 삭제

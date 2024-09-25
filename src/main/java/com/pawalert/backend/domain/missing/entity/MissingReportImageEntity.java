@@ -29,4 +29,13 @@ public class MissingReportImageEntity {
     @Column(name = "is_deleted")
     @Schema(description = "이미지 삭제 여부")
     private boolean isDeleted;
+
+    public static MissingReportImageEntity from(String imageUrl, MissingReportEntity missingReport) {
+        return MissingReportImageEntity.builder()
+                .missingPhotoUrl(imageUrl)
+                .missingReport(missingReport)
+                .isDeleted(false)
+                .build();
+    }
+
 }
