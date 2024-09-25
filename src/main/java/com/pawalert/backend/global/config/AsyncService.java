@@ -21,10 +21,8 @@ public class AsyncService {
     @Retryable(value = {Exception.class}, maxAttempts = 3, backoff = @Backoff(delay = 2000))
     public CompletableFuture<String> saveProfileImage(UserEntity user) {
         try {
-            log.info("비동기 작업 시작 - 프로필 이미지 저장 중...");
             // todo : s3로 바꿔주기
             user.setProfilePictureUrl(saveImage.saveProfileImage(user));
-            log.info("비동기 작업 완료 - 프로필 이미지 저장 완료: {}", user.getProfilePictureUrl());
 
             return CompletableFuture.completedFuture("이미지 저장성공"); // 성공 시 이미지 URL 반환
         } catch (Exception e) {

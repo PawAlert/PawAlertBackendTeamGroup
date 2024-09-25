@@ -64,11 +64,9 @@ public class UserService {
                     .authProvider("localUser")
                     .build();
             userRepository.save(user);
-            System.out.println("처리 완료");
             CompletableFuture.runAsync(() -> {
                 try {
                     // 프로필 이미지 저장
-                    System.out.println("이미지 저장 시작");
                     asyncService.saveProfileImage(user);
                 } catch (Exception e) {
                     log.error("프로필 이미지 저장 중 오류 발생", e);
