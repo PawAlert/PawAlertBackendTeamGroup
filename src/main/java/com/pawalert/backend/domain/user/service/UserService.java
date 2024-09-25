@@ -39,13 +39,18 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final SaveImage saveImage;
 
+    // 이미 존재하는 이메일 체크
+    public ResponseEntity<?> checkEmail(String email) {
+        if (userRepository.existsByEmail(email)) {
+            throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
+        }
+        return ResponseHandler.ok("사용 가능한 이메일입니다.", HttpStatus.OK);
+    }
+
     // 회원가입
     @Transactional
     public ResponseEntity<?> registerUser(RegisterRequest registerRequest) {
-        // 이미 존재하는 이메일인지 확인
-        if (userRepository.existsByEmail(registerRequest.email())) {
-            throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
-        }
+
         try {
             UserEntity user = UserEntity.builder()
                     .email(registerRequest.email())
@@ -97,6 +102,7 @@ public class UserService {
             throw new BusinessException(ErrorCode.INVALID_LOGIN_CREDENTIALS);
         }
     }
+
     // 마이페이지 수정
     public ResponseEntity<?> updateMyPage(UserUpdateRequest request, CustomUserDetails user) {
         // 사용자 정보 조회
