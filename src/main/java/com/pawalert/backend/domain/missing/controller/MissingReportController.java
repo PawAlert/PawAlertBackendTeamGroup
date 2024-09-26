@@ -36,9 +36,7 @@ public class MissingReportController {
     public ResponseEntity<?> updateMissingReport(@AuthenticationPrincipal CustomUserDetails user,
                                                  @RequestBody MissingUpdateRequest request
                                                  ) {
-
         return missingReportService.updateMissingReport(request, user);
-
     }
 
     // 실종글 삭제
@@ -70,7 +68,7 @@ public class MissingReportController {
 
     // 실종신고 전체 조회
     @GetMapping("/list")
-    public Page<MissingViewListResponse> MissingPostList(@PageableDefault(size = 10) Pageable pageable) {
+    public Page<MissingViewListResponse> missingPostList(@PageableDefault(size = 10) Pageable pageable) {
         return missingReportService.getMissingReports(pageable);
     }
 

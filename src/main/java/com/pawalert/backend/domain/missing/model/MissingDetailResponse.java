@@ -57,8 +57,6 @@ public record MissingDetailResponse(
         @Schema(description = "연락처1")
         String contact1,
         @Schema(description = "연락처2")
-        String contact2,
-        @Schema(description = "댓글")
-        List<CommentResponse> comments
+        String contact2
         ) {
 }

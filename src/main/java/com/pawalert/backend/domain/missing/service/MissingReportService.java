@@ -95,8 +95,7 @@ public class MissingReportService {
         try {
             // 위치 저장
             Location location = Location.from(request.locataionRecord());
-
-            // 펫 정보 저장
+            // 반려동물 정보 저장
             PetEntity pet = PetEntity.fromRequest(request, userMember);
             petRepository.save(pet);
 
@@ -107,15 +106,14 @@ public class MissingReportService {
             List<MissingReportImageEntity> imageUrls = images.stream()
                     .map(image -> MissingReportImageEntity.from(saveImage.SaveImages(image), missingReport))
                     .toList();
-
             missingImageRepository.saveAll(imageUrls);
-
 
             // 넘겨줄 data 정보
             List<String> data = List.of(
                     "user Email =  " + userMember.getEmail(),
                     "pet name = " + pet.getPetName()
             );
+
             return ResponseHandler.generateResponse(HttpStatus.CREATED, "Missing report created successfully", data);
 
         } catch (Exception e) {
@@ -130,28 +128,25 @@ public class MissingReportService {
     public ResponseEntity<SuccessResponse<MissingDetailResponse>> getMissingReportDetail(Long missingReportId, CustomUserDetails user) {
         UserEntity userMember = null;
         boolean isMine = false;
-
-        List<CommentEntity> comments = commentRepository.findByMissingReportId(missingReportId);
-
         MissingReportEntity missingReport = missingReportRepository.findById(missingReportId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MISSING_REPORT));
 
-        // CommentEntity 리스트를 CommentResponse 리스트로 변환
-        List<CommentResponse> commentResponses = comments.stream()
-                .map(comment -> {
-                    // 내가 작성한 댓글인지
-                    boolean isCommentMine = Optional.ofNullable(user).isPresent() &&
-                            comment.getUserId().equals(user.getUid());
-                    return new CommentResponse(
-                            comment.getId(),
-                            comment.getUserId(),
-                            comment.getMissingReportId(),
-                            comment.getContent(),
-                            comment.isDeleted(),
-                            comment.getTimestamp(),
-                            isCommentMine
-                    );
-                }).toList();
+          // 댓글 따로 만들었음,
+//        List<CommentResponse> commentResponses = comments.stream()
+//                .map(comment -> {
+//                    // 내가 작성한 댓글인지
+//                    boolean isCommentMine = Optional.ofNullable(user).isPresent() &&
+//                            comment.getUserId().equals(user.getUid());
+//                    return new CommentResponse(
+//                            comment.getId(),
+//                            comment.getUserId(),
+//                            comment.getMissingReportId(),
+//                            comment.getContent(),
+//                            comment.isDeleted(),
+//                            comment.getTimestamp(),
+//                            isCommentMine
+//                    );
+//                }).toList();
 
 
         if (Optional.ofNullable(user).isPresent()) {
@@ -186,8 +181,7 @@ public class MissingReportService {
                         .map(image -> new PetImageListRecord(image.getId(), image.getMissingPhotoUrl()))
                         .toList(),
                 missingReport.getContact1(),
-                missingReport.getContact2(),
-                commentResponses
+                missingReport.getContact2()
         );
         return ResponseHandler.generateResponse(HttpStatus.OK, "Missing report detail retrieved successfully", response);
 
@@ -224,9 +218,8 @@ public class MissingReportService {
                             missingReport.getDescription(),
                             missingReport.getContact1()
                     );
-                }).toList(); // 스트림을 다시 List로 변환
+                }).toList();
 
-        // 필터링된 결과를 Page로 변환
         return new PageImpl<>(filteredResponseList, pageable, reportsPage.getTotalElements());
     }
 
