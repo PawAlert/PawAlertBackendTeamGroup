@@ -199,37 +199,10 @@ public class MissingReportService {
         List<MissingViewListResponse> filteredResponseList = reportsPage.getContent().stream()
                 .filter(missingReport -> !missingReport.isDeleted()) // deleted = false인 항목만 필터링
                 .filter(missingReport -> {
-                    if (statusFilter == null || statusFilter.isEmpty()) {
-                        return true; // statusFilter가 없으면 모든 상태 통과
-                    }
                     // 필터링된 status와 비교
                     return missingReport.getStatus().name().equalsIgnoreCase(statusFilter);
                 })
-                .map(missingReport -> {
-                    String firstImageUrl = missingReport.getMissingPetImages().isEmpty() ?
-                            null :
-                            missingReport.getMissingPetImages().get(0).getMissingPhotoUrl();
-
-                    // DTO 생성
-                    return new MissingViewListResponse(
-                            missingReport.getId(),
-                            missingReport.getUser().getId(),
-                            missingReport.getTitle(),
-                            missingReport.getDateLost(),
-                            missingReport.getLocation().getPostcode(),
-                            missingReport.getLocation().getAddress(),
-                            missingReport.getLocation().getAddressDetail(),
-                            missingReport.getStatus().name(),
-                            missingReport.getPet().getPetName(),
-                            missingReport.getPet().getSpecies(),
-                            missingReport.getPet().getColor(),
-                            missingReport.getPet().getAge(),
-                            missingReport.getPet().getGender(),
-                            firstImageUrl,
-                            missingReport.getDescription(),
-                            missingReport.getContact1()
-                    );
-                }).toList();
+                .map(MissingViewListResponse::from).toList();
 
         // 필터링된 리스트를 페이지로 변환 후 반환
         return new PageImpl<>(filteredResponseList, pageable, reportsPage.getTotalElements());

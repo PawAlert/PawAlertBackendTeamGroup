@@ -42,9 +42,7 @@ public record MissingViewListResponse(
 ) {
     // MissingReport 객체를 MissingViewListResponse로 변환하는 정적 메서드 추가
     public static MissingViewListResponse from(MissingReportEntity missingReport) {
-        String firstImageUrl = missingReport.getMissingPetImages().isEmpty() ?
-                null :
-                missingReport.getMissingPetImages().get(0).getMissingPhotoUrl();
+        String firstImageUrl = missingReport.getMissingPetImages().get(0).getMissingPhotoUrl();
 
         return new MissingViewListResponse(
                 missingReport.getId(),
