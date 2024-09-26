@@ -4,7 +4,6 @@ import com.pawalert.backend.domain.comment.dto.CommentRequestRecord;
 import com.pawalert.backend.domain.comment.dto.CommentResponse;
 import com.pawalert.backend.domain.comment.entity.CommentEntity;
 import com.pawalert.backend.domain.comment.repository.CommentRepository;
-import com.pawalert.backend.domain.missing.repository.MissingReportRepository;
 import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
@@ -13,7 +12,8 @@ import com.pawalert.backend.global.httpstatus.exception.ResponseHandler;
 import com.pawalert.backend.global.httpstatus.exception.SuccessResponse;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.annotation.Id;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -46,8 +47,17 @@ public class CommentService {
     }
 
     //댓글 조회
-    public ResponseEntity<SuccessResponse<Object>> getComments(CustomUserDetails user, Long postId) {
+    public Page<CommentResponse> getComments(CustomUserDetails user, Long postId, Pageable pageable) {
         UserEntity userMember;
+        Pageable sortedByTimestampDesc = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Sort.Direction.DESC, "timestamp")  // 최신순 정렬
+        );
+
+        Page<CommentEntity> comments = commentRepository.findByMissingReportId(postId, sortedByTimestampDesc);
+
+        log.info("comments: {}", comments);
 
         // 회원 여부 확인 후 존재하면 유저 정보를 가져옴
         if (Optional.ofNullable(user).isPresent()) {
@@ -56,12 +66,12 @@ public class CommentService {
         } else {
             userMember = null;
         }
-        List<CommentEntity> comments = commentRepository.findByMissingReportId(postId);
+//        List<CommentEntity> comments = commentRepository.findByMissingReportId(postId);
 
         List<CommentResponse> comt = comments.stream()
                 .map(comment -> {
                     boolean isCommentMine = Optional.ofNullable(userMember).isPresent()
-                            && userMember.getUid().equals(comment.getUserId()); // NPE 방지: userMember 사용
+                            && userMember.getUid().equals(comment.getUserId());
                     return new CommentResponse(
                             comment.getId(),
                             comment.getUserId(),
@@ -73,7 +83,7 @@ public class CommentService {
                     );
                 }).toList();
 
-        return ResponseHandler.generateResponse(HttpStatus.OK, "Comments fetched successfully", comt);
+        return new PageImpl<>(comt, pageable, comments.getTotalElements());
 
     }
 
