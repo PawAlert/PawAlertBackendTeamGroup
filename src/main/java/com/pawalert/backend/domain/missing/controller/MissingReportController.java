@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
 @RestController
 @RequestMapping("/api/missing")
 @RequiredArgsConstructor
@@ -35,7 +36,7 @@ public class MissingReportController {
     @PatchMapping("/update")
     public ResponseEntity<?> updateMissingReport(@AuthenticationPrincipal CustomUserDetails user,
                                                  @RequestBody MissingUpdateRequest request
-                                                 ) {
+    ) {
         return missingReportService.updateMissingReport(request, user);
     }
 
@@ -68,12 +69,12 @@ public class MissingReportController {
 
     // 실종신고 전체 조회
     @GetMapping("/list")
-    public Page<MissingViewListResponse> missingPostList(@PageableDefault(size = 10) Pageable pageable) {
-        return missingReportService.getMissingReports(pageable);
+    public Page<MissingViewListResponse> missingPostList(
+            @PageableDefault(size = 10) Pageable pageable,
+            @RequestParam(value = "sortDirection", required = false, defaultValue = "desc") String sortDirection, // 정렬 방향
+            @RequestParam(value = "statusFilter", required = false, defaultValue = "MISSING") String statusFilter) { // 상태 필터
+        return missingReportService.getMissingReports(pageable, sortDirection, statusFilter);
     }
-
-
-
 
 
 }

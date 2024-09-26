@@ -24,9 +24,7 @@ import com.pawalert.backend.global.jwt.CustomUserDetails;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -131,7 +129,7 @@ public class MissingReportService {
         MissingReportEntity missingReport = missingReportRepository.findById(missingReportId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MISSING_REPORT));
 
-          // 댓글 따로 만들었음,
+        // 댓글 따로 만들었음,
 //        List<CommentResponse> commentResponses = comments.stream()
 //                .map(comment -> {
 //                    // 내가 작성한 댓글인지
@@ -188,12 +186,25 @@ public class MissingReportService {
     }
 
     // 실종글 리스트 조회
-    public Page<MissingViewListResponse> getMissingReports(Pageable pageable) {
+    public Page<MissingViewListResponse> getMissingReports(Pageable pageable, String sortDirection, String statusFilter) {
+        // 최신 순 또는 오래된 순
+        Sort.Direction direction = "DESC".equals(sortDirection) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(direction, "dateLost"));
+
+        // 데이터 조회
         Page<MissingReportEntity> reportsPage = missingReportRepository.findAll(pageable);
 
         // List로 변환한 후 필터링
+        // List로 변환한 후 필터링
         List<MissingViewListResponse> filteredResponseList = reportsPage.getContent().stream()
                 .filter(missingReport -> !missingReport.isDeleted()) // deleted = false인 항목만 필터링
+                .filter(missingReport -> {
+                    if (statusFilter == null || statusFilter.isEmpty()) {
+                        return true; // statusFilter가 없으면 모든 상태 통과
+                    }
+                    // 필터링된 status와 비교
+                    return missingReport.getStatus().name().equalsIgnoreCase(statusFilter);
+                })
                 .map(missingReport -> {
                     String firstImageUrl = missingReport.getMissingPetImages().isEmpty() ?
                             null :
@@ -220,6 +231,7 @@ public class MissingReportService {
                     );
                 }).toList();
 
+        // 필터링된 리스트를 페이지로 변환 후 반환
         return new PageImpl<>(filteredResponseList, pageable, reportsPage.getTotalElements());
     }
 
