@@ -30,9 +30,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -187,25 +189,31 @@ public class MissingReportService {
 
     // 실종글 리스트 조회
     public Page<MissingViewListResponse> getMissingReports(Pageable pageable, String sortDirection, String statusFilter) {
-        // 최신 순 또는 오래된 순
-        Sort.Direction direction = "DESC".equals(sortDirection) ? Sort.Direction.DESC : Sort.Direction.ASC;
-        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(direction, "dateLost"));
-
         // 데이터 조회
-        Page<MissingReportEntity> reportsPage = missingReportRepository.findAll(pageable);
+        List<MissingReportEntity> allReports = missingReportRepository.findAll(); // 먼저 모든 데이터를 가져옴
 
-        // List로 변환한 후 필터링
-        // List로 변환한 후 필터링
-        List<MissingViewListResponse> filteredResponseList = reportsPage.getContent().stream()
+        // 먼저 필터링
+        List<MissingReportEntity> filteredReports = allReports.stream()
                 .filter(missingReport -> !missingReport.isDeleted()) // deleted = false인 항목만 필터링
                 .filter(missingReport -> {
                     // 필터링된 status와 비교
                     return missingReport.getStatus().name().equalsIgnoreCase(statusFilter);
                 })
-                .map(MissingViewListResponse::from).toList();
+                .toList();
+
+        // 필터링된 데이터를 정렬된 Pageable로 다시 정렬
+        Sort.Direction direction = "DESC".equals(sortDirection) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        List<MissingReportEntity> sortedFilteredReports = filteredReports.stream()
+                .sorted(Comparator.comparing(MissingReportEntity::getDateLost, direction == Sort.Direction.DESC ? Comparator.reverseOrder() : Comparator.naturalOrder()))
+                .toList();
 
         // 필터링된 리스트를 페이지로 변환 후 반환
-        return new PageImpl<>(filteredResponseList, pageable, reportsPage.getTotalElements());
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), sortedFilteredReports.size());
+        Page<MissingViewListResponse> page = new PageImpl<>(sortedFilteredReports.subList(start, end)
+                .stream().map(MissingViewListResponse::from).collect(Collectors.toList()), pageable, sortedFilteredReports.size());
+
+        return page;
     }
 
 
