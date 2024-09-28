@@ -135,6 +135,8 @@ public class HospitalDoctorService {
                 .build();
 
         hospitalDoctorRepository.save(hospitalDoctor);
+        redisService.hospitalAndShelterSignup("Hospital", newUser.getCreatedAt(), newUser.getUid());
+
 
         return ResponseHandler.generateResponse(HttpStatus.CREATED, "병원 의사 등록 성공",
                 String.format("사용자 ID %s 유저 권한 : %s",

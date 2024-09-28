@@ -210,6 +210,7 @@ public class ShelterService {
 
     }
 
+    // 보호센터 회원가입
     public ResponseEntity<SuccessResponse<String>> signupShelterInfo(SignupShelterRequest request) {
 
         try {
@@ -241,8 +242,11 @@ public class ShelterService {
                     .build();
 
             shelterRepository.save(shelterMember);
+
+            redisService.hospitalAndShelterSignup("Shelter", newUser.getCreatedAt(), newUser.getUid());
             return ResponseHandler.generateResponse(HttpStatus.CREATED, "비회원 보호센터 정보 등록 성공",
                     String.format("동물보호단체 id %s", shelterMember.getId()));
+
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.ERROR_MISSING_REPORT);
         }

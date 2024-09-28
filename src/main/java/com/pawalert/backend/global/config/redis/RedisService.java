@@ -3,6 +3,8 @@ package com.pawalert.backend.global.config.redis;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -10,15 +12,20 @@ import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RedisService {
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private final MongoTemplate mongoTemplate;
+    private final ObjectMapper objectMapper;
 
     // 댓글 저장하기
+    // todo : 댓글은 바로 mongoDB에 저장 
     public void commentSaveData(String userUid, String comment, LocalDateTime createTime) throws JsonProcessingException {
         // 댓글 내용과 작성 시간을 묶어서 저장
         Map<String, String> commentData = new HashMap<>();
@@ -29,26 +36,27 @@ public class RedisService {
 
     }
 
+    // 회원가입 기록
+    public void signupSavaData(String userUid, String userIp, LocalDateTime signupTime) {
+        Map<String, String> signupData = new HashMap<>();
+        signupData.put("uid", userUid);
+        signupData.put("userIp", userIp);
+        signupData.put("joinTime", converterTime(signupTime));
+        signupData.put("type", "SIGNUP");
+
+        redisSaveData(userUid, signupData);
+    }
 
     // 로그인 기록
     public void loginSaveData(String userUid, String userIp, LocalDateTime loginTime) {
-        try {
-            // 로그인 기록을 저장
-            Map<String, String> loginData = new HashMap<>();
-            loginData.put("type", "login");
-            loginData.put("loginTime", converterTime(loginTime));
-            loginData.put("userIp", userIp);
+        // 로그인 기록을 저장
+        Map<String, String> loginData = new HashMap<>();
+        loginData.put("uid", userUid);
+        loginData.put("type", "LOGIN");
+        loginData.put("loginTime", converterTime(loginTime));
+        loginData.put("userIp", userIp);
 
-            // JSON 직렬화를 사용하여 List에 저장 (UID로 하나의 Key에 모든 데이터 관리)
-            redisTemplate.opsForList().rightPush(
-                    MessageFormat.format("user:{0}:allData", userUid), // UID 기반의 Key
-                    new ObjectMapper().writeValueAsString(loginData)
-            );
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-
-
-        }
+        redisSaveData(userUid, loginData);
 
     }
 
@@ -60,10 +68,17 @@ public class RedisService {
         missingData.put("missingReportId", String.valueOf(missingReportId));
         missingData.put("createTime", converterTime(createTime));
         missingData.put("location", location);
-
         redisSaveData(userUid, missingData);
+    }
 
+    // 병원 보호센터 관계자 회원가입
+    public void hospitalAndShelterSignup(String type, LocalDateTime time, String uid) {
+        Map<String, String> signupData = new HashMap<>();
+        signupData.put("userUid", uid);
+        signupData.put("createTime", converterTime(time));
+        signupData.put("type", type);
 
+        redisSaveData(uid, signupData);
     }
 
     // 동물병원, 동물병원 인증시도, 인증 성공 여부
@@ -100,15 +115,7 @@ public class RedisService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-
-
-    public String getData(String key) {
-        // Redis에서 데이터를 조회
-        return (String) redisTemplate.opsForValue().get(key);
-    }
-
 
     // 시간 변환
     private String converterTime(LocalDateTime time) {
@@ -117,7 +124,7 @@ public class RedisService {
         return time.format(formatter);
     }
 
-    // 정보 저장하기
+    // 유저 활동 정보 저장하기
     private void redisSaveData(String userUid, Map<String, String> saveData) {
 
         try {
@@ -125,7 +132,26 @@ public class RedisService {
                     MessageFormat.format("user:{0}:allData", userUid), // UID 기반의 Key
                     new ObjectMapper().writeValueAsString(saveData)
             );
+
+            Long dataSize = redisTemplate.opsForList().size(MessageFormat.format("user:{0}:allData", userUid));
+            // 임계값 설정 (예: 회원별 데이터 100개 이상이면 MongoDB로 옮김)
+            int threshold = 10;
+
+            if (dataSize != null && dataSize >= threshold) {
+                // Redis에 있는 데이터를 MongoDB로 옮김
+                // 키에 해당하는 값, 데이터 끝까지 가져오기
+                List<Object> redisData = redisTemplate.opsForList().range(MessageFormat.format("user:{0}:allData", userUid), 0, -1);
+                if (redisData != null && !redisData.isEmpty()) {
+                    for (Object data : redisData) {
+                        mongoTemplate.save(objectMapper.readValue((String) data, Map.class), "userActivities");
+                    }
+                }
+                // Redis에서 데이터 삭제
+                redisTemplate.delete(MessageFormat.format("user:{0}:allData", userUid));
+                log.info("MongoDB로 데이터 이동 완료 및 Redis에서 삭제 완료");
+            }
         } catch (JsonProcessingException e) {
+            // todo : 에러 관련 처리
             e.printStackTrace();
         }
 

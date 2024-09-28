@@ -63,6 +63,7 @@ public class UserService {
                     .authProvider("localUser")
                     .build();
             userRepository.save(user);
+            redisService.signupSavaData(user.getUid(), "192.168.0.0.1", user.getCreatedAt());
 
             return ResponseHandler.generateResponse(HttpStatus.CREATED, "User registered successfully!", "사용자 이메일 : " + user.getEmail());
         } catch (Exception e) {
