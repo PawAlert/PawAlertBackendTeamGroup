@@ -6,6 +6,7 @@ import com.pawalert.backend.domain.comment.entity.CommentEntity;
 import com.pawalert.backend.domain.comment.repository.CommentRepository;
 import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.repository.UserRepository;
+import com.pawalert.backend.global.config.redis.RedisService;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
 import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
 import com.pawalert.backend.global.httpstatus.exception.ResponseHandler;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +30,7 @@ import java.util.Optional;
 public class CommentService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final RedisService redisService;
 
 
     // 댓글 작성
@@ -43,6 +46,18 @@ public class CommentService {
                 .timestamp(LocalDateTime.now())
                 .build();
         commentRepository.save(commentEntity);
+
+
+        // redis 에 정보 저장
+
+        try{
+            log.info("Redis에 저장");
+            redisService.commentSaveData(user.getUid(), response.content(), commentEntity.getTimestamp());
+
+        }catch (Exception e){
+            log.error("Redis에 저장 실패");
+        }
+
         return ResponseHandler.generateResponse(HttpStatus.CREATED, "Comment added successfully", null);
     }
 

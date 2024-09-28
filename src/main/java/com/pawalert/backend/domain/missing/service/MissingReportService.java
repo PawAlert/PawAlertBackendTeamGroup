@@ -16,6 +16,7 @@ import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.Location;
 import com.pawalert.backend.global.SaveImage;
+import com.pawalert.backend.global.config.redis.RedisService;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
 import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
 import com.pawalert.backend.global.httpstatus.exception.ResponseHandler;
@@ -47,6 +48,7 @@ public class MissingReportService {
     private final PetRepository petRepository;
     private final MissingImageRepository missingImageRepository;
     private final CommentRepository commentRepository;
+    private final RedisService redisService;
 
     // 실종글 수정
     @Transactional
@@ -113,7 +115,8 @@ public class MissingReportService {
                     "user Email =  " + userMember.getEmail(),
                     "pet name = " + pet.getPetName()
             );
-
+            //redis 정보 저장
+            redisService.missingSaveData(userMember.getUid(), missingReport.getId(), location.getAddress(), missingReport.getCreatedAt());
             return ResponseHandler.generateResponse(HttpStatus.CREATED, "Missing report created successfully", data);
 
         } catch (Exception e) {
@@ -189,31 +192,33 @@ public class MissingReportService {
 
     // 실종글 리스트 조회
     public Page<MissingViewListResponse> getMissingReports(Pageable pageable, String sortDirection, String statusFilter) {
-        // 데이터 조회
+        // 모든 데이터 조회
         List<MissingReportEntity> allReports = missingReportRepository.findAll(); // 먼저 모든 데이터를 가져옴
 
         // 먼저 필터링
         List<MissingReportEntity> filteredReports = allReports.stream()
                 .filter(missingReport -> !missingReport.isDeleted()) // deleted = false인 항목만 필터링
-                .filter(missingReport -> {
-                    // 필터링된 status와 비교
-                    return missingReport.getStatus().name().equalsIgnoreCase(statusFilter);
-                })
+                .filter(missingReport -> missingReport.getStatus().name().equalsIgnoreCase(statusFilter)) // 상태 필터 적용
                 .toList();
 
-        // 필터링된 데이터를 정렬된 Pageable로 다시 정렬
-        Sort.Direction direction = "DESC".equals(sortDirection) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        // 필터링된 데이터를 정렬
+        Comparator<MissingReportEntity> comparator = Comparator.comparing(MissingReportEntity::getDateLost);
+        if ("DESC".equals(sortDirection)) {
+            comparator = comparator.reversed(); // DESC일 경우 역순 정렬
+        }
         List<MissingReportEntity> sortedFilteredReports = filteredReports.stream()
-                .sorted(Comparator.comparing(MissingReportEntity::getDateLost, direction == Sort.Direction.DESC ? Comparator.reverseOrder() : Comparator.naturalOrder()))
+                .sorted(comparator) // 필터링된 데이터를 정렬
                 .toList();
 
         // 필터링된 리스트를 페이지로 변환 후 반환
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), sortedFilteredReports.size());
-        Page<MissingViewListResponse> page = new PageImpl<>(sortedFilteredReports.subList(start, end)
-                .stream().map(MissingViewListResponse::from).collect(Collectors.toList()), pageable, sortedFilteredReports.size());
+        List<MissingViewListResponse> pageContent = sortedFilteredReports.subList(start, end).stream()
+                .map(MissingViewListResponse::from) // 필터링된 데이터를 DTO로 변환
+                .toList();
 
-        return page;
+        // 최종 결과 반환
+        return new PageImpl<>(pageContent, pageable, sortedFilteredReports.size());
     }
 
 

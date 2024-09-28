@@ -12,6 +12,7 @@ import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.model.UserRole;
 import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.*;
+import com.pawalert.backend.global.config.redis.RedisService;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
 import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
 import com.pawalert.backend.global.httpstatus.exception.ResponseHandler;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -40,6 +42,7 @@ public class ShelterService {
     private final UserRepository userRepository;
     private final AnimalShelterRepository animalShelterRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RedisService redisService;
 
 
     // 등록 ( 회원 )
@@ -151,6 +154,7 @@ public class ShelterService {
 
     }
 
+    // 보호 센터 정보 조회
     public ResponseEntity<SuccessResponse<ShelterViewResponse>> getShelterView(CustomUserDetails user, Long shelterId) {
         AnimalRescueOrganizationEntity shelter = shelterRepository.findById(shelterId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_SHELTER));
@@ -193,8 +197,14 @@ public class ShelterService {
     public ResponseEntity<SuccessResponse<String>> certificationShelter(CertificationShelterResponse request) {
         try {
             AnimalShelterEntity result = animalShelterRepository.findByJurisdictionAndShelterName(request.jurisdiction(), request.shelterName());
+            //todo : 옵셔널로 바꾸기
+            if(result == null) {
+                throw new BusinessException(ErrorCode.NOT_FOUND_SHELTER);
+            }
+            redisService.hospitalAndShelterAttempt("Shelter", "Success", LocalDateTime.now(), "192.168.0.0.1", request.shelterName(), request.jurisdiction());
             return ResponseHandler.generateResponse(HttpStatus.OK, "보호센터 인증 성공", result.getShelterName());
         } catch (Exception e) {
+            redisService.hospitalAndShelterAttempt("Shelter", "Fail", LocalDateTime.now(), "192.168.0.0.1", request.shelterName(), request.jurisdiction());
             throw new BusinessException(ErrorCode.DUPLICATE_SHELTER);
         }
 

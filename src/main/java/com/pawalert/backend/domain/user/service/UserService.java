@@ -5,6 +5,7 @@ import com.pawalert.backend.domain.user.model.*;
 import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.SaveImage;
 import com.pawalert.backend.global.config.AsyncService;
+import com.pawalert.backend.global.config.redis.RedisService;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
 import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
 import com.pawalert.backend.global.httpstatus.exception.ResponseHandler;
@@ -14,7 +15,6 @@ import com.pawalert.backend.global.jwt.JwtTokenProvider;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,9 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 @AllArgsConstructor
@@ -41,6 +39,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final AsyncService asyncService;
     private final SaveImage saveImage;
+    private final RedisService redisService;
 
     // 이미 존재하는 이메일 체크
     public ResponseEntity<SuccessResponse<HttpStatus>> checkEmail(String email) {
@@ -73,7 +72,6 @@ public class UserService {
 
     // 로그인
     public ResponseEntity<?> login(LoginRequest loginRequest) {
-
         try {
             UserEntity user = userRepository.findByEmail(loginRequest.email())
                     .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
@@ -88,12 +86,16 @@ public class UserService {
             String uid = ((CustomUserDetails) authentication.getPrincipal()).getUid(); // uid 가져오기
             String jwt = jwtTokenProvider.generateToken(uid); //uid 기반으로
 
+            //reids에 로그인 정보 저장
+            redisService.loginSaveData(uid, "192.168.0.0.1", user.getUpdatedAt()); // 로그인 정보 저장
+
             // 성공적인 응답 생성
             SuccessResponse<JwtResponse> response = new SuccessResponse<>(
                     HttpStatus.OK,
                     "Login successful",
                     new JwtResponse(jwt)
             );
+
 
             // JWT 토큰을 헤더에 추가하고 성공 응답 반환
             return ResponseEntity.ok()

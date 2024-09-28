@@ -9,12 +9,14 @@ import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.model.UserRole;
 import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.*;
+import com.pawalert.backend.global.config.redis.RedisService;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
 import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
 import com.pawalert.backend.global.httpstatus.exception.ResponseHandler;
 import com.pawalert.backend.global.httpstatus.exception.SuccessResponse;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,8 +24,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 
@@ -33,6 +37,7 @@ public class HospitalDoctorService {
     private final SaveImage saveImage;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RedisService redisService;
 
 
     // 인증회원에서 동물병원 등록
@@ -221,13 +226,21 @@ public class HospitalDoctorService {
 
     // 회원가입 병원 정보 인증
     public ResponseEntity<SuccessResponse<String>> certificationHospitalDoctor(CertificationHospitalDoctorResponse request) {
-        HospitalExcelInfoEntity result = hospitalExcelInfoRepository.findByLicenseNumber(request.licenseNumber())
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_LICENSE));
+        try {
+            HospitalExcelInfoEntity result = hospitalExcelInfoRepository.findByLicenseNumber(request.licenseNumber())
+                    .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_LICENSE));
 
-        if (result.getName().equals(request.hospitalName())) {
-            return ResponseHandler.generateResponse(HttpStatus.OK, "병원 인증 성공", result.getName());
-        } else {
-            throw new BusinessException(ErrorCode.NOT_FOUND_LICENSE);
+            if (result.getName().equals(request.hospitalName())) {
+                log.info("병원 인증 성공");
+                redisService.hospitalAndShelterAttempt("Hospital", "Success", LocalDateTime.now(), "192.168.0.0.1", request.hospitalName(), request.licenseNumber());
+                return ResponseHandler.generateResponse(HttpStatus.OK, "병원 인증 성공", result.getName());
+            } else {
+                throw new BusinessException(ErrorCode.NOT_FOUND_LICENSE);
+            }
+        } catch (Exception e) {
+            log.error("병원 인증 실패");
+            redisService.hospitalAndShelterAttempt("Hospital", "Fail", LocalDateTime.now(), "192.168.0.0.1", request.hospitalName(), request.licenseNumber());
+            return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, "병원 인증 실패", request.hospitalName());
         }
     }
 }

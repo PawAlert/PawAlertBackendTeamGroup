@@ -46,7 +46,6 @@ public class MissingReportController {
                                                       @PathVariable Long missingReportId) {
 
         return missingReportService.deleteMissingReport(missingReportId, user);
-
     }
 
     // 실종 글 상세 조회

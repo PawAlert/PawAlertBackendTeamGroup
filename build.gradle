@@ -33,10 +33,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
 
-//    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // RabbitMQ
+    testImplementation 'org.springframework.amqp:spring-rabbit-test'
+
+
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 
