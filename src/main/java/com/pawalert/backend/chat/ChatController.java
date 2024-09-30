@@ -1,10 +1,12 @@
 package com.pawalert.backend.chat;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
+@Slf4j
 @Controller
 public class ChatController {
 
@@ -22,7 +24,7 @@ public class ChatController {
         redisTemplate.convertAndSend("chat:" + chatMessage.getReceiverId(), message);
 
         // 메시지 로그 출력
-        System.out.println("Message sent from " + senderId + " to " + chatMessage.getReceiverId() + ": " + message);
+        log.info("Message sent from " + senderId + " to " + chatMessage.getReceiverId() + ": " + message);
     }
 
     // 채팅방 ID 생성 메서드
