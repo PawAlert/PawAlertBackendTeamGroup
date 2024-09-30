@@ -1,29 +1,30 @@
 package com.pawalert.backend.chat;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
-@RequiredArgsConstructor
 public class ChatController {
 
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    // 메시지 전송 메서드
+    @MessageMapping("/chat/{receiverId}")
+    public void sendMessage(String senderId, String receiverId, String message) {
+        // 채팅방 ID 생성
+        String chatRoomId = generateChatRoomId(senderId, receiverId);
 
-    private final ChatMessageService chatMessageService;
-
-    // 클라이언트가 "/app/chat" 경로로 보낸 메시지를 처리하고 저장
-    @MessageMapping("/chat")
-    public void sendMessage(ChatMessage message) {
         // Redis 채널에 메시지 발행
-        redisTemplate.convertAndSend("chat", message);
+        redisTemplate.convertAndSend("chat:" + chatRoomId, message);
 
-        // MongoDB에 메시지 저장
-        chatMessageService.saveMessage(message);
+        // MongoDB에 메시지 저장 (추가 로직 필요)
+    }
 
-        System.out.println("Message sent to Redis and saved to MongoDB: " + message.getMessage());
+    // 채팅방 ID 생성 메서드
+    private String generateChatRoomId(String user1Id, String user2Id) {
+        return user1Id.compareTo(user2Id) < 0 ? user1Id + "_" + user2Id : user2Id + "_" + user1Id;
     }
 }
