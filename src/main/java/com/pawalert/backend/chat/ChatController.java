@@ -13,14 +13,16 @@ public class ChatController {
 
     // 메시지 전송 메서드
     @MessageMapping("/chat/{receiverId}")
-    public void sendMessage(String senderId, String receiverId, String message) {
-        // 채팅방 ID 생성
-        String chatRoomId = generateChatRoomId(senderId, receiverId);
+    public void sendMessage(ChatMessage chatMessage) {
+        // chatMessage는 senderId와 message를 포함해야 함
+        String senderId = chatMessage.getSenderId();
+        String message = chatMessage.getMessage();
 
-        // Redis 채널에 메시지 발행
-        redisTemplate.convertAndSend("chat:" + chatRoomId, message);
+        // 메시지를 Redis에 발행
+        redisTemplate.convertAndSend("chat:" + chatMessage.getReceiverId(), message);
 
-        // MongoDB에 메시지 저장 (추가 로직 필요)
+        // 메시지 로그 출력
+        System.out.println("Message sent from " + senderId + " to " + chatMessage.getReceiverId() + ": " + message);
     }
 
     // 채팅방 ID 생성 메서드
