@@ -19,12 +19,6 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int port;
 
-//    @Bean
-//    public RedisConnectionFactory redisConnectionFactory() {
-//        // Redis 연결 설정
-//        return new LettuceConnectionFactory(host, port);
-//    }
-
     //Pub/Sub
     @Bean
     public RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory) {
