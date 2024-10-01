@@ -1,6 +1,7 @@
 package com.pawalert.backend.domain.missing.model;
 
 import com.pawalert.backend.domain.comment.dto.CommentResponse;
+import com.pawalert.backend.domain.missing.entity.MissingReportEntity;
 import com.pawalert.backend.domain.mypet.model.PetImageListRecord;
 import com.pawalert.backend.global.Location;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,6 +14,8 @@ public record MissingDetailResponse(
         // 작성자 정보
         @Schema(description = "작성자 ID")
         String userName,
+        @Schema(description = "사용자 UID")
+        String userUid,
         @Schema(description = "작성자 전화번호")
         String phoneNumber,
         @Schema(description = "자신이 작성했는지")
@@ -58,5 +61,37 @@ public record MissingDetailResponse(
         String contact1,
         @Schema(description = "연락처2")
         String contact2
-        ) {
+
+
+) {
+    public static MissingDetailResponse from(MissingReportEntity missingReport, boolean isMine) {
+
+        return new MissingDetailResponse(
+                missingReport.getUser().getUserName(),
+                missingReport.getUser().getUid(),
+                missingReport.getUser().getPhoneNumber(),
+                isMine,
+                missingReport.getId(),
+                missingReport.getTitle(),
+                missingReport.getContent(),
+                missingReport.getDateLost(),
+                missingReport.getLocation(),
+                missingReport.getDescription(),
+                missingReport.getStatus().toString(),
+                missingReport.getPet().getPetName(),
+                missingReport.getPet().getSpecies(),
+                missingReport.getPet().isNeutering(),
+                missingReport.getPet().getColor(),
+                missingReport.getPet().getAge(),
+                missingReport.getPet().getGender(),
+                missingReport.getPet().getMicrochipId(),
+                missingReport.getPet().getDescription(),
+                // image 는 id 와 url 함께
+                missingReport.getMissingPetImages().stream()
+                        .map(image -> new PetImageListRecord(image.getId(), image.getMissingPhotoUrl()))
+                        .toList(),
+                missingReport.getContact1(),
+                missingReport.getContact2()
+        );
+    }
 }

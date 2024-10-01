@@ -1,8 +1,6 @@
 package com.pawalert.backend.domain.missing.service;
 
 
-import com.pawalert.backend.domain.comment.dto.CommentResponse;
-import com.pawalert.backend.domain.comment.entity.CommentEntity;
 import com.pawalert.backend.domain.comment.repository.CommentRepository;
 import com.pawalert.backend.domain.missing.entity.MissingReportEntity;
 import com.pawalert.backend.domain.missing.entity.MissingReportImageEntity;
@@ -10,7 +8,6 @@ import com.pawalert.backend.domain.missing.model.*;
 import com.pawalert.backend.domain.missing.repository.MissingImageRepository;
 import com.pawalert.backend.domain.missing.repository.MissingReportRepository;
 import com.pawalert.backend.domain.mypet.entity.PetEntity;
-import com.pawalert.backend.domain.mypet.model.PetImageListRecord;
 import com.pawalert.backend.domain.mypet.repository.PetRepository;
 import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.repository.UserRepository;
@@ -33,9 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -134,23 +129,6 @@ public class MissingReportService {
         MissingReportEntity missingReport = missingReportRepository.findById(missingReportId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MISSING_REPORT));
 
-        // 댓글 따로 만들었음,
-//        List<CommentResponse> commentResponses = comments.stream()
-//                .map(comment -> {
-//                    // 내가 작성한 댓글인지
-//                    boolean isCommentMine = Optional.ofNullable(user).isPresent() &&
-//                            comment.getUserId().equals(user.getUid());
-//                    return new CommentResponse(
-//                            comment.getId(),
-//                            comment.getUserId(),
-//                            comment.getMissingReportId(),
-//                            comment.getContent(),
-//                            comment.isDeleted(),
-//                            comment.getTimestamp(),
-//                            isCommentMine
-//                    );
-//                }).toList();
-
 
         if (Optional.ofNullable(user).isPresent()) {
             userMember = userRepository.findByUid(user.getUid())
@@ -159,34 +137,9 @@ public class MissingReportService {
             isMine = missingReport.getUser().getId().equals(userMember.getId());
         }
 
+        MissingDetailResponse response = MissingDetailResponse.from(missingReport, isMine);
 
-        MissingDetailResponse response = new MissingDetailResponse(
-                missingReport.getUser().getUserName(),
-                missingReport.getUser().getPhoneNumber(),
-                isMine,
-                missingReport.getId(),
-                missingReport.getTitle(),
-                missingReport.getContent(),
-                missingReport.getDateLost(),
-                missingReport.getLocation(),
-                missingReport.getDescription(),
-                missingReport.getStatus().toString(),
-                missingReport.getPet().getPetName(),
-                missingReport.getPet().getSpecies(),
-                missingReport.getPet().isNeutering(),
-                missingReport.getPet().getColor(),
-                missingReport.getPet().getAge(),
-                missingReport.getPet().getGender(),
-                missingReport.getPet().getMicrochipId(),
-                missingReport.getPet().getDescription(),
-                // image 는 id 와 url 함께
-                missingReport.getMissingPetImages().stream()
-                        .map(image -> new PetImageListRecord(image.getId(), image.getMissingPhotoUrl()))
-                        .toList(),
-                missingReport.getContact1(),
-                missingReport.getContact2()
-        );
-        return ResponseHandler.generateResponse(HttpStatus.OK, "Missing report detail retrieved successfully", response);
+        return ResponseHandler.generateResponse(HttpStatus.OK,"Missing report detail retrieved successfully", response);
 
     }
 

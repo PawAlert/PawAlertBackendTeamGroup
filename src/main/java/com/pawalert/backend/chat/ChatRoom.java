@@ -1,12 +1,21 @@
 package com.pawalert.backend.chat;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
+@Document(collection = "chat_rooms")
+@Builder
 public class ChatRoom {
-    private String id;         // 채팅방 ID (UID1_UID2 형태)
-    private String user1Id;   // 첫 번째 사용자 UID
-    private String user2Id;   // 두 번째 사용자 UID
-    private List<ChatMessage> messages; // 해당 채팅방의 메시지 기록
-
-    // 생성자, getter, setter 등 추가
+    @Id
+    private String id; // 채팅방 ID
+    private String chatRoomId;
+    private List<ChatMessageDTO> messages = new ArrayList<>(); // 메시지 목록
 }

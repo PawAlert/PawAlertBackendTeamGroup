@@ -1,6 +1,6 @@
 package com.pawalert.backend.global.config.redis;
 
-import com.pawalert.backend.chat.ChatMessage;
+import com.pawalert.backend.chat.ChatMessageDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -17,10 +17,10 @@ public class RedisMessageSubscriber implements MessageListener {
         try {
             // Redis에서 수신한 메시지를 처리 (예: ChatMessage로 변환)
             String messageBody = new String(message.getBody());
-            ChatMessage chatMessage = objectMapper.readValue(messageBody, ChatMessage.class);
+            ChatMessageDTO chatMessage = objectMapper.readValue(messageBody, ChatMessageDTO.class);
 
             // 메시지 처리 로직 (예: 로그 출력)
-            System.out.println("Received message: " + chatMessage.getMessage());
+            System.out.println("Received message: " + chatMessage.message());
         } catch (Exception e) {
             e.printStackTrace();
         }

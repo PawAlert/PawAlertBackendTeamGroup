@@ -4,6 +4,7 @@ import com.pawalert.backend.domain.user.model.JwtResponse;
 import com.pawalert.backend.domain.user.model.LoginRequest;
 import com.pawalert.backend.domain.user.model.RegisterRequest;
 import com.pawalert.backend.domain.user.model.UserUpdateRequest;
+import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.domain.user.service.UserService;
 import com.pawalert.backend.global.httpstatus.exception.ResponseHandler;
 import com.pawalert.backend.global.httpstatus.exception.SuccessResponse;
@@ -25,6 +26,7 @@ import java.util.Objects;
 public class UserController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @GetMapping("/checkemail")
     public ResponseEntity<SuccessResponse<HttpStatus>> checkEmailUser(@RequestParam("email") String email) {
@@ -61,8 +63,16 @@ public class UserController {
     // 프로필 이미지 업데이트
     @PatchMapping("/updateProfileImage")
     public ResponseEntity<SuccessResponse<String>> updateProfileImage(@AuthenticationPrincipal CustomUserDetails user,
-                                                @RequestPart("userImage") MultipartFile images) {
+                                                                      @RequestPart("userImage") MultipartFile images) {
         return userService.updateProfileImage(user, images);
+    }
+
+    // 채팅상대방 ID 조회
+    @GetMapping("/otherUser")
+    private String otherUser(@AuthenticationPrincipal CustomUserDetails user,@RequestParam(value = "userUid") String otherUid) {
+
+        String otherUidEmail = userRepository.findByUid(otherUid).get().getEmail();
+        return otherUidEmail;
     }
 
     // todo : 프론트단이 완성되면 추가하기로!
