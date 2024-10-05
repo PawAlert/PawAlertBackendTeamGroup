@@ -56,7 +56,7 @@ public class UserService {
             UserEntity user = UserEntity.builder()
                     .email(registerRequest.email())
                     .password(passwordEncoder.encode(registerRequest.password()))
-                    .userName(registerRequest.username())
+                    .userName(registerRequest.userName())
                     .role(UserRole.ROLE_USER)
                     .uid(UUID.randomUUID().toString())
                     .profilePictureUrl(saveImage.saveProfileImage())
