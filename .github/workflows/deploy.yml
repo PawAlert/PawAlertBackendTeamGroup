@@ -66,8 +66,7 @@ jobs:
                   value: ${{ secrets.SPRING_CLOUD_AWS_S3_BUCKET }}
                 - name: SPRING_CLOUD_AWS_S3_PUBLIC_FOLDER
                  value: ${{ secrets.SPRING_CLOUD_AWS_S3_PUBLIC_FOLDER }}
-                - name: SPRING_CLOUD_AWS_S3_PRIVATE_FOLDER
-                  value: ${{ secrets.SPRING_CLOUD_AWS_S3_PRIVATE_FOLDER }}
+            
               buildenv: []
             context:
               git:
