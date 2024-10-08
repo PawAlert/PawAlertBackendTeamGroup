@@ -11,4 +11,13 @@ public record LocataionRecord(
         String address,
         String addressDetail
 ) {
+    public static LocataionRecord getLocation(Location location) {
+        return new LocataionRecord(
+                location.getLatitude(),
+                location.getLongitude(),
+                location.getPostcode(),
+                location.getAddress(),
+                location.getAddressDetail()
+        );
+    }
 }

@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -40,19 +42,16 @@ public class ShelterService {
     private final RedisService redisService;
     private final S3Service s3Service;
 
-    //    // 업데이트
+    // 업데이트
     @Transactional
     public ResponseEntity<SuccessResponse<String>> updateShelter(CustomUserDetails user,
                                                                  ShelterJoinDto request,
-                                                                 MultipartFile file) {
+                                                                 MultipartFile image) {
 
-        AnimalRescueOrganizationEntity shelter = shelterRepository.findById(1L)
+        AnimalRescueOrganizationEntity shelter = shelterRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_SHELTER));
 
-        try {
-
-            // todo : 변수화 하자 (중복)
-            String imageUpload = s3Service.basicProfile();
+            String imageUpload = s3Service.uploadFile(image, true);
 
             Location location = Location.from(request.location());
 
@@ -61,35 +60,26 @@ public class ShelterService {
             shelter.setContactPhone(request.contactPhone());
             shelter.setContactEmail(request.contactEmail());
             shelter.setWebsiteUrl(request.websiteUrl());
-            shelter.setDetailAddress(location);
+            shelter.setLocation(location);
             shelter.setShelterProfileImage(imageUpload);
 
             return ResponseHandler.generateResponse(HttpStatus.OK, "보호센터 정보 수정 성공",
                     String.format("동물보호단체 email %s 유저 ID : %s",
                             shelter.getContactEmail(), shelter.getUserId()));
-        } catch (Exception e) {
-            throw new BusinessException(ErrorCode.ERROR_MISSING_REPORT);
-        }
 
 
     }
 
     // 보호 센터 정보 조회
-    public ResponseEntity<SuccessResponse<ShelterViewResponse>> getShelterView(CustomUserDetails user, Long shelterId) {
+    public ResponseEntity<SuccessResponse<ShelterViewResponse>> getShelterView(CustomUserDetails user,
+                                                                               Long shelterId) {
         AnimalRescueOrganizationEntity shelter = shelterRepository.findById(shelterId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_SHELTER));
 
 
         try {
-            LocataionRecord location = new LocataionRecord(
-                    shelter.getDetailAddress().getLatitude(),
-                    shelter.getDetailAddress().getLongitude(),
-                    shelter.getDetailAddress().getAddress(),
-                    shelter.getDetailAddress().getAddressDetail(),
-                    shelter.getDetailAddress().getPostcode()
-            );
-
-
+            // 보호센터 위치 정보
+            LocataionRecord location = LocataionRecord.getLocation(shelter.getLocation());
 
 
             ShelterViewResponse response = new ShelterViewResponse(
@@ -111,21 +101,19 @@ public class ShelterService {
 
     // 쉘터 인증
     public ResponseEntity<SuccessResponse<String>> certificationShelter(CertificationShelterResponse request) {
-        try {
-            AnimalShelterEntity result = animalShelterRepository.findByJurisdictionAndShelterName(request.jurisdiction(), request.shelterName());
-            //todo : 옵셔널로 바꾸기
-            if (result == null) {
-                throw new BusinessException(ErrorCode.NOT_FOUND_SHELTER);
-            }
-//            redisService.hospitalAndShelterAttempt("Shelter", "Success", LocalDateTime.now(), "192.168.0.0.1", request.shelterName(), request.jurisdiction());
-            return ResponseHandler.generateResponse(HttpStatus.OK, "보호센터 인증 성공", result.getShelterName());
-        } catch (Exception e) {
-//            redisService.hospitalAndShelterAttempt("Shelter", "Fail", LocalDateTime.now(), "192.168.0.0.1", request.shelterName(), request.jurisdiction());
-            throw new BusinessException(ErrorCode.DUPLICATE_SHELTER);
+
+        Optional<AnimalShelterEntity> result = animalShelterRepository
+                .findByJurisdictionAndShelterName(request.jurisdiction(), request.shelterName());
+
+        if (result.isEmpty()) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_SHELTER);
         }
+        return ResponseHandler.generateResponse(HttpStatus.OK,
+                "보호센터 인증 성공",
+                result.get().getShelterName());
+
 
     }
-
 
 
 }

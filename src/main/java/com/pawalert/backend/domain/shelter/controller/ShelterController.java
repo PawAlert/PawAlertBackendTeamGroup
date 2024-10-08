@@ -35,16 +35,12 @@ private final ShelterService shelterService;
                                                                                       @PathVariable Long shelterId) {
         return shelterService.getShelterView(user, shelterId);
     }
-
-    // todo 보호센터 정보 삭제
-    // todo 보호센터 정보 검색 조회
-
     // 보호센터 인증
-    @PostMapping("/certification")
+    @GetMapping("/certification")
     public ResponseEntity<SuccessResponse<String>> certificationHospitalDoctor(@RequestBody CertificationShelterResponse request) {
         return shelterService.certificationShelter(request);
     }
 
-
+    // todo : 보호센터 정보 삭제는 탈퇴하면 자동 삭제
 
 }

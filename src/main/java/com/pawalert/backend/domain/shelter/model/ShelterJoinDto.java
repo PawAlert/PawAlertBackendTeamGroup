@@ -6,9 +6,9 @@ import com.pawalert.backend.global.Location;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record ShelterJoinDto(
-        @Schema(description = "이메일")
+        @Schema(description = "이메일 / 비회원 가입의 경우에만")
         String email,
-        @Schema(description = "비밀번호")
+        @Schema(description = "비밀번호 / 비회원 가입의 경우에만")
         String password,
         @Schema(description = "관할구역")
         String jurisdiction,
@@ -30,7 +30,7 @@ public record ShelterJoinDto(
                         .contactPhone(contactPhone)
                         .contactEmail(contactEmail)
                         .websiteUrl(websiteUrl)
-                        .detailAddress(Location.from(location))
+                        .location(Location.from(location))
                         .shelterProfileImage(basicImage)
                         .userId(userId)
                         .build();

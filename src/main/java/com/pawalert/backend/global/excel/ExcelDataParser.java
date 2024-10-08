@@ -64,13 +64,14 @@ public class ExcelDataParser {
 
                 // todo
                 // 데이터베이스에 저장된 병원 정보를 인허가번호로 조회
-                Optional<AnimalShelterEntity> existingAnimalShelterOpt = Optional.ofNullable(animalShelterRepository.findByJurisdictionAndShelterName(jurisdiction, shelterName));
+                Optional<Optional<AnimalShelterEntity>> existingAnimalShelterOpt = Optional.ofNullable(animalShelterRepository
+                        .findByJurisdictionAndShelterName(jurisdiction, shelterName));
                 if (existingAnimalShelterOpt.isPresent()) {
-                    AnimalShelterEntity existingAnimalShelter = existingAnimalShelterOpt.get();
-                    existingAnimalShelter.setJurisdiction(jurisdiction);
-                    existingAnimalShelter.setShelterName(shelterName);
-                    existingAnimalShelter.setPhoneNumber(phoneNumber);
-                    existingAnimalShelter.setAddress(address);
+                    Optional<AnimalShelterEntity> existingAnimalShelter = existingAnimalShelterOpt.get();
+                    existingAnimalShelter.get().setJurisdiction(jurisdiction);
+                    existingAnimalShelter.get().setShelterName(shelterName);
+                    existingAnimalShelter.get().setPhoneNumber(phoneNumber);
+                    existingAnimalShelter.get().setAddress(address);
                 } else {
                     // 새로운 병원 정보를 추가 (데이터베이스에 저장)
                     AnimalShelterEntity animalShelter = new AnimalShelterEntity();

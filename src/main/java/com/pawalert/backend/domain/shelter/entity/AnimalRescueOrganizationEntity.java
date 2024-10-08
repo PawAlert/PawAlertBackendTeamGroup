@@ -60,7 +60,7 @@ public class AnimalRescueOrganizationEntity extends BaseEntity {
 
     @Embedded
     @Schema(description = "실종 위치 (위도/경도) 및 상세주소")
-    private Location detailAddress;
+    private Location location;
 
 
 }
