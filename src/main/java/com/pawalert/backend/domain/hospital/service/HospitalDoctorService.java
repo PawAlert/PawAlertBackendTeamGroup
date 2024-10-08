@@ -9,6 +9,7 @@ import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.model.UserRole;
 import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.*;
+import com.pawalert.backend.global.aws.S3Service;
 import com.pawalert.backend.global.aws.SaveImage;
 import com.pawalert.backend.global.config.redis.RedisService;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
@@ -39,6 +40,7 @@ public class HospitalDoctorService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisService redisService;
+    private final S3Service s3Service;
 
 
     // 인증회원에서 동물병원 등록
@@ -64,11 +66,7 @@ public class HospitalDoctorService {
         }
 
         // 이미지 정보 저장
-        ImageInfo imageInfo = ImageInfo.builder()
-                .imageUrl(fileName)
-                .imageUserId(user.getId())
-                .isDelete(false)
-                .build();
+        String imageInfo = s3Service.basicProfile();
 
         try {
             memberUser.setRole(UserRole.ROLE_ANIMAL_HOSPITAL_USER);
@@ -157,11 +155,7 @@ public class HospitalDoctorService {
         try {
             if (!file.isEmpty()) {
                 String fileName = saveImage.SaveImages(file);
-                ImageInfo imageInfo = ImageInfo.builder()
-                        .imageUrl(fileName)
-                        .imageUserId(user.getId())
-                        .isDelete(true)
-                        .build();
+                String imageInfo = s3Service.basicProfile();
                 hospitalDoctor.setHospitalImage(imageInfo);
             }
 
@@ -203,10 +197,7 @@ public class HospitalDoctorService {
                 hospitalDoctor.getDetailAddress().getAddressDetail(),
                 hospitalDoctor.getDetailAddress().getPostcode()
         );
-        ImageInfoRecord imageInfoRecord = new ImageInfoRecord(
-                hospitalDoctor.getHospitalImage().getImageUserId(),
-                hospitalDoctor.getHospitalImage().getImageUrl()
-        );
+        String imageinfoRecord = s3Service.basicProfile();
 
         try {
             HospitalDoctorViewResponse response = new HospitalDoctorViewResponse(
@@ -215,7 +206,7 @@ public class HospitalDoctorService {
                     hospitalDoctor.getPhoneNumber(),
                     hospitalDoctor.getLicenseNumber(),
                     hospitalDoctor.getMajor(),
-                    imageInfoRecord,
+                    imageinfoRecord,
                     getDetailAddress,
                     hospitalDoctor.getUserId()
 

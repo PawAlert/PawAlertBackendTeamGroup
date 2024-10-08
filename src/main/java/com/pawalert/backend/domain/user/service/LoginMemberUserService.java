@@ -3,16 +3,13 @@ package com.pawalert.backend.domain.user.service;
 import com.pawalert.backend.domain.missing.model.MissingViewListResponse;
 import com.pawalert.backend.domain.missing.repository.MissingReportRepository;
 import com.pawalert.backend.domain.shelter.entity.AnimalRescueOrganizationEntity;
-import com.pawalert.backend.domain.shelter.model.ShelterUpdateOrCreateRequest;
-import com.pawalert.backend.domain.shelter.repository.AnimalShelterRepository;
+import com.pawalert.backend.domain.shelter.model.ShelterJoinDto;
 import com.pawalert.backend.domain.shelter.repository.ShelterRepository;
 import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.model.*;
 import com.pawalert.backend.domain.user.repository.UserRepository;
-import com.pawalert.backend.global.ImageInfo;
 import com.pawalert.backend.global.aws.S3Service;
 import com.pawalert.backend.global.aws.SaveImage;
-import com.pawalert.backend.global.config.redis.RedisService;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
 import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
 import com.pawalert.backend.global.httpstatus.exception.ResponseHandler;
@@ -101,6 +98,7 @@ public class LoginMemberUserService {
                 + userInfo.getEmail());
     }
 
+    // 나의 게시글 목록 조회
     public ResponseEntity<SuccessResponse<List<MissingViewListResponse>>> getMyPosts(CustomUserDetails user) {
         List<MissingViewListResponse> response = missingReportRepository.findEqualMissingReportsId(user.getId());
         return ResponseHandler.generateResponse(HttpStatus.OK, "내가 작성한 글 조회 성공", response);
@@ -110,7 +108,7 @@ public class LoginMemberUserService {
     // 이미 회원인 유저 보호센터 등록하기
     @Transactional
     public ResponseEntity<SuccessResponse<String>> createShelter(CustomUserDetails user,
-                                                                 ShelterUpdateOrCreateRequest request,
+                                                                 ShelterJoinDto request,
                                                                  MultipartFile file) {
 
         // 유저 정보 가져옴,
@@ -123,11 +121,8 @@ public class LoginMemberUserService {
         }
         String imageUrl = saveImage.saveProfileImage();
 
-        ImageInfo imageUpload = ImageInfo.builder()
-                .imageUrl(imageUrl)
-                .imageUserId(user.getId())
-                .isDelete(false)
-                .build();
+        String imageUpload = s3Service.basicProfile();
+
 
         AnimalRescueOrganizationEntity shelter = request.toEntity(userInfo.getId(), imageUpload);
         shelterRepository.save(shelter);

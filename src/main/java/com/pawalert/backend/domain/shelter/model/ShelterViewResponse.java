@@ -16,7 +16,7 @@ public record ShelterViewResponse(
         @Schema(description = "보호센터 위치 (위도/경도) 및 상세주소")
         LocataionRecord location,
         @Schema(description = "보호센터 website URL")
-        ImageInfoRecord shelterImage,
+        String shelterImage,
         @Schema(description = "보호센터 email")
         String shelterEmail,
         @Schema(description = "사용자 ID")

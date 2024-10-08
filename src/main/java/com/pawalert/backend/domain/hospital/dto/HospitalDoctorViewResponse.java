@@ -16,7 +16,7 @@ public record HospitalDoctorViewResponse(
         @Schema(description = "의사 전공 예) 대형 동물 진료, 특수 동물 진료")
         String major,
         @Schema(description = "병원 이미지 정보")
-        ImageInfoRecord hospitalImage,
+        String hospitalImage,
         @Schema(description = "병원 위치 (위도/경도) 및 상세주소")
         LocataionRecord detailAddress,
         @Schema(description = "사용자 ID")

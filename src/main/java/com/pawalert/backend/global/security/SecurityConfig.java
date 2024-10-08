@@ -49,7 +49,7 @@ public class SecurityConfig {
                                 .requestMatchers("/","/api/user/otherUser/**", "/app/chat/**", "/chat/**", "/ws/**", "/favicon.ico", "/files/**", "/login", "/api/missing/search/**",
                                         "api/user/checkemail/**",
                                         "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
-                                        "/api/user/login", "/oauth2/**",
+                                        "/api/user/**", "/oauth2/**",
                                         "/test/**",
                                         "/api/posts/comments/**",
                                         "/api/hospital/doctor/certification", "/api/hospital/doctor/signupCreate",

@@ -1,8 +1,7 @@
 package com.pawalert.backend.domain.user.controller;
 
 import com.pawalert.backend.domain.missing.model.MissingViewListResponse;
-import com.pawalert.backend.domain.shelter.entity.AnimalRescueOrganizationEntity;
-import com.pawalert.backend.domain.shelter.model.ShelterUpdateOrCreateRequest;
+import com.pawalert.backend.domain.shelter.model.ShelterJoinDto;
 import com.pawalert.backend.domain.user.model.UserUpdateRequest;
 import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.domain.user.service.LoginMemberUserService;
@@ -53,7 +52,7 @@ public class LoginMemberUserController {
     // 보호센터 가입 (회원)
     @PostMapping(value = "/shelterSignup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SuccessResponse<String>>  createShelterMember(@AuthenticationPrincipal CustomUserDetails user,
-                                                              @RequestPart("shelter") ShelterUpdateOrCreateRequest request,
+                                                              @RequestPart("shelter") ShelterJoinDto request,
                                                               @RequestPart("image") MultipartFile file
     ) {
         return userService.createShelter(user, request, file);

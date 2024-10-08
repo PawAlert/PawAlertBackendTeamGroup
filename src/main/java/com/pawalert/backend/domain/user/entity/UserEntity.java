@@ -61,7 +61,6 @@ public class UserEntity extends BaseEntity {
     @Schema(description = "USER, ADMIN, ASSOCIATION_USER")
     private UserRole role = UserRole.ROLE_USER;
 
-
     // 유저 - 반려동물 1:Nㅜ
     @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<PetEntity> pets;

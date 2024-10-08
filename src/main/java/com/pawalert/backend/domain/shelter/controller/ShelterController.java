@@ -1,10 +1,8 @@
 package com.pawalert.backend.domain.shelter.controller;
 
-import com.pawalert.backend.domain.hospital.dto.SignupHospitalDoctorRequest;
 import com.pawalert.backend.domain.shelter.model.CertificationShelterResponse;
-import com.pawalert.backend.domain.shelter.model.ShelterUpdateOrCreateRequest;
+import com.pawalert.backend.domain.shelter.model.ShelterJoinDto;
 import com.pawalert.backend.domain.shelter.model.ShelterViewResponse;
-import com.pawalert.backend.domain.shelter.model.SignupShelterRequest;
 import com.pawalert.backend.domain.shelter.service.ShelterService;
 import com.pawalert.backend.global.httpstatus.exception.SuccessResponse;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
@@ -21,18 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class ShelterController {
 private final ShelterService shelterService;
 
-    // 보호센터 정보 등록
-//    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<SuccessResponse<String>> createHospitalDoctor(@AuthenticationPrincipal CustomUserDetails user,
-//                                                                        @RequestPart("shelter")  ShelterUpdateOrCreateRequest request,
-//                                                                        @RequestPart("image") MultipartFile file
-//    ) {
-//        return shelterService.createShelter(user, request, file);
-//    }
-    // 보호센터 정보 수정
+
+//     보호센터 정보 수정
     @PatchMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SuccessResponse<String>> updateHospitalDoctor(@AuthenticationPrincipal CustomUserDetails user,
-                                                                        @RequestPart("shelterUpdate") ShelterUpdateOrCreateRequest request,
+                                                                        @RequestPart("shelterUpdate") ShelterJoinDto request,
                                                                         @RequestPart("image") MultipartFile file
     ) {
         return shelterService.updateShelter(user, request, file);
@@ -54,12 +45,6 @@ private final ShelterService shelterService;
         return shelterService.certificationShelter(request);
     }
 
-    // 비회원 보호센터 정보 등록
-    // todo : 비회원 인증 로직 다른 파일로 합치기
-    @PostMapping(value = "/signupCreate")
-    public ResponseEntity<SuccessResponse<String>> createHospitalDoctor(@RequestBody SignupShelterRequest request
-    ) {
-        return shelterService.signupShelterInfo(request);
-    }
+
 
 }

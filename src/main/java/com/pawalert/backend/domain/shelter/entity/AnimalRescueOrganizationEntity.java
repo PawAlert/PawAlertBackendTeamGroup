@@ -1,7 +1,6 @@
 package com.pawalert.backend.domain.shelter.entity;
 
 import com.pawalert.backend.global.BaseEntity;
-import com.pawalert.backend.global.ImageInfo;
 import com.pawalert.backend.global.Location;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -56,9 +55,8 @@ public class AnimalRescueOrganizationEntity extends BaseEntity {
     @Column(name = "user_id")
     private Long userId;
 
-    @Embedded
     @Schema(description = "보호단체 이미지 정보")
-    private ImageInfo profileImage;
+    private String shelterProfileImage;
 
     @Embedded
     @Schema(description = "실종 위치 (위도/경도) 및 상세주소")

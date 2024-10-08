@@ -1,6 +1,5 @@
 package com.pawalert.backend.domain.hospital.entity;
 
-import com.pawalert.backend.global.ImageInfo;
 import com.pawalert.backend.global.Location;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -44,7 +43,6 @@ public class HospitalDoctorEntity {
     @Column(name = "user_id")
     private Long userId;
 
-    @Embedded
     @Schema(description = "병원 이미지 정보")
-    private ImageInfo hospitalImage;
+    private String hospitalImage;
 }

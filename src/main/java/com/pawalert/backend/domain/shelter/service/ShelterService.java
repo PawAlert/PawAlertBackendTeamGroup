@@ -3,15 +3,13 @@ package com.pawalert.backend.domain.shelter.service;
 import com.pawalert.backend.domain.shelter.entity.AnimalRescueOrganizationEntity;
 import com.pawalert.backend.domain.shelter.entity.AnimalShelterEntity;
 import com.pawalert.backend.domain.shelter.model.CertificationShelterResponse;
-import com.pawalert.backend.domain.shelter.model.ShelterUpdateOrCreateRequest;
+import com.pawalert.backend.domain.shelter.model.ShelterJoinDto;
 import com.pawalert.backend.domain.shelter.model.ShelterViewResponse;
-import com.pawalert.backend.domain.shelter.model.SignupShelterRequest;
 import com.pawalert.backend.domain.shelter.repository.AnimalShelterRepository;
 import com.pawalert.backend.domain.shelter.repository.ShelterRepository;
-import com.pawalert.backend.domain.user.entity.UserEntity;
-import com.pawalert.backend.domain.user.model.UserRole;
 import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.*;
+import com.pawalert.backend.global.aws.S3Service;
 import com.pawalert.backend.global.aws.SaveImage;
 import com.pawalert.backend.global.config.redis.RedisService;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
@@ -29,10 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.UUID;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -44,75 +38,21 @@ public class ShelterService {
     private final AnimalShelterRepository animalShelterRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisService redisService;
+    private final S3Service s3Service;
 
-
-    // 등록 ( 회원 )
-//    @Transactional
-//    public ResponseEntity<SuccessResponse<String>> createShelter(CustomUserDetails user,
-//                                                                 ShelterUpdateOrCreateRequest request,
-//                                                                 MultipartFile file) {
-//
-//        UserEntity memberUser = userRepository.findByUid(user.getUid())
-//                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
-//
-//        AnimalShelterEntity shelter = animalShelterRepository.findByJurisdictionAndShelterName(request.jurisdiction(), request.shelterName());
-//
-//        log.info("shelter : {}", shelter);
-//        if (Objects.isNull(shelter)) {
-//            throw new BusinessException(ErrorCode.DUPLICATE_SHELTER);
-//        }
-//
-//        String imageUrl = saveImage.saveProfileImage();
-//
-//        if (!file.isEmpty()) {
-//            imageUrl = saveImage.SaveImages(file);
-//        }
-//
-//        try {
-//
-//            memberUser.setRole(UserRole.ROLE_ASSOCIATION_USER);
-//
-//
-//            ImageInfo imageUpload = ImageInfo.builder()
-//                    .imageUrl(imageUrl)
-//                    .imageUserId(user.getId())
-//                    .isDelete(false)
-//                    .build();
-//
-//            Location location = Location.builder()
-//                    .address(request.location().address())
-//                    .addressDetail(request.location().addressDetail())
-//                    .latitude(request.location().latitude())
-//                    .longitude(request.location().longitude())
-//                    .postcode(request.location().postcode())
-//                    .build();
-//
-//
-//            return getSuccessResponseResponseEntity(request, memberUser, imageUpload, location, shelterRepository);
-//        } catch (Exception e) {
-//            throw new BusinessException(ErrorCode.ERROR_MISSING_REPORT);
-//        }
-//
-//
-//    }
-
-    // 업데이트
+    //    // 업데이트
     @Transactional
     public ResponseEntity<SuccessResponse<String>> updateShelter(CustomUserDetails user,
-                                                                 ShelterUpdateOrCreateRequest request,
+                                                                 ShelterJoinDto request,
                                                                  MultipartFile file) {
 
-        AnimalRescueOrganizationEntity shelter = shelterRepository.findById(request.shelterId())
+        AnimalRescueOrganizationEntity shelter = shelterRepository.findById(1L)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_SHELTER));
 
         try {
 
             // todo : 변수화 하자 (중복)
-            ImageInfo imageUpload = ImageInfo.builder()
-                    .imageUrl(saveImage.SaveImages(file))
-                    .imageUserId(user.getId())
-                    .isDelete(false)
-                    .build();
+            String imageUpload = s3Service.basicProfile();
 
             Location location = Location.from(request.location());
 
@@ -122,7 +62,7 @@ public class ShelterService {
             shelter.setContactEmail(request.contactEmail());
             shelter.setWebsiteUrl(request.websiteUrl());
             shelter.setDetailAddress(location);
-            shelter.setProfileImage(imageUpload);
+            shelter.setShelterProfileImage(imageUpload);
 
             return ResponseHandler.generateResponse(HttpStatus.OK, "보호센터 정보 수정 성공",
                     String.format("동물보호단체 email %s 유저 ID : %s",
@@ -150,10 +90,6 @@ public class ShelterService {
             );
 
 
-            ImageInfoRecord imageInfoRecord = new ImageInfoRecord(
-                    shelter.getProfileImage().getImageUserId(),
-                    shelter.getProfileImage().getImageUrl()
-            );
 
 
             ShelterViewResponse response = new ShelterViewResponse(
@@ -162,7 +98,7 @@ public class ShelterService {
                     shelter.getShelterName(),
                     shelter.getContactPhone(),
                     location,
-                    imageInfoRecord,
+                    shelter.getShelterProfileImage(),
                     shelter.getContactEmail(),
                     shelter.getUserId()
             );
@@ -190,47 +126,6 @@ public class ShelterService {
 
     }
 
-    // 보호센터 회원가입
-    public ResponseEntity<SuccessResponse<String>> signupShelterInfo(SignupShelterRequest request) {
-
-        try {
-            UserEntity newUser = UserEntity.builder()
-                    .email(request.email())
-                    .password(passwordEncoder.encode(request.password()))
-                    .role(UserRole.ROLE_ASSOCIATION_USER)
-                    .uid(UUID.randomUUID().toString())
-                    .authProvider("localUser")
-                    .build();
-            newUser.setProfilePictureUrl(saveImage.saveProfileImage());
-            userRepository.save(newUser);
-
-            Location location = Location.builder()
-                    .address(request.locataionRecord().address())
-                    .addressDetail(request.locataionRecord().addressDetail())
-                    .latitude(request.locataionRecord().latitude())
-                    .longitude(request.locataionRecord().longitude())
-                    .postcode(request.locataionRecord().postcode())
-                    .build();
-
-            AnimalRescueOrganizationEntity shelterMember = AnimalRescueOrganizationEntity.builder()
-                    .shelterName(request.shelterName())
-                    .jurisdiction(request.jurisdiction())
-                    .contactPhone(request.contactPhone())
-                    .contactEmail(request.email())
-                    .detailAddress(location)
-                    .userId(newUser.getId())
-                    .build();
-
-            shelterRepository.save(shelterMember);
-
-//            redisService.hospitalAndShelterSignup("Shelter", newUser.getCreatedAt(), newUser.getUid());
-            return ResponseHandler.generateResponse(HttpStatus.CREATED, "비회원 보호센터 정보 등록 성공",
-                    String.format("동물보호단체 id %s", shelterMember.getId()));
-
-        } catch (Exception e) {
-            throw new BusinessException(ErrorCode.ERROR_MISSING_REPORT);
-        }
-    }
 
 
 }
