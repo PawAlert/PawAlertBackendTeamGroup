@@ -36,13 +36,12 @@ public class NonMemberSignupAndCertificationController {
     }
 
     // 로그인
-    @PostMapping("/login")
+    @GetMapping("/login")
     public ResponseEntity<SuccessResponse<JwtResponse>> authenticateUser(@RequestBody LoginRequest loginRequest) {
         return nonLoginMemberUserService.login(loginRequest);
     }
 
     // 비회원 보호센터 정보 등록
-    // todo : 비회원 인증 로직 다른 파일로 합치기
     @PostMapping(value = "/signupCreate")
     public ResponseEntity<SuccessResponse<String>> createHospitalDoctor(@RequestBody ShelterJoinDto request
     ) {

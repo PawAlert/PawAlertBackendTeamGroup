@@ -24,4 +24,9 @@ public class UserValidationUtil {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
     }
+
+    // 유저 email 존재유무 확인
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
 }

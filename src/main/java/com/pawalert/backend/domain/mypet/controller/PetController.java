@@ -37,11 +37,13 @@ public class PetController {
                             @RequestPart("petImage") List<MultipartFile> images) {
        return petService.updateMyPet(request, user, images);
     }
+
     //마이펫 정보 확인
     @GetMapping("/getmypet")
     public ResponseEntity<?> getMyPet(@AuthenticationPrincipal CustomUserDetails user) {
         return petService.getPets(user);
     }
+
     // 펫정보 삭제
     @DeleteMapping("/deletemypet/{petId}")
     public ResponseEntity<String> deleteMyPet(@PathVariable Long petId,

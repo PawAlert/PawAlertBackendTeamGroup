@@ -2,7 +2,6 @@ package com.pawalert.backend.domain.user.service;
 
 import com.pawalert.backend.domain.shelter.entity.AnimalRescueOrganizationEntity;
 import com.pawalert.backend.domain.shelter.model.ShelterJoinDto;
-import com.pawalert.backend.domain.shelter.repository.AnimalShelterRepository;
 import com.pawalert.backend.domain.shelter.repository.ShelterRepository;
 import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.model.JwtResponse;
@@ -11,8 +10,6 @@ import com.pawalert.backend.domain.user.model.RegisterRequest;
 import com.pawalert.backend.domain.user.model.UserRole;
 import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.aws.S3Service;
-import com.pawalert.backend.global.aws.SaveImage;
-import com.pawalert.backend.global.config.redis.RedisService;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
 import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
 import com.pawalert.backend.global.httpstatus.exception.ResponseHandler;
@@ -20,6 +17,7 @@ import com.pawalert.backend.global.httpstatus.exception.SuccessResponse;
 import com.pawalert.backend.global.jwt.CustomUserDetails;
 import com.pawalert.backend.global.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.core.aggregation.AggregationExpression;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,9 +38,7 @@ public class NonMemberSignupAndCertificationService {
     private final S3Service s3Service;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    // 유저 검증 유틸
     private final UserValidationUtil userValidationUtil;
-    // ---
     private final ShelterRepository shelterRepository;
 
     // 로그인
@@ -78,7 +74,9 @@ public class NonMemberSignupAndCertificationService {
 
     // 이미 존재하는 이메일 체크
     public ResponseEntity<SuccessResponse<HttpStatus>> checkEmail(String email) {
-        if (userRepository.existsByEmail(email)) {
+
+        // 이메일 중복체크
+        if (userValidationUtil.existsByEmail(email)) {
             throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
         }
         return ResponseHandler.ok("사용 가능한 이메일입니다.", HttpStatus.OK);

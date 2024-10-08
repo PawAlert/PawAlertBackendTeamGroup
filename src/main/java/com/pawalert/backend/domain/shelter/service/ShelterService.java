@@ -7,11 +7,8 @@ import com.pawalert.backend.domain.shelter.model.ShelterJoinDto;
 import com.pawalert.backend.domain.shelter.model.ShelterViewResponse;
 import com.pawalert.backend.domain.shelter.repository.AnimalShelterRepository;
 import com.pawalert.backend.domain.shelter.repository.ShelterRepository;
-import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.*;
 import com.pawalert.backend.global.aws.S3Service;
-import com.pawalert.backend.global.aws.SaveImage;
-import com.pawalert.backend.global.config.redis.RedisService;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
 import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
 import com.pawalert.backend.global.httpstatus.exception.ResponseHandler;
@@ -22,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,14 +28,9 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-// todo : 진짜 중복 코드 너무 많다 날잡고 정리하자 제발 미루지말라고.. 내일 꼭하자..^^;
 public class ShelterService {
     private final ShelterRepository shelterRepository;
-    private final SaveImage saveImage;
-    private final UserRepository userRepository;
     private final AnimalShelterRepository animalShelterRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final RedisService redisService;
     private final S3Service s3Service;
 
     // 업데이트
