@@ -82,8 +82,11 @@ dependencies {
     // Excel 파일을 읽고 쓰는 작업을 자동화하는 데 사용
     implementation 'org.apache.poi:poi-ooxml:5.2.3'
 
-    // 대량의 데이터를 처리하는 배치 작업을 개발하는 데 사용
+    // 배치
     implementation 'org.springframework.boot:spring-boot-starter-batch'
+
+    // aws
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.1.1'
 
 
     // querydsl

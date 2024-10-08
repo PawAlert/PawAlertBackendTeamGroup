@@ -57,6 +57,17 @@ jobs:
                   value: ${{ secrets.MONGO_DATABASE }}
                 - name: SPRING_DATA_MONGODB_PASSWORD
                   value: ${{ secrets.MONGO_PASSWORD }}
+                # AWS 관련 환경 변수 추가
+                - name: SPRING_CLOUD_AWS_CREDENTIALS_ACCESS_KEY
+                  value: ${{ secrets.AWS_ACCESS_KEY }}
+                - name: SPRING_CLOUD_AWS_CREDENTIALS_SECRET_KEY
+                  value: ${{ secrets.AWS_SECRET_KEY }}
+                - name: SPRING_CLOUD_AWS_S3_BUCKET
+                  value: ${{ secrets.SPRING_CLOUD_AWS_S3_BUCKET }}
+                - name: SPRING_CLOUD_AWS_S3_PUBLIC_FOLDER
+                 value: ${{ secrets.SPRING_CLOUD_AWS_S3_PUBLIC_FOLDER }}
+                - name: SPRING_CLOUD_AWS_S3_PRIVATE_FOLDER
+                  value: ${{ secrets.SPRING_CLOUD_AWS_S3_PRIVATE_FOLDER }}
               buildenv: []
             context:
               git:

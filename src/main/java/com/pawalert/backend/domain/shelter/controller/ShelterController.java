@@ -22,13 +22,13 @@ public class ShelterController {
 private final ShelterService shelterService;
 
     // 보호센터 정보 등록
-    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<SuccessResponse<String>> createHospitalDoctor(@AuthenticationPrincipal CustomUserDetails user,
-                                                                        @RequestPart("shelter")  ShelterUpdateOrCreateRequest request,
-                                                                        @RequestPart("image") MultipartFile file
-    ) {
-        return shelterService.createShelter(user, request, file);
-    }
+//    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<SuccessResponse<String>> createHospitalDoctor(@AuthenticationPrincipal CustomUserDetails user,
+//                                                                        @RequestPart("shelter")  ShelterUpdateOrCreateRequest request,
+//                                                                        @RequestPart("image") MultipartFile file
+//    ) {
+//        return shelterService.createShelter(user, request, file);
+//    }
     // 보호센터 정보 수정
     @PatchMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SuccessResponse<String>> updateHospitalDoctor(@AuthenticationPrincipal CustomUserDetails user,

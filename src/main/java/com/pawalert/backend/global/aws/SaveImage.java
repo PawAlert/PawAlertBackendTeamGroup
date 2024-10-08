@@ -1,9 +1,7 @@
-package com.pawalert.backend.global;
+package com.pawalert.backend.global.aws;
 
-import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
 import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
-import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

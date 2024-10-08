@@ -79,7 +79,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         }
 
         // todo : 서버 배포 후 동작확인해보기
-        redisService.loginSaveData(uid, "192.168.0.0.1", LocalDateTime.now()); // 로그인 정보 저장
+//        redisService.loginSaveData(uid, "192.168.0.0.1", LocalDateTime.now()); // 로그인 정보 저장
 
 
         System.out.println("Attributes: " + attributes);

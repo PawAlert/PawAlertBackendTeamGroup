@@ -1,6 +1,9 @@
 package com.pawalert.backend.domain.shelter.model;
 
+import com.pawalert.backend.domain.shelter.entity.AnimalRescueOrganizationEntity;
+import com.pawalert.backend.global.ImageInfo;
 import com.pawalert.backend.global.LocataionRecord;
+import com.pawalert.backend.global.Location;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record ShelterUpdateOrCreateRequest(
@@ -19,4 +22,16 @@ public record ShelterUpdateOrCreateRequest(
         @Schema(description = "보호센터 email")
         String contactEmail
 ) {
+        public AnimalRescueOrganizationEntity toEntity(Long userId, ImageInfo profileImage) {
+                return AnimalRescueOrganizationEntity.builder()
+                        .shelterName(shelterName)
+                        .jurisdiction(jurisdiction)
+                        .contactPhone(contactPhone)
+                        .contactEmail(contactEmail)
+                        .websiteUrl(websiteUrl)
+                        .detailAddress(Location.from(location))
+                        .profileImage(profileImage)
+                        .userId(userId)
+                        .build();
+        }
 }

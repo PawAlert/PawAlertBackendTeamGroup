@@ -9,6 +9,7 @@ import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.model.UserRole;
 import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.*;
+import com.pawalert.backend.global.aws.SaveImage;
 import com.pawalert.backend.global.config.redis.RedisService;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
 import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
@@ -135,7 +136,7 @@ public class HospitalDoctorService {
                 .build();
 
         hospitalDoctorRepository.save(hospitalDoctor);
-        redisService.hospitalAndShelterSignup("Hospital", newUser.getCreatedAt(), newUser.getUid());
+//        redisService.hospitalAndShelterSignup("Hospital", newUser.getCreatedAt(), newUser.getUid());
 
 
         return ResponseHandler.generateResponse(HttpStatus.CREATED, "병원 의사 등록 성공",
@@ -234,14 +235,14 @@ public class HospitalDoctorService {
 
             if (result.getName().equals(request.hospitalName())) {
                 log.info("병원 인증 성공");
-                redisService.hospitalAndShelterAttempt("Hospital", "Success", LocalDateTime.now(), "192.168.0.0.1", request.hospitalName(), request.licenseNumber());
+//                redisService.hospitalAndShelterAttempt("Hospital", "Success", LocalDateTime.now(), "192.168.0.0.1", request.hospitalName(), request.licenseNumber());
                 return ResponseHandler.generateResponse(HttpStatus.OK, "병원 인증 성공", result.getName());
             } else {
                 throw new BusinessException(ErrorCode.NOT_FOUND_LICENSE);
             }
         } catch (Exception e) {
             log.error("병원 인증 실패");
-            redisService.hospitalAndShelterAttempt("Hospital", "Fail", LocalDateTime.now(), "192.168.0.0.1", request.hospitalName(), request.licenseNumber());
+//            redisService.hospitalAndShelterAttempt("Hospital", "Fail", LocalDateTime.now(), "192.168.0.0.1", request.hospitalName(), request.licenseNumber());
             return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, "병원 인증 실패", request.hospitalName());
         }
     }

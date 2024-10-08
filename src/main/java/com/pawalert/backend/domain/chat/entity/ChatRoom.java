@@ -1,5 +1,6 @@
-package com.pawalert.backend.chat;
+package com.pawalert.backend.domain.chat.entity;
 
+import com.pawalert.backend.domain.chat.dto.ChatMessageDTO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,4 +19,7 @@ public class ChatRoom {
     private String id; // 채팅방 ID
     private String chatRoomId;
     private List<ChatMessageDTO> messages = new ArrayList<>(); // 메시지 목록
+    // 참여자 이메일 정보
+    private String joinUserUid1;
+    private String joinUserUid2;
 }

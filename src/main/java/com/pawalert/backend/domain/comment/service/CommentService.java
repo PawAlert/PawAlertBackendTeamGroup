@@ -52,7 +52,7 @@ public class CommentService {
 
         try{
             log.info("Redis에 저장");
-            redisService.commentSaveData(user.getUid(), response.content(), commentEntity.getTimestamp());
+//            redisService.commentSaveData(user.getUid(), response.content(), commentEntity.getTimestamp());
 
         }catch (Exception e){
             log.error("Redis에 저장 실패");

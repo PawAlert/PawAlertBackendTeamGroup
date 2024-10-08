@@ -8,7 +8,7 @@ import com.pawalert.backend.domain.mypet.repository.PetImageRepository;
 import com.pawalert.backend.domain.mypet.repository.PetRepository;
 import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.repository.UserRepository;
-import com.pawalert.backend.global.SaveImage;
+import com.pawalert.backend.global.aws.SaveImage;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
 import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
 import com.pawalert.backend.global.httpstatus.exception.ResponseHandler;
@@ -106,6 +106,7 @@ public class PetService {
                             .photoUrl(petImageUrl)
                             .build();
                 }).toList();
+
         pet.getPetImages().addAll(newPetImages);
 
         // 펫 정보 업데이트

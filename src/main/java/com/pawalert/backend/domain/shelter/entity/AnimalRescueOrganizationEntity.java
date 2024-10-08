@@ -12,9 +12,9 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(indexes = {
         @Index(name = "idx_shelter_name", columnList = "shelter_name")
 })

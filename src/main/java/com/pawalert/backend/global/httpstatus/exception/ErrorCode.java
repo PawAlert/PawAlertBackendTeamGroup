@@ -27,6 +27,8 @@ public enum ErrorCode {
     NOT_FOUND_SHELTER(HttpStatus.NOT_FOUND, "보호단체 정보가 없습니다."),
     DUPLICATE_SHELTER(HttpStatus.FORBIDDEN, "보호단체 인증실패."),
 
+    EXIST_SHELTER(HttpStatus.BAD_REQUEST, "이미 존재하는 보호센터 입니다."),
+
     // 반려동물
     NOT_FOUND_PET(HttpStatus.NOT_FOUND, "존재하지 않는 반려동물입니다."),
 

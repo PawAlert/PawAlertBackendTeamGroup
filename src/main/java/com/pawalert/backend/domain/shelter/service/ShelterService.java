@@ -12,6 +12,7 @@ import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.model.UserRole;
 import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.*;
+import com.pawalert.backend.global.aws.SaveImage;
 import com.pawalert.backend.global.config.redis.RedisService;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
 import com.pawalert.backend.global.httpstatus.exception.ErrorCode;
@@ -46,68 +47,54 @@ public class ShelterService {
 
 
     // 등록 ( 회원 )
-    @Transactional
-    public ResponseEntity<SuccessResponse<String>> createShelter(CustomUserDetails user,
-                                                                 ShelterUpdateOrCreateRequest request,
-                                                                 MultipartFile file) {
-
-        UserEntity memberUser = userRepository.findByUid(user.getUid())
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
-
-        AnimalShelterEntity shelter = animalShelterRepository.findByJurisdictionAndShelterName(request.jurisdiction(), request.shelterName());
-
-        log.info("shelter : {}", shelter);
-        if (Objects.isNull(shelter)) {
-            throw new BusinessException(ErrorCode.DUPLICATE_SHELTER);
-        }
-
-        String imageUrl = saveImage.saveProfileImage();
-
-        if (!file.isEmpty()) {
-            imageUrl = saveImage.SaveImages(file);
-        }
-
-        try {
-
-            memberUser.setRole(UserRole.ROLE_ASSOCIATION_USER);
-
-
-            ImageInfo imageUpload = ImageInfo.builder()
-                    .imageUrl(imageUrl)
-                    .imageUserId(user.getId())
-                    .isDelete(false)
-                    .build();
-
-            Location location = Location.builder()
-                    .address(request.location().address())
-                    .addressDetail(request.location().addressDetail())
-                    .latitude(request.location().latitude())
-                    .longitude(request.location().longitude())
-                    .postcode(request.location().postcode())
-                    .build();
-
-
-            AnimalRescueOrganizationEntity shelterMember = AnimalRescueOrganizationEntity.builder()
-                    .shelterName(request.shelterName())
-                    .jurisdiction(request.jurisdiction())
-                    .contactPhone(request.contactPhone())
-                    .contactEmail(request.contactEmail())
-                    .websiteUrl(request.websiteUrl())
-                    .detailAddress(location)
-                    .profileImage(imageUpload)
-                    .userId(memberUser.getId())
-                    .build();
-
-            shelterRepository.save(shelterMember);
-            return ResponseHandler.generateResponse(HttpStatus.CREATED, "보호센터 정보 등록 성공",
-                    String.format("동물보호단체 id %s 유저 권한 : %s",
-                            shelterMember.getId(), memberUser.getRole()));
-        } catch (Exception e) {
-            throw new BusinessException(ErrorCode.ERROR_MISSING_REPORT);
-        }
-
-
-    }
+//    @Transactional
+//    public ResponseEntity<SuccessResponse<String>> createShelter(CustomUserDetails user,
+//                                                                 ShelterUpdateOrCreateRequest request,
+//                                                                 MultipartFile file) {
+//
+//        UserEntity memberUser = userRepository.findByUid(user.getUid())
+//                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+//
+//        AnimalShelterEntity shelter = animalShelterRepository.findByJurisdictionAndShelterName(request.jurisdiction(), request.shelterName());
+//
+//        log.info("shelter : {}", shelter);
+//        if (Objects.isNull(shelter)) {
+//            throw new BusinessException(ErrorCode.DUPLICATE_SHELTER);
+//        }
+//
+//        String imageUrl = saveImage.saveProfileImage();
+//
+//        if (!file.isEmpty()) {
+//            imageUrl = saveImage.SaveImages(file);
+//        }
+//
+//        try {
+//
+//            memberUser.setRole(UserRole.ROLE_ASSOCIATION_USER);
+//
+//
+//            ImageInfo imageUpload = ImageInfo.builder()
+//                    .imageUrl(imageUrl)
+//                    .imageUserId(user.getId())
+//                    .isDelete(false)
+//                    .build();
+//
+//            Location location = Location.builder()
+//                    .address(request.location().address())
+//                    .addressDetail(request.location().addressDetail())
+//                    .latitude(request.location().latitude())
+//                    .longitude(request.location().longitude())
+//                    .postcode(request.location().postcode())
+//                    .build();
+//
+//
+//            return getSuccessResponseResponseEntity(request, memberUser, imageUpload, location, shelterRepository);
+//        } catch (Exception e) {
+//            throw new BusinessException(ErrorCode.ERROR_MISSING_REPORT);
+//        }
+//
+//
+//    }
 
     // 업데이트
     @Transactional
@@ -127,14 +114,7 @@ public class ShelterService {
                     .isDelete(false)
                     .build();
 
-            // todo : 변수화 하자 (중복)
-            Location location = Location.builder()
-                    .address(request.location().address())
-                    .addressDetail(request.location().addressDetail())
-                    .latitude(request.location().latitude())
-                    .longitude(request.location().longitude())
-                    .postcode(request.location().postcode())
-                    .build();
+            Location location = Location.from(request.location());
 
             shelter.setJurisdiction(request.jurisdiction());
             shelter.setShelterName(request.shelterName());
@@ -198,13 +178,13 @@ public class ShelterService {
         try {
             AnimalShelterEntity result = animalShelterRepository.findByJurisdictionAndShelterName(request.jurisdiction(), request.shelterName());
             //todo : 옵셔널로 바꾸기
-            if(result == null) {
+            if (result == null) {
                 throw new BusinessException(ErrorCode.NOT_FOUND_SHELTER);
             }
-            redisService.hospitalAndShelterAttempt("Shelter", "Success", LocalDateTime.now(), "192.168.0.0.1", request.shelterName(), request.jurisdiction());
+//            redisService.hospitalAndShelterAttempt("Shelter", "Success", LocalDateTime.now(), "192.168.0.0.1", request.shelterName(), request.jurisdiction());
             return ResponseHandler.generateResponse(HttpStatus.OK, "보호센터 인증 성공", result.getShelterName());
         } catch (Exception e) {
-            redisService.hospitalAndShelterAttempt("Shelter", "Fail", LocalDateTime.now(), "192.168.0.0.1", request.shelterName(), request.jurisdiction());
+//            redisService.hospitalAndShelterAttempt("Shelter", "Fail", LocalDateTime.now(), "192.168.0.0.1", request.shelterName(), request.jurisdiction());
             throw new BusinessException(ErrorCode.DUPLICATE_SHELTER);
         }
 
@@ -243,7 +223,7 @@ public class ShelterService {
 
             shelterRepository.save(shelterMember);
 
-            redisService.hospitalAndShelterSignup("Shelter", newUser.getCreatedAt(), newUser.getUid());
+//            redisService.hospitalAndShelterSignup("Shelter", newUser.getCreatedAt(), newUser.getUid());
             return ResponseHandler.generateResponse(HttpStatus.CREATED, "비회원 보호센터 정보 등록 성공",
                     String.format("동물보호단체 id %s", shelterMember.getId()));
 
