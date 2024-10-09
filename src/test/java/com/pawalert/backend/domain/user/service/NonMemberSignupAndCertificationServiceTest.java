@@ -12,9 +12,11 @@ import com.pawalert.backend.global.httpstatus.exception.SuccessResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +29,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class NonMemberSignupAndCertificationServiceTest {
 
     @Mock
@@ -47,11 +50,6 @@ class NonMemberSignupAndCertificationServiceTest {
     @InjectMocks
     private NonMemberSignupAndCertificationService userService;
 
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);  // Mockito 초기화
-    }
 
     @Test
     void login() {
