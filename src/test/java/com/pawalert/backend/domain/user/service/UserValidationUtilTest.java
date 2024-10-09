@@ -5,15 +5,17 @@ import com.pawalert.backend.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-
+@ExtendWith(MockitoExtension.class)
 @DisplayName("유저 uid-email 검증 단위테스트")
 class UserValidationUtilTest {
     @Mock
@@ -21,11 +23,6 @@ class UserValidationUtilTest {
 
     @InjectMocks
     private UserValidationUtil userValidationUtil;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);  // Mockito 초기화
-    }
 
     @Test
     @DisplayName("uid 검증")

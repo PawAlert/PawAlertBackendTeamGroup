@@ -48,7 +48,7 @@ public class LoginMemberUserService {
     private final SaveImage saveImage;
 
 
-    // 마이페이지 수정
+    // 마이페이지 업데이트
     @Transactional
     public ResponseEntity<?> updateMyPage(UserUpdateRequest request, CustomUserDetails user) {
         // 사용자 정보 조회
@@ -119,7 +119,6 @@ public class LoginMemberUserService {
         if (Boolean.TRUE.equals(existsUser)) {
             throw new BusinessException(ErrorCode.EXIST_SHELTER);
         }
-        String imageUrl = saveImage.saveProfileImage();
 
         String imageUpload = s3Service.basicProfile();
 
@@ -127,9 +126,6 @@ public class LoginMemberUserService {
         AnimalRescueOrganizationEntity shelter = request.toEntity(userInfo.getId(), imageUpload);
         shelterRepository.save(shelter);
 
-        if (!file.isEmpty()) {
-            imageUrl = saveImage.SaveImages(file);
-        }
 
         userInfo.setRole(UserRole.ROLE_ASSOCIATION_USER);
 
