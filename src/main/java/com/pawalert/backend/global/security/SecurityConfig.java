@@ -46,7 +46,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/","/api/user/otherUser/**", "/app/chat/**", "/chat/**", "/ws/**", "/favicon.ico", "/files/**", "/login", "/api/missing/search/**",
+                                .requestMatchers(
+                                        "/api/nonMember/user/**",
+                                        "/", "/api/user/otherUser/**", "/app/chat/**", "/chat/**", "/ws/**", "/favicon.ico", "/files/**", "/login", "/api/missing/search/**",
                                         "api/user/checkemail/**",
                                         "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
                                         "/api/user/**", "/oauth2/**",
