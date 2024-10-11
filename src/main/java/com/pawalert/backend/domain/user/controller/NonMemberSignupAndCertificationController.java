@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @Slf4j
-@RequestMapping("/api/user")
+@RequestMapping("/api/nonMember/user")
 
 public class NonMemberSignupAndCertificationController {
 
@@ -34,10 +34,10 @@ public class NonMemberSignupAndCertificationController {
 
         return nonLoginMemberUserService.registerUser(registerRequest);
     }
-
+//    SuccessResponse<JwtResponse>
     // 로그인
-    @GetMapping("/login")
-    public ResponseEntity<SuccessResponse<JwtResponse>> authenticateUser(@RequestBody LoginRequest loginRequest) {
+    @PostMapping("/login")
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         return nonLoginMemberUserService.login(loginRequest);
     }
 
