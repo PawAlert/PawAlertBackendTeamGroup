@@ -7,91 +7,101 @@ import com.pawalert.backend.global.Location;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public record MissingDetailResponse(
-        // 작성자 정보
-        @Schema(description = "작성자 ID")
+        @Schema(description = "작성자 ID", example = "user123")
         String userName,
-        @Schema(description = "사용자 UID")
+
+        @Schema(description = "사용자 UID", example = "uid123")
         String userUid,
-        @Schema(description = "작성자 전화번호")
+
+        @Schema(description = "작성자 전화번호", example = "010-1234-5678")
         String phoneNumber,
-        @Schema(description = "자신이 작성했는지")
+
+        @Schema(description = "자신이 작성했는지", example = "true")
         boolean isMine,
 
-
-        // 글 정보
-        @Schema(description = "실종글 Id")
+        @Schema(description = "실종글 Id", example = "1")
         Long missingReportId,
-        @Schema(description = "제목")
+
+        @Schema(description = "제목", example = "반려동물을 찾아요")
         String title,
-        @Schema(description = "게시글 내용")
+
+        @Schema(description = "게시글 내용", example = "우리 강아지가 실종되었습니다.")
         String content,
-        @Schema(description = "실종날짜 2024-12-31T23:59:59")
+
+        @Schema(description = "실종날짜", example = "2024-12-31")
         LocalDate dateLost,
+
         @Schema(description = "실종 위치 위도/경도")
         Location location,
-        @Schema(description = "특징 및 설명")
+
+        @Schema(description = "특징 및 설명", example = "검정색 털과 흰색 발")
         String description,
-        @Schema(description = "상태 예: 실종 중, 발견됨, 종료 = 기본값 MISSING")
+
+        @Schema(description = "상태 예: 실종 중, 발견됨, 종료 = 기본값 MISSING", example = "MISSING")
         String missingStatus,
 
-        //펫정보
-        @Schema(description = "펫 이름")
+        @Schema(description = "펫 이름", example = "바둑이")
         String petName,
-        @Schema(description = "펫 품종")
+
+        @Schema(description = "펫 품종", example = "시츄")
         String petSpecies,
-        @Schema(description = "펫 중성화 여부")
+
+        @Schema(description = "펫 중성화 여부", example = "false")
         boolean neutering,
-        @Schema(description = "펫 색상")
+
+        @Schema(description = "펫 색상", example = "검정색")
         String color,
-        @Schema(description = "펫 나이")
+
+        @Schema(description = "펫 나이", example = "5")
         int age,
-        @Schema(description = "펫 성별")
+
+        @Schema(description = "펫 성별", example = "수컷")
         String gender,
-        @Schema(description = "펫 칩 Id")
+
+        @Schema(description = "펫 칩 Id", example = "chip12345")
         String microchipId,
-        @Schema(description = "펫 특징")
+
+        @Schema(description = "펫 특징", example = "귀여운 눈")
         String petDescription,
+
         @Schema(description = "펫 사진 URL")
         List<PetImageListRecord> missingPetImages,
-        @Schema(description = "연락처1")
+
+        @Schema(description = "연락처1", example = "010-9876-5432")
         String contact1,
-        @Schema(description = "연락처2")
+
+        @Schema(description = "연락처2", example = "010-5678-1234")
         String contact2
-
-
 ) {
-    public static MissingDetailResponse from(MissingReportEntity missingReport, boolean isMine) {
-
-        return new MissingDetailResponse(
-                missingReport.getUser().getUserName(),
-                missingReport.getUser().getUid(),
-                missingReport.getUser().getPhoneNumber(),
-                isMine,
-                missingReport.getId(),
-                missingReport.getTitle(),
-                missingReport.getContent(),
-                missingReport.getDateLost(),
-                missingReport.getLocation(),
-                missingReport.getDescription(),
-                missingReport.getStatus().toString(),
-                missingReport.getPet().getPetName(),
-                missingReport.getPet().getSpecies(),
-                missingReport.getPet().isNeutering(),
-                missingReport.getPet().getColor(),
-                missingReport.getPet().getAge(),
-                missingReport.getPet().getGender(),
-                missingReport.getPet().getMicrochipId(),
-                missingReport.getPet().getDescription(),
-                // image 는 id 와 url 함께
-                missingReport.getMissingPetImages().stream()
-                        .map(image -> new PetImageListRecord(image.getId(), image.getMissingPhotoUrl()))
-                        .toList(),
-                missingReport.getContact1(),
-                missingReport.getContact2()
-        );
-    }
+        public static MissingDetailResponse from(MissingReportEntity missingReport, boolean isMine) {
+                return new MissingDetailResponse(
+                        missingReport.getUser().getUserName(),
+                        missingReport.getUser().getUid(),
+                        missingReport.getUser().getPhoneNumber(),
+                        isMine,
+                        missingReport.getId(),
+                        missingReport.getTitle(),
+                        missingReport.getContent(),
+                        missingReport.getDateLost(),
+                        missingReport.getLocation(),
+                        missingReport.getDescription(),
+                        missingReport.getStatus().toString(),
+                        missingReport.getPet().getPetName(),
+                        missingReport.getPet().getSpecies(),
+                        missingReport.getPet().isNeutering(),
+                        missingReport.getPet().getColor(),
+                        missingReport.getPet().getAge(),
+                        missingReport.getPet().getGender(),
+                        missingReport.getPet().getMicrochipId(),
+                        missingReport.getPet().getDescription(),
+                        missingReport.getMissingPetImages().stream()
+                                .map(image -> new PetImageListRecord(image.getId(), image.getMissingPhotoUrl()))
+                                .toList(),
+                        missingReport.getContact1(),
+                        missingReport.getContact2()
+                );
+        }
 }

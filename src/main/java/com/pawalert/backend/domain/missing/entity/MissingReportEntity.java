@@ -76,7 +76,6 @@ public class MissingReportEntity extends BaseEntity {
     private MissingStatus status = MissingStatus.MISSING;
 
 
-
     @OneToMany(mappedBy = "missingReport", cascade = CascadeType.ALL, orphanRemoval = true)
     @Schema(description = "반려동물 사진 목록")
     private List<MissingReportImageEntity> missingPetImages;
@@ -86,13 +85,15 @@ public class MissingReportEntity extends BaseEntity {
     public static MissingReportEntity fromRequest(MissingReportRecord request, Location location, UserEntity user, PetEntity pet) {
         return MissingReportEntity.builder()
                 .title(request.title())
-                .content(request.content())
+                // 당시 상황 설명
+                .content(request.incidentDescription())
                 .dateLost(request.dateLost())
                 .location(location)
-                .description(request.description())
+                // 펫 상세 설명
+                .description(request.petAdditionalInfo())
                 .status(request.status())
-                .contact1(request.contact1())
-                .contact2(request.contact2())
+                .contact1(request.emergencyContact1())
+                .contact2(request.emergencyContact2())
                 .user(user)
                 .pet(pet)
                 .build();

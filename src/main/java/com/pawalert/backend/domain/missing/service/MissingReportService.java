@@ -12,6 +12,7 @@ import com.pawalert.backend.domain.mypet.repository.PetRepository;
 import com.pawalert.backend.domain.user.entity.UserEntity;
 import com.pawalert.backend.domain.user.repository.UserRepository;
 import com.pawalert.backend.global.Location;
+import com.pawalert.backend.global.aws.S3Service;
 import com.pawalert.backend.global.aws.SaveImage;
 import com.pawalert.backend.global.config.redis.RedisService;
 import com.pawalert.backend.global.httpstatus.exception.BusinessException;
@@ -44,11 +45,23 @@ public class MissingReportService {
     private final MissingImageRepository missingImageRepository;
     private final CommentRepository commentRepository;
     private final RedisService redisService;
+    private final S3Service s3Service;
+
+
+    //실종글 이미지 업로드하기
+    public List<String> missingReturnS3ImageUrl(CustomUserDetails user,
+                                                List<MultipartFile> images) {
+
+        return images.stream()
+                .map(image -> s3Service.uploadFile(image, true))
+                .toList();
+
+    }
 
     // 실종글 수정
     @Transactional
     public ResponseEntity<SuccessResponse<String>> updateMissingReport(
-            MissingUpdateRequest request,
+            MissingPatchRequest request,
             CustomUserDetails user) {
 
         // 사용자 정보를 가져옵니다.
@@ -84,14 +97,14 @@ public class MissingReportService {
     // 실종글 등록
     @Transactional
     public ResponseEntity<SuccessResponse<List<String>>> createMissingReport(MissingReportRecord request,
-                                                                             CustomUserDetails user,
-                                                                             List<MultipartFile> images) {
+                                                                             CustomUserDetails user
+                                                                             ) {
         UserEntity userMember = userRepository.findByUid(user.getUid())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
         try {
             // 위치 저장
-            Location location = Location.from(request.locataionRecord());
+            Location location = Location.from(request.locationRecord());
             // 반려동물 정보 저장
             PetEntity pet = PetEntity.fromRequest(request, userMember);
             petRepository.save(pet);
@@ -100,10 +113,6 @@ public class MissingReportService {
             MissingReportEntity missingReport = MissingReportEntity.fromRequest(request, location, userMember, pet);
             missingReportRepository.save(missingReport);
 
-            List<MissingReportImageEntity> imageUrls = images.stream()
-                    .map(image -> MissingReportImageEntity.from(saveImage.SaveImages(image), missingReport))
-                    .toList();
-            missingImageRepository.saveAll(imageUrls);
 
             // 넘겨줄 data 정보
             List<String> data = List.of(
@@ -139,7 +148,7 @@ public class MissingReportService {
 
         MissingDetailResponse response = MissingDetailResponse.from(missingReport, isMine);
 
-        return ResponseHandler.generateResponse(HttpStatus.OK,"Missing report detail retrieved successfully", response);
+        return ResponseHandler.generateResponse(HttpStatus.OK, "Missing report detail retrieved successfully", response);
 
     }
 

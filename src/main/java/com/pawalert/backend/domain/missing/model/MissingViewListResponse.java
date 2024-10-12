@@ -7,40 +7,54 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record MissingViewListResponse(
-        @Schema(description = "실종글 Id")
+        @Schema(description = "실종글 Id", example = "1")
         Long missingReportId,
-        @Schema(description = "작성자 ID")
+
+        @Schema(description = "작성자 ID", example = "123")
         Long userId,
-        @Schema(description = "제목")
+
+        @Schema(description = "제목", example = "우리 강아지를 찾습니다")
         String title,
-        @Schema(description = "실종날짜 2024-12-31T23:59:59")
+
+        @Schema(description = "실종날짜", example = "2024-12-31")
         LocalDate dateLost,
-        @Schema(description = "위치코드")
+
+        @Schema(description = "위치코드", example = "12345")
         String postcode,
-        @Schema(description = "경기도 시흥시 현대아파트")
+
+        @Schema(description = "주소", example = "경기도 시흥시 현대아파트")
         String address,
-        @Schema(description = "상세주소")
+
+        @Schema(description = "상세주소", example = "101동 202호")
         String addressDetail,
-        @Schema(description = "실종상태")
+
+        @Schema(description = "실종상태", example = "MISSING")
         String missingStatus,
-        @Schema(description = "펫 이름")
+
+        @Schema(description = "펫 이름", example = "바둑이")
         String petName,
-        @Schema(description = "펫 품종")
+
+        @Schema(description = "펫 품종", example = "시츄")
         String species,
-        @Schema(description = "펫 색상")
+
+        @Schema(description = "펫 색상", example = "흰색")
         String petColor,
-        @Schema(description = "펫 나이")
+
+        @Schema(description = "펫 나이", example = "3")
         int age,
-        @Schema(description = "펫 성별")
+
+        @Schema(description = "펫 성별", example = "수컷")
         String petGender,
-        @Schema(description = "펫 이미지 url")
+
+        @Schema(description = "펫 이미지 url", example = "http://example.com/image.jpg")
         String petImageUrls,
-        @Schema(description = "설명")
+
+        @Schema(description = "설명", example = "검정색 털에 하얀 발")
         String content,
-        @Schema(description = "연락처")
+
+        @Schema(description = "연락처", example = "010-1234-5678")
         String contact
 ) {
-    // MissingReport 객체를 MissingViewListResponse로 변환하는 정적 메서드 추가
     public static MissingViewListResponse from(MissingReportEntity missingReport) {
         String firstImageUrl = missingReport.getMissingPetImages().get(0).getMissingPhotoUrl();
 
@@ -64,11 +78,10 @@ public record MissingViewListResponse(
         );
     }
 
-    // 리스트 변환도 지원하는 유틸리티 메서드 추가
     public static List<MissingViewListResponse> fromList(List<MissingReportEntity> missingReports) {
         return missingReports.stream()
-                .filter(missingReport -> !missingReport.isDeleted()) // deleted = false인 항목만 필터링
+                .filter(missingReport -> !missingReport.isDeleted())
                 .map(MissingViewListResponse::from)
-                .toList(); // 스트림을 다시 List로 변환
+                .toList();
     }
 }
