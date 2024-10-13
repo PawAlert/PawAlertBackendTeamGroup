@@ -1,19 +1,20 @@
 package com.pawalert.backend.domain.missing.model;
 
-import com.pawalert.backend.global.LocataionRecord;
+import com.pawalert.backend.global.LocationRecord;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public record MissingReportRecord(
         @Schema(description = "제목", example = "반려동물을 찾아요")
-        String title,
+        String missingTitle,
 
         @Schema(description = "실종 당시 상황 설명", example = "산책 중에 잃어버렸습니다.")
         String incidentDescription,
 
         @Schema(description = "실종 날짜", example = "2024-12-31")
-        LocalDate dateLost,
+        LocalDate missingDateLost,
 
         @Schema(description = "비상 연락처1", example = "010-1234-5678")
         String emergencyContact1,
@@ -32,24 +33,27 @@ public record MissingReportRecord(
         String microchipId,
 
         @Schema(description = "펫 이름", example = "버디")
-        String petName,
+        String missingPetName,
 
         @Schema(description = "펫 품종", example = "골든 리트리버")
-        String species,
+        String missingSpecies,
 
         @Schema(description = "펫 색상", example = "황금색")
-        String petColor,
+        String missingPetColor,
 
         @Schema(description = "펫 나이", example = "5")
-        int age,
+        int missingPetAge,
 
         @Schema(description = "펫 성별", example = "남자")
-        String petGender,
+        String MissingPetGender,
 
         @Schema(description = "펫 특징", example = "왼쪽 귀에 상처가 있습니다.")
-        String petDescription,
+        String missingPetDescription,
+
+        @Schema(description = "펫 이미지", example = "www.s3Image.com")
+        List<String> missingPetImages,
 
         @Schema(description = "실종 당시 위치 (위도/경도)")
-        LocataionRecord locationRecord // 오타 수정
+        LocationRecord missingLocationRecord
 ) {
 }

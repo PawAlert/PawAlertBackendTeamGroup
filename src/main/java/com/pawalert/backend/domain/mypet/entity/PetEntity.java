@@ -11,7 +11,10 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -80,18 +83,43 @@ public class PetEntity extends BaseEntity {
     @Schema(description = "삭제 여부")
     private boolean deleted;
 
-    public static PetEntity fromRequest(MissingReportRecord request, UserEntity user) {
-        return PetEntity.builder()
-                .microchipId(request.microchipId())
-                .petName(request.petName())
-                .species(request.species())
-                .color(request.petColor())
-                .age(request.age())
-                .gender(request.petGender())
-                .description(request.petDescription())
-                .deleted(false)
-                .user(user)
-                .build();
-    }
+//    public static PetEntity fromRequest(MissingReportRecord request, UserEntity user) {
+//        PetEntity pet = PetEntity.builder()
+//                .microchipId(request.microchipId())
+//                .petName(request.petName())
+//                .species(request.species())
+//                .color(request.petColor())
+//                .age(request.age())
+//                .gender(request.petGender())
+//                .description(request.petDescription())
+//                .deleted(false)
+//                .user(user)
+//                .build();
+//        if (pet.getPetImages() == null) {
+//            pet.setPetImages(new ArrayList<>());
+//        }
+//        // 이미지 업로드 하기,
+//        Optional.ofNullable(request.petImages()).ifPresent(images -> {
+//            List<PetImageEntity> petImages = images.stream()
+//                    .map(imageUrl -> PetImageEntity.builder()
+//                            .pet(pet)
+//                            .photoUrl(imageUrl)
+//                            .build())
+//                    .toList();
+//            pet.getPetImages().addAll(petImages);
+//        });
+//
+//
+//
+//        return pet;
+//    }
+//
+//    public void addPetImage(String imageUrl) {
+//        PetImageEntity petImageEntity = PetImageEntity.builder()
+//                .pet(this)
+//                .photoUrl(imageUrl)
+//                .isDeleted(false)
+//                .build();
+//    }
 
 }

@@ -1,6 +1,6 @@
 package com.pawalert.backend.domain.hospital.dto;
 
-import com.pawalert.backend.global.LocataionRecord;
+import com.pawalert.backend.global.LocationRecord;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record HospitalDoctorRequest(
@@ -11,7 +11,7 @@ public record HospitalDoctorRequest(
         String hospitalName,
 
         @Schema(description = "병원 위치 (위도/경도) 및 상세주소")
-        LocataionRecord detailAddress,
+        LocationRecord detailAddress,
 
         @Schema(description = "의사 인허가번호", example = "1234567890")
         String licenseNumber,

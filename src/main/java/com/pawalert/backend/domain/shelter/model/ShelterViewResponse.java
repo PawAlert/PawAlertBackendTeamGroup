@@ -1,6 +1,6 @@
 package com.pawalert.backend.domain.shelter.model;
 
-import com.pawalert.backend.global.LocataionRecord;
+import com.pawalert.backend.global.LocationRecord;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record ShelterViewResponse(
@@ -17,7 +17,7 @@ public record ShelterViewResponse(
         String contactPhone,
 
         @Schema(description = "보호센터 위치 (위도/경도) 및 상세주소")
-        LocataionRecord location,
+        LocationRecord location,
 
         @Schema(description = "보호센터 웹사이트 URL", example = "http://example.com/shelter")
         String shelterImage,

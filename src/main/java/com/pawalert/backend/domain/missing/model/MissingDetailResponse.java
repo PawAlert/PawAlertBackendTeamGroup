@@ -76,32 +76,34 @@ public record MissingDetailResponse(
         @Schema(description = "연락처2", example = "010-5678-1234")
         String contact2
 ) {
-        public static MissingDetailResponse from(MissingReportEntity missingReport, boolean isMine) {
-                return new MissingDetailResponse(
-                        missingReport.getUser().getUserName(),
-                        missingReport.getUser().getUid(),
-                        missingReport.getUser().getPhoneNumber(),
-                        isMine,
-                        missingReport.getId(),
-                        missingReport.getTitle(),
-                        missingReport.getContent(),
-                        missingReport.getDateLost(),
-                        missingReport.getLocation(),
-                        missingReport.getDescription(),
-                        missingReport.getStatus().toString(),
-                        missingReport.getPet().getPetName(),
-                        missingReport.getPet().getSpecies(),
-                        missingReport.getPet().isNeutering(),
-                        missingReport.getPet().getColor(),
-                        missingReport.getPet().getAge(),
-                        missingReport.getPet().getGender(),
-                        missingReport.getPet().getMicrochipId(),
-                        missingReport.getPet().getDescription(),
-                        missingReport.getMissingPetImages().stream()
-                                .map(image -> new PetImageListRecord(image.getId(), image.getMissingPhotoUrl()))
-                                .toList(),
-                        missingReport.getContact1(),
-                        missingReport.getContact2()
-                );
-        }
+    public static MissingDetailResponse from(MissingReportEntity missingReport, boolean isMine) {
+        return new MissingDetailResponse(
+                missingReport.getUser().getUserName(),
+                missingReport.getUser().getUid(),
+                missingReport.getUser().getPhoneNumber(),
+                isMine,
+                missingReport.getId(),
+                missingReport.getMissingTitle(),
+                // 실종 당시 설명
+                missingReport.getIncidentDescription(),
+                missingReport.getDateLost(),
+                missingReport.getLocation(),
+                //실종동물 설명
+                missingReport.getPetAdditionalInfo(),
+                missingReport.getStatus().toString(),
+                missingReport.getMissingPetName(),
+                missingReport.getMissingSpecies(),
+                missingReport.isMissingNeutering(),
+                missingReport.getMissingPetColor(),
+                missingReport.getMissingPetAge(),
+                missingReport.getMissingPetGender(),
+                missingReport.getMicrochipId(),
+                missingReport.getMissingPetDescription(),
+                missingReport.getMissingPetImages().stream()
+                        .map(image -> new PetImageListRecord(image.getId(), image.getMissingPhotoUrl()))
+                        .toList(),
+                missingReport.getContact1(),
+                missingReport.getContact2()
+        );
+    }
 }

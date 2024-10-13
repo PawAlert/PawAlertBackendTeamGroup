@@ -1,8 +1,8 @@
 package com.pawalert.backend.domain.shelter.model;
 
 import com.pawalert.backend.domain.shelter.entity.AnimalRescueOrganizationEntity;
-import com.pawalert.backend.global.LocataionRecord;
 import com.pawalert.backend.global.Location;
+import com.pawalert.backend.global.LocationRecord;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record ShelterJoinDto(
@@ -22,7 +22,7 @@ public record ShelterJoinDto(
         String contactPhone,
 
         @Schema(description = "보호센터 위치 (위도/경도) 및 상세주소")
-        LocataionRecord location,
+        LocationRecord location,
 
         @Schema(description = "보호센터 website URL", example = "https://www.shelterwebsite.com")
         String websiteUrl,

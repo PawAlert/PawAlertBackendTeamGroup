@@ -190,7 +190,7 @@ public class HospitalDoctorService {
         HospitalDoctorEntity hospitalDoctor = hospitalDoctorRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
-        LocataionRecord getDetailAddress = new LocataionRecord(
+        LocationRecord getDetailAddress = new LocationRecord(
                 hospitalDoctor.getDetailAddress().getLatitude(),
                 hospitalDoctor.getDetailAddress().getLongitude(),
                 hospitalDoctor.getDetailAddress().getAddress(),

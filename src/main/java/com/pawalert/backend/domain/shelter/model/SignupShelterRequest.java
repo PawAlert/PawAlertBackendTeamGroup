@@ -1,6 +1,6 @@
 package com.pawalert.backend.domain.shelter.model;
 
-import com.pawalert.backend.global.LocataionRecord;
+import com.pawalert.backend.global.LocationRecord;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record SignupShelterRequest(
@@ -17,6 +17,6 @@ public record SignupShelterRequest(
         @Schema(description = "로그인 비밀번호")
         String password,
         @Schema(description = "보호단체 위치")
-        LocataionRecord location
+        LocationRecord location
 ) {
 }

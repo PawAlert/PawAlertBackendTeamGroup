@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 
-public record LocataionRecord(
+public record LocationRecord(
         @Schema(description = "위도", example = "37.5665")
         BigDecimal latitude,
 
@@ -21,8 +21,8 @@ public record LocataionRecord(
         @Schema(description = "상세 주소", example = "1층 101호")
         String addressDetail
 ) {
-    public static LocataionRecord getLocation(Location location) {
-        return new LocataionRecord(
+    public static LocationRecord getLocation(Location location) {
+        return new LocationRecord(
                 location.getLatitude(),
                 location.getLongitude(),
                 location.getPostcode(),

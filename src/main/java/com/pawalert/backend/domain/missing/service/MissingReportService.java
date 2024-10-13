@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -47,16 +48,6 @@ public class MissingReportService {
     private final RedisService redisService;
     private final S3Service s3Service;
 
-
-    //실종글 이미지 업로드하기
-    public List<String> missingReturnS3ImageUrl(CustomUserDetails user,
-                                                List<MultipartFile> images) {
-
-        return images.stream()
-                .map(image -> s3Service.uploadFile(image, true))
-                .toList();
-
-    }
 
     // 실종글 수정
     @Transactional
@@ -79,13 +70,11 @@ public class MissingReportService {
         }
 
         // 게시글 정보를 업데이트합니다.
-        missingReport.setTitle(request.title());
-        missingReport.setDescription(request.petDescription());
+        missingReport.setMissingTitle(request.title());
+        // 실종 당시 설명
+        missingReport.setIncidentDescription(request.petDescription());
         missingReport.setContact1(request.contact1());
         missingReport.setContact2(request.contact2());
-        missingReport.getPet().setSpecies(request.petSpecies());
-        missingReport.getPet().setMicrochipId(request.microchipId());
-        missingReport.getPet().setDescription(request.description());
         missingReport.setStatus(MissingStatus.valueOf(request.missingStatus()));
 
 
@@ -97,38 +86,37 @@ public class MissingReportService {
     // 실종글 등록
     @Transactional
     public ResponseEntity<SuccessResponse<List<String>>> createMissingReport(MissingReportRecord request,
-                                                                             CustomUserDetails user
-                                                                             ) {
+                                                                             CustomUserDetails user) {
         UserEntity userMember = userRepository.findByUid(user.getUid())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
         try {
             // 위치 저장
-            Location location = Location.from(request.locationRecord());
-            // 반려동물 정보 저장
-            PetEntity pet = PetEntity.fromRequest(request, userMember);
-            petRepository.save(pet);
+            Location location = Location.from(request.missingLocationRecord());
 
-            // 반려동물 실종 정보 저장
-            MissingReportEntity missingReport = MissingReportEntity.fromRequest(request, location, userMember, pet);
+            // 반려동물 실종 게시글 생성 (이미지 포함)
+            MissingReportEntity missingReport = MissingReportEntity.fromRequest(request, location, userMember);
+
+            // 이미지 엔티티 생성 및 설정
+            List<MissingReportImageEntity> imageEntities = request.missingPetImages().stream()
+                    .map(imageUrl -> MissingReportImageEntity.from(imageUrl, missingReport))
+                    .collect(Collectors.toList());
+
+            missingReport.setMissingPetImages(imageEntities);
+
             missingReportRepository.save(missingReport);
 
-
-            // 넘겨줄 data 정보
             List<String> data = List.of(
-                    "user Email =  " + userMember.getEmail(),
-                    "pet name = " + pet.getPetName()
+                    "user Email = " + userMember.getEmail(),
+                    "pet name = " + request.missingPetName()
             );
-            //redis 정보 저장
-//            redisService.missingSaveData(userMember.getUid(), missingReport.getId(), location.getAddress(), missingReport.getCreatedAt());
+
             return ResponseHandler.generateResponse(HttpStatus.CREATED, "Missing report created successfully", data);
 
         } catch (Exception e) {
             log.error("Missing report create error", e);
             throw new BusinessException(ErrorCode.ERROR_MISSING_REPORT);
         }
-
-
     }
 
     // 실종 글 상세 조회

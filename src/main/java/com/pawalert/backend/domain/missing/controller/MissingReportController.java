@@ -36,15 +36,6 @@ public class MissingReportController {
         return missingReportService.createMissingReport(request, user);
     }
 
-    // 실종 글 이미지 업로드
-    @PostMapping(value = "/S3ImageUploadUrl", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "실종 게시글 작성 시 이미지 업로드 하는 부분", description = "게시글 작성 전 이미지를 먼저 업로드 합니다.")
-    public List<String> uploadMissingImage(@AuthenticationPrincipal CustomUserDetails user,
-                                           @RequestPart("MissingImage") List<MultipartFile> images
-    ) {
-        return missingReportService.missingReturnS3ImageUrl(user, images);
-
-    }
 
     // 실종글 수정
     @PatchMapping("/update")

@@ -61,19 +61,19 @@ public record MissingViewListResponse(
         return new MissingViewListResponse(
                 missingReport.getId(),
                 missingReport.getUser().getId(),
-                missingReport.getTitle(),
+                missingReport.getMissingTitle(),
                 missingReport.getDateLost(),
                 missingReport.getLocation().getPostcode(),
                 missingReport.getLocation().getAddress(),
                 missingReport.getLocation().getAddressDetail(),
                 missingReport.getStatus().name(),
-                missingReport.getPet().getPetName(),
-                missingReport.getPet().getSpecies(),
-                missingReport.getPet().getColor(),
-                missingReport.getPet().getAge(),
-                missingReport.getPet().getGender(),
+                missingReport.getMissingPetName(),
+                missingReport.getMissingSpecies(),
+                missingReport.getMissingPetColor(),
+                missingReport.getMissingPetAge(),
+                missingReport.getMissingPetGender(),
                 firstImageUrl,
-                missingReport.getDescription(),
+                missingReport.getMissingPetDescription(),
                 missingReport.getContact1()
         );
     }

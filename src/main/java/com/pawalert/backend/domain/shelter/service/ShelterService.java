@@ -70,7 +70,7 @@ public class ShelterService {
 
         try {
             // 보호센터 위치 정보
-            LocataionRecord location = LocataionRecord.getLocation(shelter.getLocation());
+            LocationRecord location = LocationRecord.getLocation(shelter.getLocation());
             ShelterViewResponse response = new ShelterViewResponse(
                     shelter.getId(),
                     shelter.getJurisdiction(),
