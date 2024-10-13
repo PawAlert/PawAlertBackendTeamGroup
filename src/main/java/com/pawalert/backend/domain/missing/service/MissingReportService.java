@@ -120,7 +120,8 @@ public class MissingReportService {
     }
 
     // 실종 글 상세 조회
-    public ResponseEntity<SuccessResponse<MissingDetailResponse>> getMissingReportDetail(Long missingReportId, CustomUserDetails user) {
+    public ResponseEntity<SuccessResponse<MissingDetailResponse>> getMissingReportDetail(Long missingReportId,
+                                                                                         CustomUserDetails user) {
         UserEntity userMember = null;
         boolean isMine = false;
         MissingReportEntity missingReport = missingReportRepository.findById(missingReportId)
@@ -140,35 +141,19 @@ public class MissingReportService {
 
     }
 
-    // 실종글 리스트 조회
-    public Page<MissingViewListResponse> getMissingReports(Pageable pageable, String sortDirection, String statusFilter) {
-        // 모든 데이터 조회
-        List<MissingReportEntity> allReports = missingReportRepository.findAll(); // 먼저 모든 데이터를 가져옴
+    // 실종글 목록 조회
+    public Page<MissingReportNewListResponse> getMissingReports(Pageable pageable, String sortDirection, String statusFilter) {
+        // 정렬 방향 설정
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), "dateLost");
 
-        // 먼저 필터링
-        List<MissingReportEntity> filteredReports = allReports.stream()
-                .filter(missingReport -> !missingReport.isDeleted()) // deleted = false인 항목만 필터링
-                .filter(missingReport -> missingReport.getStatus().name().equalsIgnoreCase(statusFilter)) // 상태 필터 적용
-                .toList();
+        // 데이터베이스에서 필터링 및 정렬된 데이터를 직접 조회
+        Page<MissingReportEntity> missingReports = missingReportRepository.findByDeletedFalseAndStatus(
+                MissingStatus.valueOf(statusFilter.toUpperCase()),
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort)
+        );
 
-        // 필터링된 데이터를 정렬
-        Comparator<MissingReportEntity> comparator = Comparator.comparing(MissingReportEntity::getDateLost);
-        if ("DESC".equals(sortDirection)) {
-            comparator = comparator.reversed(); // DESC일 경우 역순 정렬
-        }
-        List<MissingReportEntity> sortedFilteredReports = filteredReports.stream()
-                .sorted(comparator) // 필터링된 데이터를 정렬
-                .toList();
-
-        // 필터링된 리스트를 페이지로 변환 후 반환
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), sortedFilteredReports.size());
-        List<MissingViewListResponse> pageContent = sortedFilteredReports.subList(start, end).stream()
-                .map(MissingViewListResponse::from) // 필터링된 데이터를 DTO로 변환
-                .toList();
-
-        // 최종 결과 반환
-        return new PageImpl<>(pageContent, pageable, sortedFilteredReports.size());
+        // DTO로 변환
+        return missingReports.map(MissingReportNewListResponse::from);
     }
 
 

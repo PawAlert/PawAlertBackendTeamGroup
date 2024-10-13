@@ -56,7 +56,7 @@ public record MissingDetailResponse(
         String color,
 
         @Schema(description = "펫 나이", example = "5")
-        int age,
+        Long age,
 
         @Schema(description = "펫 성별", example = "수컷")
         String gender,
@@ -93,7 +93,7 @@ public record MissingDetailResponse(
                 missingReport.getStatus().toString(),
                 missingReport.getMissingPetName(),
                 missingReport.getMissingSpecies(),
-                missingReport.isMissingNeutering(),
+                missingReport.getMissingNeutering(),
                 missingReport.getMissingPetColor(),
                 missingReport.getMissingPetAge(),
                 missingReport.getMissingPetGender(),

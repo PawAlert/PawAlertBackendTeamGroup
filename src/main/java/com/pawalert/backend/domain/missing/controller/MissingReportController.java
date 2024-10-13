@@ -78,7 +78,7 @@ public class MissingReportController {
     // 실종신고 전체 조회
     @GetMapping("/list")
     @Operation(summary = "실종 글 목록을 조회합니다.", description = "삭제되지 않은 실종 글을 전체 조회합니다. 페이지 네이션 적용")
-    public Page<MissingViewListResponse> missingPostList(
+    public Page<MissingReportNewListResponse> missingPostList(
             @PageableDefault(size = 10) Pageable pageable,
             @RequestParam(value = "sortDirection", required = false, defaultValue = "desc") String sortDirection, // 정렬 방향
             @RequestParam(value = "statusFilter", required = false, defaultValue = "MISSING") String statusFilter) { // 상태 필터

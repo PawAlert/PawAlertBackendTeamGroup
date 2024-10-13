@@ -42,7 +42,7 @@ public record MissingReportRecord(
         String missingPetColor,
 
         @Schema(description = "펫 나이", example = "5")
-        int missingPetAge,
+        Long missingPetAge,
 
         @Schema(description = "펫 성별", example = "남자")
         String MissingPetGender,

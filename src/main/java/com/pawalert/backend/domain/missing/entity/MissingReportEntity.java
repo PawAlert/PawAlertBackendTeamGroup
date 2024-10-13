@@ -84,7 +84,7 @@ public class MissingReportEntity extends BaseEntity {
 
     @Schema(description = "펫 나이", example = "5")
     @Column(name = "missing_pet_age")
-    private int missingPetAge;
+    private Long missingPetAge;
 
     @Schema(description = "펫 성별", example = "남자")
     @Column(name = "missing_pet_gender")
@@ -92,7 +92,7 @@ public class MissingReportEntity extends BaseEntity {
 
     @Schema(description = "중성화 여부", example = "false")
     @Column(name = "missing_neutering")
-    private boolean missingNeutering;
+    private Boolean missingNeutering;
 
     @Schema(description = "펫 특징", example = "왼쪽 귀에 상처가 있습니다.")
     @Column(name = "missing_pet_description")

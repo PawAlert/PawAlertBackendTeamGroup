@@ -41,7 +41,7 @@ public record MissingViewListResponse(
         String petColor,
 
         @Schema(description = "펫 나이", example = "3")
-        int age,
+        Long age,
 
         @Schema(description = "펫 성별", example = "수컷")
         String petGender,

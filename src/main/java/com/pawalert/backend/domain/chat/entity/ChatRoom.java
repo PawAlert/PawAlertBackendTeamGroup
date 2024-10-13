@@ -1,25 +1,40 @@
 package com.pawalert.backend.domain.chat.entity;
 
-import com.pawalert.backend.domain.chat.dto.ChatMessageDTO;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-@Document(collection = "chat_rooms")
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = "chatrooms")
 public class ChatRoom {
+
     @Id
-    private String id; // 채팅방 ID
-    private String chatRoomId;
-    private List<ChatMessageDTO> messages = new ArrayList<>(); // 메시지 목록
-    // 참여자 이메일 정보
-    private String joinUserUid1;
-    private String joinUserUid2;
+    private String id;
+
+    private String missingPostId;
+    private String senderUid;
+    private String receiverUid;
+    private LocalDateTime createdAt;
+    private List<ChatMessage> messages = new ArrayList<>();
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ChatMessage {
+        private String chatRoomId;
+        private String senderUid;
+        private String receiverUid;
+        private String message;
+        private long timestamp;
+
+    }
 }
