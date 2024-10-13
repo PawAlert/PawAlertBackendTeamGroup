@@ -92,7 +92,7 @@ public class MissingReportService {
 
         try {
             // 위치 저장
-            Location location = Location.from(request.missingLocationRecord());
+            Location location = Location.from(request.locationRecord());
 
             // 반려동물 실종 게시글 생성 (이미지 포함)
             MissingReportEntity missingReport = MissingReportEntity.fromRequest(request, location, userMember);

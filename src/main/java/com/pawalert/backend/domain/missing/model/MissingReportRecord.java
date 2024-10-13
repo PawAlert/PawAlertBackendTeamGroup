@@ -54,6 +54,6 @@ public record MissingReportRecord(
         List<String> missingPetImages,
 
         @Schema(description = "실종 당시 위치 (위도/경도)")
-        LocationRecord missingLocationRecord
+        LocationRecord locationRecord
 ) {
 }
