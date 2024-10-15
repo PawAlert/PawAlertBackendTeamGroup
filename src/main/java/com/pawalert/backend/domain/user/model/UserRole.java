@@ -6,6 +6,7 @@ public enum UserRole {
     //동물 병원
     ROLE_ANIMAL_HOSPITAL_USER,
     //동물 구조 단체
-    ROLE_ASSOCIATION_USER
+    ROLE_ASSOCIATION_USER,
+    ROLE_OFFICIAL_USER,
 
 }

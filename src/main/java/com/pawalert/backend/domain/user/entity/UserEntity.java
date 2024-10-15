@@ -57,7 +57,7 @@ public class UserEntity extends BaseEntity {
     private String profilePictureUrl;
 
     @Enumerated(EnumType.STRING) // enum 값을 문자열로 저장
-    @Column(name = "role")
+    @Column(name = "role", length = 50)
     @Schema(description = "USER, ADMIN, ASSOCIATION_USER")
     private UserRole role = UserRole.ROLE_USER;
 
