@@ -38,4 +38,10 @@ public class AnnouncementService {
         return AnnouncementDetailDto.fromEntity(announcement);
     }
 
+    @Transactional(readOnly = true)
+    public Page<AnnouncementSummaryDto> getUserAnnouncements(String officialId, Pageable pageable) {
+        Page<AnnouncementEntity> announcementPage = announcementRepository.findByOfficialId(officialId, pageable);
+        return announcementPage.map(AnnouncementSummaryDto::fromEntity);
+    }
+
 }

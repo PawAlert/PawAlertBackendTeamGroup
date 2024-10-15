@@ -59,4 +59,14 @@ public class AnnouncementController {
         return ResponseHandler.ok("공고 상세 정보를 성공적으로 조회했습니다.", announcementDetail);
     }
 
+    @GetMapping("/my-announcements")
+    @Operation(summary = "내 공고 목록 조회", description = "로그인한 사용자의 공고 목록을 페이지 단위로 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "내 공고 목록 조회 성공")
+    public ResponseEntity<SuccessResponse<Page<AnnouncementSummaryDto>>> getMyAnnouncements(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PageableDefault(size = 9, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<AnnouncementSummaryDto> announcementPage = announcementService.getUserAnnouncements(userDetails.getUid(), pageable);
+        return ResponseHandler.ok("내 공고 목록을 성공적으로 조회했습니다.", announcementPage);
+    }
+
 }
