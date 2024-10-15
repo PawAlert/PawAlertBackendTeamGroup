@@ -124,11 +124,11 @@ public class MissingReportService {
                                                                                          CustomUserDetails user) {
         UserEntity userMember = null;
         boolean isMine = false;
+
         MissingReportEntity missingReport = missingReportRepository.findById(missingReportId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MISSING_REPORT));
 
-
-        if (Optional.ofNullable(user).isPresent()) {
+        if (user != null) {
             userMember = userRepository.findByUid(user.getUid())
                     .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
@@ -138,7 +138,6 @@ public class MissingReportService {
         MissingDetailResponse response = MissingDetailResponse.from(missingReport, isMine);
 
         return ResponseHandler.generateResponse(HttpStatus.OK, "Missing report detail retrieved successfully", response);
-
     }
 
     // 실종글 목록 조회
