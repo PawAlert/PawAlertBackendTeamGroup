@@ -28,8 +28,8 @@ public class HospitalDoctorEntity {
     private String hospitalName;
 
     @Embedded
-    @Schema(description = "실종 위치 (위도/경도) 및 상세주소")
-    private Location detailAddress;
+    @Schema(description = "병원 위치 정보")
+    private Location location;
 
     @Schema(description = "의사 인허가번호")
     @Column(name = "doctor_license_number")

@@ -26,6 +26,7 @@ public enum ErrorCode {
     FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다."),
     NOT_FOUND_SHELTER(HttpStatus.NOT_FOUND, "보호단체 정보가 없습니다."),
     DUPLICATE_SHELTER(HttpStatus.FORBIDDEN, "보호단체 인증실패."),
+    NOT_FOUND_VOLUNTEER_ACTIVITY(HttpStatus.NOT_FOUND, "해당 봉사활동을 찾을 수 없습니다."),
 
     EXIST_SHELTER(HttpStatus.BAD_REQUEST, "이미 존재하는 보호센터 입니다."),
 

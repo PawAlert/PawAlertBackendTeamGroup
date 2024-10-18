@@ -45,7 +45,7 @@ public record MissingReportRecord(
         Long missingPetAge,
 
         @Schema(description = "펫 성별", example = "남자")
-        String MissingPetGender,
+        String missingPetGender,
 
         @Schema(description = "펫 특징", example = "왼쪽 귀에 상처가 있습니다.")
         String missingPetDescription,

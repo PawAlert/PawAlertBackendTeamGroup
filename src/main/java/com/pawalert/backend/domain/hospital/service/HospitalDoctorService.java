@@ -71,13 +71,8 @@ public class HospitalDoctorService {
         try {
             memberUser.setRole(UserRole.ROLE_ANIMAL_HOSPITAL_USER);
 
-            Location detailAddress = Location.builder()
-                    .latitude(request.detailAddress().latitude())
-                    .longitude(request.detailAddress().longitude())
-                    .postcode(request.detailAddress().postcode())
-                    .address(request.detailAddress().address())
-                    .addressDetail(request.detailAddress().addressDetail())
-                    .build();
+
+            Location detailAddress = Location.from(request.detailAddress());
 
             HospitalDoctorEntity hospitalDoctor = HospitalDoctorEntity.builder()
                     .phoneNumber(request.phoneNumber())
@@ -85,7 +80,7 @@ public class HospitalDoctorService {
                     .licenseNumber(request.licenseNumber())
                     .major(request.major())
                     .userId(user.getId())
-                    .detailAddress(detailAddress)
+                    .location(detailAddress)
                     .hospitalImage(imageInfo)
                     .userId(memberUser.getId())
                     .build();
@@ -115,14 +110,8 @@ public class HospitalDoctorService {
         newUser.setProfilePictureUrl(saveImage.saveProfileImage());
         userRepository.save(newUser);
 
+        Location detailAddress = Location.from(request.locataionRecord());
 
-        Location detailAddress = Location.builder()
-                .latitude(request.locataionRecord().latitude())
-                .longitude(request.locataionRecord().longitude())
-                .postcode(request.locataionRecord().postcode())
-                .address(request.locataionRecord().address())
-                .addressDetail(request.locataionRecord().addressDetail())
-                .build();
 
         HospitalDoctorEntity hospitalDoctor = HospitalDoctorEntity.builder()
                 .phoneNumber(request.phoneNumber())
@@ -130,7 +119,7 @@ public class HospitalDoctorService {
                 .licenseNumber(request.licenseNumber())
                 .major(request.major())
                 .userId(newUser.getId())
-                .detailAddress(detailAddress)
+                .location(detailAddress)
                 .build();
 
         hospitalDoctorRepository.save(hospitalDoctor);
@@ -159,18 +148,12 @@ public class HospitalDoctorService {
                 hospitalDoctor.setHospitalImage(imageInfo);
             }
 
-            Location detailAddress = Location.builder()
-                    .latitude(request.detailAddress().latitude())
-                    .longitude(request.detailAddress().longitude())
-                    .postcode(request.detailAddress().postcode())
-                    .address(request.detailAddress().address())
-                    .addressDetail(request.detailAddress().addressDetail())
-                    .build();
+            Location detailAddress = Location.from(request.detailAddress());
 
 
             hospitalDoctor.setPhoneNumber(request.phoneNumber());
             hospitalDoctor.setHospitalName(request.hospitalName());
-            hospitalDoctor.setDetailAddress(detailAddress);
+            hospitalDoctor.setLocation(detailAddress);
             hospitalDoctor.setMajor(request.major());
 
             return ResponseHandler.generateResponse(HttpStatus.OK, "병원 의사 정보 수정 성공",
@@ -185,19 +168,11 @@ public class HospitalDoctorService {
     //병원 의사 정보 조회
     @Transactional(readOnly = true)
     public ResponseEntity<SuccessResponse<HospitalDoctorViewResponse>> getHospitalDoctorView(CustomUserDetails user) {
-
-
         HospitalDoctorEntity hospitalDoctor = hospitalDoctorRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
-        LocationRecord getDetailAddress = new LocationRecord(
-                hospitalDoctor.getDetailAddress().getLatitude(),
-                hospitalDoctor.getDetailAddress().getLongitude(),
-                hospitalDoctor.getDetailAddress().getAddress(),
-                hospitalDoctor.getDetailAddress().getAddressDetail(),
-                hospitalDoctor.getDetailAddress().getPostcode()
-        );
-        String imageinfoRecord = s3Service.basicProfile();
+        LocationRecord locationRecord = LocationRecord.getLocation(hospitalDoctor.getLocation());
+        String imageInfoRecord = s3Service.basicProfile();
 
         try {
             HospitalDoctorViewResponse response = new HospitalDoctorViewResponse(
@@ -206,11 +181,9 @@ public class HospitalDoctorService {
                     hospitalDoctor.getPhoneNumber(),
                     hospitalDoctor.getLicenseNumber(),
                     hospitalDoctor.getMajor(),
-                    imageinfoRecord,
-                    getDetailAddress,
+                    imageInfoRecord,
+                    locationRecord,
                     hospitalDoctor.getUserId()
-
-
             );
             return ResponseHandler.generateResponse(HttpStatus.OK, "병원 의사 정보 조회 성공", response);
         } catch (Exception e) {

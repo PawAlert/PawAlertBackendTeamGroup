@@ -90,9 +90,9 @@ public class MissingReportEntity extends BaseEntity {
     @Column(name = "missing_pet_gender")
     private String missingPetGender;
 
-    @Schema(description = "중성화 여부", example = "false")
-    @Column(name = "missing_neutering")
-    private Boolean missingNeutering;
+//    @Schema(description = "중성화 여부", example = "false")
+//    @Column(name = "missing_neutering")
+//    private Boolean missingNeutering;
 
     @Schema(description = "펫 특징", example = "왼쪽 귀에 상처가 있습니다.")
     @Column(name = "missing_pet_description")
@@ -119,7 +119,7 @@ public class MissingReportEntity extends BaseEntity {
                 .missingSpecies(request.missingSpecies())
                 .missingPetColor(request.missingPetColor())
                 .missingPetAge(request.missingPetAge())
-                .missingPetGender(request.MissingPetGender())
+                .missingPetGender(request.missingPetGender())
                 .missingPetDescription(request.missingPetDescription())
                 .user(user)
                 .build();

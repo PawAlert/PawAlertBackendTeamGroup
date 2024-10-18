@@ -50,7 +50,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(
-//                                        "/api/announcements/get-announcements/**",
+                                        "/api/volunteer/detail/**",
+                                        "/api/volunteer/search/**",
                                         "/api/announcements/**",
                                         "/api/missing/getdetail/**",
                                         "/api/announcements/get-announcements",

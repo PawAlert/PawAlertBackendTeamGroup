@@ -1,6 +1,7 @@
 package com.pawalert.backend.domain.missing.model;
 
 import com.pawalert.backend.domain.missing.entity.MissingReportEntity;
+import com.pawalert.backend.global.LocationRecord;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
@@ -19,14 +20,8 @@ public record MissingViewListResponse(
         @Schema(description = "실종날짜", example = "2024-12-31")
         LocalDate dateLost,
 
-        @Schema(description = "위치코드", example = "12345")
-        String postcode,
-
-        @Schema(description = "주소", example = "경기도 시흥시 현대아파트")
-        String address,
-
-        @Schema(description = "상세주소", example = "101동 202호")
-        String addressDetail,
+        @Schema(description = "위치 정보")
+        LocationRecord location,
 
         @Schema(description = "실종상태", example = "MISSING")
         String missingStatus,
@@ -47,7 +42,7 @@ public record MissingViewListResponse(
         String petGender,
 
         @Schema(description = "펫 이미지 url", example = "http://example.com/image.jpg")
-        String petImageUrls,
+        String petImageUrl,
 
         @Schema(description = "설명", example = "검정색 털에 하얀 발")
         String content,
@@ -56,16 +51,15 @@ public record MissingViewListResponse(
         String contact
 ) {
     public static MissingViewListResponse from(MissingReportEntity missingReport) {
-        String firstImageUrl = missingReport.getMissingPetImages().get(0).getMissingPhotoUrl();
+        String firstImageUrl = missingReport.getMissingPetImages().isEmpty() ?
+                null : missingReport.getMissingPetImages().get(0).getMissingPhotoUrl();
 
         return new MissingViewListResponse(
                 missingReport.getId(),
                 missingReport.getUser().getId(),
                 missingReport.getMissingTitle(),
                 missingReport.getDateLost(),
-                missingReport.getLocation().getPostcode(),
-                missingReport.getLocation().getAddress(),
-                missingReport.getLocation().getAddressDetail(),
+                LocationRecord.getLocation(missingReport.getLocation()),
                 missingReport.getStatus().name(),
                 missingReport.getMissingPetName(),
                 missingReport.getMissingSpecies(),

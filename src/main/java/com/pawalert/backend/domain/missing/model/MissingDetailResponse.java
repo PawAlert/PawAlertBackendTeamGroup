@@ -49,8 +49,8 @@ public record MissingDetailResponse(
         @Schema(description = "펫 품종", example = "시츄")
         String petSpecies,
 
-        @Schema(description = "펫 중성화 여부", example = "false")
-        boolean neutering,
+//        @Schema(description = "펫 중성화 여부", example = "false")
+//        boolean neutering,
 
         @Schema(description = "펫 색상", example = "검정색")
         String color,
@@ -93,7 +93,7 @@ public record MissingDetailResponse(
                 missingReport.getStatus().toString(),
                 missingReport.getMissingPetName(),
                 missingReport.getMissingSpecies(),
-                missingReport.getMissingNeutering(),
+//                missingReport.getMissingNeutering(),
                 missingReport.getMissingPetColor(),
                 missingReport.getMissingPetAge(),
                 missingReport.getMissingPetGender(),
